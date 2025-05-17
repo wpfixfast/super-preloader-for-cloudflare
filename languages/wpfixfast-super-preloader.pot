@@ -1,0 +1,317 @@
+# Copyright (C) 2025 WP Fix Fast
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Super Preloader for Cloudflare 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpfixfast-super-preloader\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-05-17T09:03:56+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: wpfixfast-super-preloader\n"
+
+#. Plugin Name of the plugin
+#: wpfixfast-super-preloader.php
+#: includes/admin-ui.php:11
+#: includes/admin-ui.php:40
+msgid "Super Preloader for Cloudflare"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: wpfixfast-super-preloader.php
+msgid "https://wpfixfast.com"
+msgstr ""
+
+#. Description of the plugin
+#: wpfixfast-super-preloader.php
+msgid "Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker."
+msgstr ""
+
+#. Author of the plugin
+#: wpfixfast-super-preloader.php
+msgid "WP Fix Fast"
+msgstr ""
+
+#. Author URI of the plugin
+#: wpfixfast-super-preloader.php
+msgid "https://wpfixfast.com/"
+msgstr ""
+
+#: includes/admin-ui.php:12
+msgid "Super Preloader"
+msgstr ""
+
+#: includes/admin-ui.php:72
+msgid "Preloader running... Please wait for the first batch to complete."
+msgstr ""
+
+#: includes/admin-ui.php:73
+msgid "All URLs have been processed."
+msgstr ""
+
+#. translators: %d is the number of URLs remaining in the preload queue.
+#: includes/admin-ui.php:75
+msgid "%d URLs remaining. Background process will continue."
+msgstr ""
+
+#: includes/admin-ui.php:76
+msgid "Error: "
+msgstr ""
+
+#: includes/admin-ui.php:77
+msgid "AJAX request failed."
+msgstr ""
+
+#: includes/admin-ui.php:78
+msgid "Unknown error."
+msgstr ""
+
+#: includes/ajax.php:8
+msgid "Unauthorized"
+msgstr ""
+
+#: includes/ajax.php:14
+msgid "Preloader function not found."
+msgstr ""
+
+#: includes/ajax.php:27
+msgid "First batch completed."
+msgstr ""
+
+#: includes/cron.php:11
+msgid "Once Weekly"
+msgstr ""
+
+#: includes/helpers.php:33
+#: includes/partials/navigation-tabs.php:13
+msgid "Settings"
+msgstr ""
+
+#: includes/partials/logs-viewer.php:19
+msgid "No log file found."
+msgstr ""
+
+#: includes/partials/navigation-tabs.php:16
+msgid "Stats"
+msgstr ""
+
+#: includes/partials/navigation-tabs.php:19
+msgid "Logs"
+msgstr ""
+
+#: includes/partials/reset-preloader.php:13
+msgid "Clear Stats and Logs"
+msgstr ""
+
+#: includes/partials/settings-form.php:15
+msgid "Cloudflare Worker URL"
+msgstr ""
+
+#: includes/partials/settings-form.php:21
+msgid "https://your-worker-name.username.workers.dev"
+msgstr ""
+
+#. translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag.
+#: includes/partials/settings-form.php:29
+msgid "%1$sDownload%2$s and deploy this Cloudflare Worker code to create your Worker URL. More details and detailed guide at our How to Use section below."
+msgstr ""
+
+#: includes/partials/settings-form.php:43
+msgid "Proxy List URL"
+msgstr ""
+
+#: includes/partials/settings-form.php:49
+msgid "https://proxy.webshare.io/api/v2/proxy/list/download/..."
+msgstr ""
+
+#: includes/partials/settings-form.php:54
+msgid "Optional. If not set, requests will go directly from your server and only warm cache at its nearest Cloudflare edge location."
+msgstr ""
+
+#: includes/partials/settings-form.php:61
+msgid "Sitemap URL"
+msgstr ""
+
+#: includes/partials/settings-form.php:67
+msgid "https://your-domain.com/sitemap.xml"
+msgstr ""
+
+#. translators: %d is the number of URLs found during the last preload run.
+#: includes/partials/settings-form.php:77
+msgid " %d URLs were found during the last preload run."
+msgstr ""
+
+#: includes/partials/settings-form.php:81
+msgid "No sitemap data available yet. Run the preloader to count URLs."
+msgstr ""
+
+#: includes/partials/settings-form.php:90
+msgid "Shared Secret"
+msgstr ""
+
+#: includes/partials/settings-form.php:96
+msgid "Secret key defined in CF Worker"
+msgstr ""
+
+#: includes/partials/settings-form.php:101
+msgid "A secret key used to authenticate requests between your site and the Cloudflare Worker. This must match the value defined in your Worker code."
+msgstr ""
+
+#: includes/partials/settings-form.php:108
+msgid "Auto Run Interval"
+msgstr ""
+
+#: includes/partials/settings-form.php:114
+msgid "Manual Only"
+msgstr ""
+
+#: includes/partials/settings-form.php:115
+msgid "Hourly"
+msgstr ""
+
+#: includes/partials/settings-form.php:116
+msgid "Twice Daily"
+msgstr ""
+
+#: includes/partials/settings-form.php:117
+msgid "Daily"
+msgstr ""
+
+#: includes/partials/settings-form.php:118
+msgid "Weekly"
+msgstr ""
+
+#: includes/partials/settings-form.php:135
+msgid "Batch Size (URLs per batch)"
+msgstr ""
+
+#: includes/partials/settings-form.php:155
+msgid "Delete Data on Uninstall"
+msgstr ""
+
+#: includes/partials/settings-form.php:165
+msgid "Remove all plugin data and logs when the plugin is deleted."
+msgstr ""
+
+#: includes/partials/settings-form.php:175
+msgid "Save Settings"
+msgstr ""
+
+#: includes/partials/setup-guide.php:9
+msgid "Getting Started"
+msgstr ""
+
+#: includes/partials/setup-guide.php:11
+msgid "This plugin helps warm up Cloudflare edge caches by preloading your public URLs using a Worker script and optional rotating proxies. It helps reduce time-to-first-byte (TTFB) and improve real user performance metrics by ensuring content is already cached near your visitors."
+msgstr ""
+
+#: includes/partials/setup-guide.php:18
+msgid "Normally, Cloudflare only populates its edge cache in a specific location when a visitor from that region requests the page. This means content may be slow for first-time visitors in other geographic regions. By sending preload requests from various IP locations, the plugin helps increase Cloudflare cache hit rates across multiple edges."
+msgstr ""
+
+#. translators: %s is a clickable link to the Super Page Cache plugin.
+#: includes/partials/setup-guide.php:29
+msgid "It works best when used together with a caching plugin like %s, since Cloudflare does not cache HTML responses by default—only static assets like images, CSS, and JS. This can lead to better scores in Core Web Vitals—especially the Largest Contentful Paint (LCP)—which is a key factor in SEO and user experience."
+msgstr ""
+
+#: includes/partials/setup-guide.php:39
+msgid "To get started, follow the detailes instructions at our How to Use section below. Recommended steps: 1) Create and Deploy Cloudflare Worker URL. 2) Get Webshare Proxies Download Link. 3) Create your sitemap using Yoast SEO, RankMath SEO, or similar plugin. 4) Start Preloading."
+msgstr ""
+
+#: includes/partials/setup-guide.php:44
+msgid "How to Use"
+msgstr ""
+
+#: includes/partials/setup-guide.php:48
+msgid "What is Cloudflare Edge?"
+msgstr ""
+
+#: includes/partials/setup-guide.php:53
+msgid "Why you should set up Super Page Cache first"
+msgstr ""
+
+#: includes/partials/setup-guide.php:58
+msgid "Why a Cloudflare Worker is needed to preload cache"
+msgstr ""
+
+#: includes/partials/setup-guide.php:63
+msgid "How to create and deploy a Cloudflare Worker"
+msgstr ""
+
+#: includes/partials/setup-guide.php:68
+msgid "How to register and use Webshare Proxies"
+msgstr ""
+
+#: includes/partials/setup-guide.php:73
+msgid "Usage Notes and Key Considerations"
+msgstr ""
+
+#: includes/partials/start-preloader.php:16
+msgid "Start Manual Preload"
+msgstr ""
+
+#: includes/partials/stats-table.php:16
+msgid "URL"
+msgstr ""
+
+#. translators: %d is the run number in the preload stats table header.
+#: includes/partials/stats-table.php:21
+msgid "Run #%d"
+msgstr ""
+
+#: includes/post-handlers.php:58
+msgid "Settings updated."
+msgstr ""
+
+#: includes/post-handlers.php:62
+msgid "Settings saved."
+msgstr ""
+
+#: includes/post-handlers.php:81
+msgid "Reset Preload: Cleared stats, log, and cursor."
+msgstr ""
+
+#: includes/post-handlers.php:82
+msgid "Preload state has been fully reset."
+msgstr ""
+
+#: includes/preloader.php:12
+msgid "Missing required settings: worker or sitemap."
+msgstr ""
+
+#. translators: %s is the error message from the proxy list request.
+#: includes/preloader.php:23
+msgid "Failed to download proxy list: %s"
+msgstr ""
+
+#: includes/preloader.php:37
+msgid "Failed to download sitemap: "
+msgstr ""
+
+#. translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
+#: includes/preloader.php:105
+msgid "Warming: %1$s via %2$s"
+msgstr ""
+
+#. translators: %s is the URL being warmed directly from the server.
+#: includes/preloader.php:109
+msgid "Warming: %s directly from server"
+msgstr ""
+
+#. translators: %s is the HTTP response body returned from the preload request.
+#: includes/preloader.php:114
+msgid "Response: %s"
+msgstr ""
+
+#: includes/preloader.php:161
+msgid "Preload completed."
+msgstr ""
+
+#. translators: %d is the index of the next scheduled preload batch.
+#: includes/preloader.php:166
+msgid "Scheduled next batch at index %d"
+msgstr ""

@@ -1,0 +1,74 @@
+/* utility classes */
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.p-10 {
+  padding: 10px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-10 {
+  gap: 10px;
+}
+/* utility classes */
+
+.wpff-sp-danger-button {
+  background: #dc3232 !important;
+  border-color: #dc3232 !important;
+  color: #fff !important;
+}
+.wpff-sp-danger-button:hover {
+  background: #a00 !important;
+  border-color: #a00 !important;
+  color: #fff !important;
+}
+.long-url-field {
+  width: 100%;
+  max-width: 600px;
+}
+.long-description {
+  width: 100%;
+  max-width: 600px;
+  padding: 3px;
+  color: #888;
+}
+
+/* manual preload results */
+#wpff-sp-preload-result {
+  color: #555;
+}
+
+/* stats table */
+.wpff-sp-stats-table {
+  border-top: 0 !important;
+}
+.wpff-sp-stats-table th {
+  font-weight: bold;
+  background-color: rgba(245, 245, 245, 0.5);
+}
+.wpff-sp-stats-table td {
+  vertical-align: middle;
+}
+.bg-light-gray {
+  background-color: #f5f5f5;
+}
+
+/* log output box */
+#wpff-sp-log-output {
+  background: #f9f9f9;
+  padding: 1em;
+  overflow-x: auto;
+  max-height: 500px;
+}
