@@ -8,7 +8,7 @@ Author: WP Fix Fast
 Author URI: https://wpfixfast.com/
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-Text Domain: wpfixfast-super-preloader
+Text Domain: super-preloader-for-cloudflare
 Domain Path: /languages
  */
 
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 // Load languages
 add_action('plugins_loaded', function () {
   load_plugin_textdomain(
-    'wpfixfast-super-preloader',
+    'super-preloader-for-cloudflare',
     false,
     dirname(plugin_basename(__FILE__)) . '/languages'
   );
@@ -29,9 +29,9 @@ add_action('plugins_loaded', function () {
 $upload_dir = wp_upload_dir();
 define(
   'WPFF_SP_LOG_DIR',
-  trailingslashit($upload_dir['basedir']) . 'wpfixfast-super-preloader'
+  trailingslashit($upload_dir['basedir']) . 'super-preloader-for-cloudflare'
 );
-define('WPFF_SP_LOG_FILE', WPFF_SP_LOG_DIR . '/wpfixfast-super-preloader.log');
+define('WPFF_SP_LOG_FILE', WPFF_SP_LOG_DIR . '/super-preloader-for-cloudflare.log');
 
 // Load includes
 require_once plugin_dir_path(__FILE__) . 'includes/admin-ui.php';

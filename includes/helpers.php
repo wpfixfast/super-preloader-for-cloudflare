@@ -30,7 +30,7 @@ function wpff_sp_generate_token($url, $secret) {
 }
 
 function wpff_sp_add_settings_link($links) {
-  $settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=wpfixfast-super-preloader')) . '">' . esc_html(__('Settings', 'wpfixfast-super-preloader')) . '</a>';
+  $settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=super-preloader-for-cloudflare')) . '">' . esc_html(__('Settings', 'super-preloader-for-cloudflare')) . '</a>';
   array_unshift($links, $settings_link);
   return $links;
 }

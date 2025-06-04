@@ -10,8 +10,8 @@ if (get_option('wpff_sp_delete_data_on_uninstall') !== '1') {
 // Recalculate log paths since main plugin is not loaded
 $upload_dir = wp_upload_dir();
 $log_dir    =
-  trailingslashit($upload_dir['basedir']) . 'wpfixfast-super-preloader';
-$log_file = $log_dir . '/wpfixfast-super-preloader.log';
+  trailingslashit($upload_dir['basedir']) . 'super-preloader-for-cloudflare';
+$log_file = $log_dir . '/super-preloader-for-cloudflare.log';
 
 // Delete options
 delete_option('wpff_sp_worker_url');

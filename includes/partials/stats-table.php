@@ -13,12 +13,12 @@ $site_url = get_site_url();
   <table class="widefat wpff-sp-stats-table">
     <thead>
       <tr>
-        <th><?php echo esc_html(__('URL', 'wpfixfast-super-preloader')); ?></th>
+        <th><?php echo esc_html(__('URL', 'super-preloader-for-cloudflare')); ?></th>
         <?php for ($i = 1; $i <= 5; $i++): ?>
           <th>
             <?php
 // translators: %d is the run number in the preload stats table header.
-echo esc_html(sprintf(__('Run #%d', 'wpfixfast-super-preloader'), $i));
+echo esc_html(sprintf(__('Run #%d', 'super-preloader-for-cloudflare'), $i));
 ?>
           </th>
         <?php endfor; ?>

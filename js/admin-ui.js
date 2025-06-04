@@ -3,8 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const spinner = document.getElementById('wpff-sp-spinner')
   const resultBox = document.getElementById('wpff-sp-preload-result')
 
-  if (!button || !spinner) return
+  // Auto scroll to the bottom of the log output box
+  const logBox = document.getElementById('wpff-sp-log-output')
+  if (logBox) logBox.scrollTop = logBox.scrollHeight
 
+  if (!button || !spinner) return
   button.addEventListener('click', function () {
     // Disable all buttons
     document.querySelectorAll('button, input[type="submit"]').forEach(btn => (btn.disabled = true))

@@ -55,11 +55,11 @@ function wpff_sp_handle_settings_post() {
       delete_option('wpff_sp_delete_data_on_uninstall');
     }
 
-    wpff_sp_log(__('Settings updated.', 'wpfixfast-super-preloader'));
+    wpff_sp_log(__('Settings updated.', 'super-preloader-for-cloudflare'));
 
     wpff_sp_update_cron_schedule();
 
-    echo '<div class="updated"><p>' . esc_html(__('Settings saved.', 'wpfixfast-super-preloader')) . '</p></div>';
+    echo '<div class="updated"><p>' . esc_html(__('Settings saved.', 'super-preloader-for-cloudflare')) . '</p></div>';
   }
 }
 
@@ -78,7 +78,7 @@ function wpff_sp_handle_reset_post() {
       wp_delete_file(WPFF_SP_LOG_FILE);
     }
 
-    wpff_sp_log(__('Reset Preload: Cleared stats, log, and cursor.', 'wpfixfast-super-preloader'));
-    echo '<div class="notice notice-warning"><p>' . esc_html(__('Preload state has been fully reset.', 'wpfixfast-super-preloader')) . '</p></div>';
+    wpff_sp_log(__('Reset Preload: Cleared stats, log, and cursor.', 'super-preloader-for-cloudflare'));
+    echo '<div class="notice notice-warning"><p>' . esc_html(__('Preload state has been fully reset.', 'super-preloader-for-cloudflare')) . '</p></div>';
   }
 }

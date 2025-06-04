@@ -8,10 +8,10 @@ add_action('admin_enqueue_scripts', 'wpff_sp_enqueue_admin_assets');
 
 function wpff_sp_register_admin_menu() {
   add_options_page(
-    __('Super Preloader for Cloudflare', 'wpfixfast-super-preloader'),
-    __('Super Preloader', 'wpfixfast-super-preloader'),
+    __('Super Preloader for Cloudflare', 'super-preloader-for-cloudflare'),
+    __('Super Preloader', 'super-preloader-for-cloudflare'),
     'manage_options',
-    'wpfixfast-super-preloader',
+    'super-preloader-for-cloudflare',
     'wpff_sp_render_settings_page'
   );
 }
@@ -37,7 +37,7 @@ function wpff_sp_render_settings_page() {
   $stats         = get_option('wpff_sp_preload_stats', []);
 
   echo '<div class="wrap">';
-  echo '<h1>' . esc_html(__('Super Preloader for Cloudflare', 'wpfixfast-super-preloader')) . '</h1>';
+  echo '<h1>' . esc_html(__('Super Preloader for Cloudflare', 'super-preloader-for-cloudflare')) . '</h1>';
   include plugin_dir_path(__FILE__) . 'partials/navigation-tabs.php';
 
   if ($tab === 'settings') {
@@ -54,7 +54,7 @@ function wpff_sp_render_settings_page() {
 }
 
 function wpff_sp_enqueue_admin_assets($hook) {
-  if ($hook !== 'settings_page_wpfixfast-super-preloader') {
+  if ($hook !== 'settings_page_super-preloader-for-cloudflare') {
     return;
   }
 
@@ -69,13 +69,13 @@ function wpff_sp_enqueue_admin_assets($hook) {
   wp_localize_script('wpff-sp-admin-ui', 'wpff', [
     'nonce' => wp_create_nonce('wpff_sp_preload_nonce'),
     'i18n'  => [
-      'running'    => __('Preloader running... Please wait for the first batch to complete.', 'wpfixfast-super-preloader'),
-      'complete'   => __('All URLs have been processed.', 'wpfixfast-super-preloader'),
+      'running'    => __('Preloader running... Please wait for the first batch to complete.', 'super-preloader-for-cloudflare'),
+      'complete'   => __('All URLs have been processed.', 'super-preloader-for-cloudflare'),
       // translators: %d is the number of URLs remaining in the preload queue.
-      'remaining'  => __('%d URLs remaining. Background process will continue.', 'wpfixfast-super-preloader'),
-      'error'      => __('Error: ', 'wpfixfast-super-preloader'),
-      'ajaxFailed' => __('AJAX request failed.', 'wpfixfast-super-preloader'),
-      'unknown'    => __('Unknown error.', 'wpfixfast-super-preloader'),
+      'remaining'  => __('%d URLs remaining. Background process will continue.', 'super-preloader-for-cloudflare'),
+      'error'      => __('Error: ', 'super-preloader-for-cloudflare'),
+      'ajaxFailed' => __('AJAX request failed.', 'super-preloader-for-cloudflare'),
+      'unknown'    => __('Unknown error.', 'super-preloader-for-cloudflare'),
     ],
   ]);
 

@@ -8,7 +8,7 @@ add_filter('cron_schedules', function ($schedules) {
   if (!isset($schedules['weekly'])) {
     $schedules['weekly'] = [
       'interval' => 7 * DAY_IN_SECONDS,
-      'display'  => __('Once Weekly', 'wpfixfast-super-preloader'),
+      'display'  => __('Once Weekly', 'super-preloader-for-cloudflare'),
     ];
   }
   return $schedules;

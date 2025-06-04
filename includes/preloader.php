@@ -9,7 +9,7 @@ function wpff_sp_run_preloader() {
   $sitemap   = get_option('wpff_sp_sitemap_url');
 
   if (empty($worker) || empty($sitemap)) {
-    wpff_sp_log(esc_html__('Missing required settings: worker or sitemap.', 'wpfixfast-super-preloader'));
+    wpff_sp_log(esc_html__('Missing required settings: worker or sitemap.', 'super-preloader-for-cloudflare'));
     return;
   }
 
@@ -20,7 +20,7 @@ function wpff_sp_run_preloader() {
 
     if (is_wp_error($proxy_list)) {
       // translators: %s is the error message from the proxy list request.
-      wpff_sp_log(sprintf(esc_html__('Failed to download proxy list: %s', 'wpfixfast-super-preloader'), $proxy_list->get_error_message()));
+      wpff_sp_log(sprintf(esc_html__('Failed to download proxy list: %s', 'super-preloader-for-cloudflare'), $proxy_list->get_error_message()));
     } else {
       $proxies = array_filter(
         array_map(
@@ -34,7 +34,7 @@ function wpff_sp_run_preloader() {
   $sitemap_xml = wp_remote_get($sitemap);
   if (is_wp_error($sitemap_xml)) {
     wpff_sp_log(
-      esc_html__('Failed to download sitemap: ', 'wpfixfast-super-preloader') .
+      esc_html__('Failed to download sitemap: ', 'super-preloader-for-cloudflare') .
       esc_html($sitemap_xml->get_error_message())
     );
     return;
@@ -102,16 +102,16 @@ function wpff_sp_run_preloader() {
 
     if ($use_proxy) {
       // translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
-      wpff_sp_log(sprintf(esc_html__('Warming: %1$s via %2$s', 'wpfixfast-super-preloader'), $url, $proxy));
+      wpff_sp_log(sprintf(esc_html__('Warming: %1$s via %2$s', 'super-preloader-for-cloudflare'), $url, $proxy));
       $response = wpff_sp_proxy_request($target_url, $proxy, $auth);
     } else {
       // translators: %s is the URL being warmed directly from the server.
-      wpff_sp_log(sprintf(esc_html__('Warming: %s directly from server', 'wpfixfast-super-preloader'), $url));
+      wpff_sp_log(sprintf(esc_html__('Warming: %s directly from server', 'super-preloader-for-cloudflare'), $url));
       $response = wpff_sp_direct_request($target_url);
     }
 
     // translators: %s is the HTTP response body returned from the preload request.
-    wpff_sp_log(sprintf(esc_html__('Response: %s', 'wpfixfast-super-preloader'), trim($response['body'])));
+    wpff_sp_log(sprintf(esc_html__('Response: %s', 'super-preloader-for-cloudflare'), trim($response['body'])));
 
     if (!empty($response['cf_ray'])) {
       $parts = explode('-', trim($response['cf_ray']));
@@ -158,11 +158,11 @@ function wpff_sp_run_preloader() {
     delete_transient('wpff_sp_batch_stats');
     delete_transient('wpff_sp_preload_cursor');
     delete_transient('wpff_sp_preload_urls'); // Clear cached sitemap
-    wpff_sp_log(esc_html__('Preload completed.', 'wpfixfast-super-preloader'));
+    wpff_sp_log(esc_html__('Preload completed.', 'super-preloader-for-cloudflare'));
   } else {
     set_transient('wpff_sp_preload_cursor', $cursor, 10 * MINUTE_IN_SECONDS);
     wp_schedule_single_event(time() + 2, 'wpff_sp_run_preloader');
     // translators: %d is the index of the next scheduled preload batch.
-    wpff_sp_log(sprintf(esc_html__('Scheduled next batch at index %d', 'wpfixfast-super-preloader'), $cursor['index']));
+    wpff_sp_log(sprintf(esc_html__('Scheduled next batch at index %d', 'super-preloader-for-cloudflare'), $cursor['index']));
   }
 }

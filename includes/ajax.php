@@ -5,13 +5,13 @@ if (!defined('ABSPATH')) {
 
 function wpff_sp_run_preloader_ajax() {
   if (!current_user_can('manage_options')) {
-    wp_send_json_error(esc_html__('Unauthorized', 'wpfixfast-super-preloader'));
+    wp_send_json_error(esc_html__('Unauthorized', 'super-preloader-for-cloudflare'));
   }
 
   check_ajax_referer('wpff_sp_preload_nonce', 'nonce');
 
   if (!function_exists('wpff_sp_run_preloader')) {
-    wp_send_json_error(esc_html__('Preloader function not found.', 'wpfixfast-super-preloader'));
+    wp_send_json_error(esc_html__('Preloader function not found.', 'super-preloader-for-cloudflare'));
   }
 
   wpff_sp_run_preloader();
@@ -24,7 +24,7 @@ function wpff_sp_run_preloader_ajax() {
   $remaining     = max(0, $total_urls - $current_index);
 
   wp_send_json_success([
-    'message'   => esc_html__('First batch completed.', 'wpfixfast-super-preloader'),
+    'message'   => esc_html__('First batch completed.', 'super-preloader-for-cloudflare'),
     'remaining' => $remaining,
     'done'      => $remaining === 0,
   ]);

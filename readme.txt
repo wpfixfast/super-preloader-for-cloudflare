@@ -47,6 +47,13 @@ Recommended steps:
 - [How to register and use Webshare Proxies](https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-register-and-use-webshare-proxies)
 - [Usage Notes and Key Considerations](https://wpfixfast.com/blog/preload-cloudflare-cache/#usage-notes-and-key-considerations)
 
+== Screenshots ==
+
+1. On settings tab you can configure Cloudflare Worker URL, Webshare.io Proxies URL, Sitemap.xml URL, and auto run interval.
+2. The Stats tab displays a table showing the last 5 runs and the edge locations where your URLs are cached.
+3. Logs tab for checking HTTP responses and debugging.
+4. Cloudflare Worker script code to deploy. Set secret key here.
+5. How to check if your Cache is HIT, MISS, or BYPASS.
 
 == Changelog ==
 
