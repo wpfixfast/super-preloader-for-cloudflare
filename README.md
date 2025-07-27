@@ -5,6 +5,7 @@
 [![Donate](https://img.shields.io/badge/Donate-WPFixFast-blue)](https://wpfixfast.com/)
 
 ---
+
 ## Description
 
 Super Preloader for Cloudflare helps you warm your site's edge cache across multiple Cloudflare nodes using proxies and a Worker URL. Perfect for globally distributed cache coverage.
@@ -41,7 +42,38 @@ Recommended steps:
 - [How to register and use Webshare Proxies](https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-register-and-use-webshare-proxies)
 - [Usage Notes and Key Considerations](https://wpfixfast.com/blog/preload-cloudflare-cache/#usage-notes-and-key-considerations)
 
+## Frequently Asked Questions
+
+**What do I need to use this plugin?**
+
+You need a Cloudflare Worker URL (required) and optionally Webshare.io proxies for better global coverage. The plugin provides the Worker script code to deploy to your Cloudflare account.
+
+**Do I need a caching plugin?**
+
+It's highly recommended. Cloudflare only caches static files by default, not HTML pages. Use it with Super Page Cache or similar plugins for best results.
+
+**How does this improve my site performance?**
+
+It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTFB) and improving Core Web Vitals scores. Users worldwide get faster page loads instead of slow "cache miss" responses.
+
+## Screenshots
+
+1. On settings tab you can configure Cloudflare Worker URL, Webshare.io Proxies URL, Sitemap.xml URL, and auto run interval.
+2. The Stats tab displays a table showing the last 5 runs and the edge locations where your URLs are cached.
+3. Logs tab for checking HTTP responses and debugging.
+4. Cloudflare Worker script code to deploy. Set secret key here.
+5. How to check if your Cache is HIT, MISS, or BYPASS.
+6. Comparison of proxy usage versus direct connections
+
 ## Changelog
 
+### 1.0.1 - 27.07.2025
+
+- **Fixed:** Removed deprecated load_plugin_textdomain() call
+- **Improved:** Stats table styling and hover effects
+- **Added:** Color coded tooltips for displaying edge locations on hover
+- **Added:** Comprehensive statistics summary with cumulative and latest run metrics
+
 ### 1.0.0
+
 - Initial release

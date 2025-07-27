@@ -2,7 +2,7 @@
 /*
 Plugin Name: Super Preloader for Cloudflare
 Plugin URI: https://wpfixfast.com
-Version: 1.0.0
+Version: 1.0.1
 Description: Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker.
 Author: WP Fix Fast
 Author URI: https://wpfixfast.com/
@@ -16,16 +16,9 @@ if (!defined('ABSPATH')) {
   exit();
 }
 
-// Load languages
-add_action('plugins_loaded', function () {
-  load_plugin_textdomain(
-    'super-preloader-for-cloudflare',
-    false,
-    dirname(plugin_basename(__FILE__)) . '/languages'
-  );
-});
-
 // Define constants
+define('WPFF_SP_PLUGIN_PATH', plugin_dir_path(__FILE__));
+
 $upload_dir = wp_upload_dir();
 define(
   'WPFF_SP_LOG_DIR',
@@ -34,13 +27,13 @@ define(
 define('WPFF_SP_LOG_FILE', WPFF_SP_LOG_DIR . '/super-preloader-for-cloudflare.log');
 
 // Load includes
-require_once plugin_dir_path(__FILE__) . 'includes/admin-ui.php';
-require_once plugin_dir_path(__FILE__) . 'includes/http_request_functions.php';
-require_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
-require_once plugin_dir_path(__FILE__) . 'includes/post-handlers.php';
-require_once plugin_dir_path(__FILE__) . 'includes/cron.php';
-require_once plugin_dir_path(__FILE__) . 'includes/preloader.php';
-require_once plugin_dir_path(__FILE__) . 'includes/ajax.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/admin-ui.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/http_request_functions.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/helpers.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/post-handlers.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/cron.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/preloader.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/ajax.php';
 
 // Settings link in the plugins page
 add_filter(

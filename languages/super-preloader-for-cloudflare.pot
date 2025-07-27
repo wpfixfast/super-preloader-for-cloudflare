@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-28T08:04:18+00:00\n"
+"POT-Creation-Date: 2025-07-27T17:06:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
@@ -91,7 +91,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/partials/logs-viewer.php:19
+#: includes/partials/logs-viewer.php:13
 msgid "No log file found."
 msgstr ""
 
@@ -254,13 +254,68 @@ msgstr ""
 msgid "Start Manual Preload"
 msgstr ""
 
-#: includes/partials/stats-table.php:16
+#: includes/partials/stats-table.php:22
+msgid "Cumulative Stats Across All Runs (%d Completed)"
+msgstr ""
+
+#: includes/partials/stats-table.php:23
+msgid "Aggregated data from all completed preloader runs"
+msgstr ""
+
+#: includes/partials/stats-table.php:28
+#: includes/partials/stats-table.php:83
+msgid "URLs preloaded"
+msgstr ""
+
+#: includes/partials/stats-table.php:32
+#: includes/partials/stats-table.php:87
+msgid "Unique edge locations"
+msgstr ""
+
+#: includes/partials/stats-table.php:36
+#: includes/partials/stats-table.php:91
+msgid "Unique regions"
+msgstr ""
+
+#: includes/partials/stats-table.php:40
+#: includes/partials/stats-table.php:95
+msgid "Unique countries"
+msgstr ""
+
+#: includes/partials/stats-table.php:45
+#: includes/partials/stats-table.php:100
+msgid "Most common edge"
+msgstr ""
+
+#: includes/partials/stats-table.php:54
+#: includes/partials/stats-table.php:109
+msgid "Most common country"
+msgstr ""
+
+#: includes/partials/stats-table.php:63
+#: includes/partials/stats-table.php:118
+msgid "Most common region"
+msgstr ""
+
+#: includes/partials/stats-table.php:77
+msgid "Latest Run (#%d)"
+msgstr ""
+
+#: includes/partials/stats-table.php:78
+msgid "Performance data from the most recent preloader run"
+msgstr ""
+
+#: includes/partials/stats-table.php:138
 msgid "URL"
 msgstr ""
 
 #. translators: %d is the run number in the preload stats table header.
-#: includes/partials/stats-table.php:21
+#: includes/partials/stats-table.php:143
 msgid "Run #%d"
+msgstr ""
+
+#: includes/partials/stats-table.php:195
+msgid "No stats available yet. Run preloader to generate stats."
 msgstr ""
 
 #: includes/post-handlers.php:58
