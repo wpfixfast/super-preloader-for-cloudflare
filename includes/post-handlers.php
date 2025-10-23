@@ -38,6 +38,20 @@ function wpff_sp_handle_settings_post() {
       );
     }
 
+    if (isset($_POST['cron_start_hour'])) {
+      update_option(
+        'wpff_sp_cron_start_hour',
+        sanitize_text_field(wp_unslash($_POST['cron_start_hour']))
+      );
+    }
+
+    if (isset($_POST['cron_start_minute'])) {
+      update_option(
+        'wpff_sp_cron_start_minute',
+        sanitize_text_field(wp_unslash($_POST['cron_start_minute']))
+      );
+    }     
+
     if (isset($_POST['batch_size'])) {
       update_option('wpff_sp_batch_size', absint($_POST['batch_size']));
     }

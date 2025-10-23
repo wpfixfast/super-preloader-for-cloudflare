@@ -108,12 +108,11 @@ if ($url_count) {
           <label><?php echo esc_html(__('Auto Run Interval', 'super-preloader-for-cloudflare')); ?></label>
         </th>
         <td>
-          <select name="cron_interval">
+          <select name="cron_interval" id="cron_interval">
             <?php
 $intervals = [
   'manual'     => __('Manual Only', 'super-preloader-for-cloudflare'),
   'hourly'     => __('Hourly', 'super-preloader-for-cloudflare'),
-  'twicedaily' => __('Twice Daily', 'super-preloader-for-cloudflare'),
   'daily'      => __('Daily', 'super-preloader-for-cloudflare'),
   'weekly'     => __('Weekly', 'super-preloader-for-cloudflare'),
 ];
@@ -129,6 +128,57 @@ foreach ($intervals as $key => $label) {
           </select>
         </td>
       </tr>
+
+      <tr id="wpff_time_row" style="display: none;">
+        <th>
+          <label><?php echo esc_html(__('Auto Run Start Time', 'super-preloader-for-cloudflare')); ?></label>
+        </th>
+        <td>
+          <select name="cron_start_hour" style="width: 60px;">
+          <?php
+for ($h = 0; $h < 24; $h++):
+  printf(
+    '<option value="%s"%s>%s</option>',
+    esc_attr($h),
+    selected(get_option('wpff_sp_cron_start_hour'), $h, false),
+    esc_html(sprintf('%02d', $h))
+  );              
+endfor;
+        ?>
+          </select>
+          :
+          <select name="cron_start_minute" style="width: 60px;">
+          <?php
+for ($m = 0; $m < 60; $m++):
+  printf(
+    '<option value="%s"%s>%s</option>',
+    esc_attr($m),
+    selected(get_option('wpff_sp_cron_start_minute'), $m, false),
+    esc_html(sprintf('%02d', $m))
+  );              
+endfor;
+        ?>
+          </select>
+<?php
+$timezone = wp_timezone();
+$current = new DateTime('now', $timezone);
+?>
+          <span style="margin-left: 15px; color: #666;">
+              <?php echo esc_html(__('Current time', 'super-preloader-for-cloudflare')); ?>: <strong><?php echo esc_html( $current->format('H:i') ); ?></strong>
+          </span>          
+          <script>
+            // Condifional display based on cron interval
+            const el_wpff_time_row = document.getElementById('wpff_time_row');
+            const el_cron_interval = document.getElementById('cron_interval')
+            el_cron_interval.addEventListener('change', function() {
+              let displayTimeFields = (this.value !== 'manual');
+              el_wpff_time_row.style.display = displayTimeFields ? 'table-row' : 'none';
+            });
+            // Trigger change event on page load to set initial visibility
+            el_cron_interval.dispatchEvent(new Event('change'));
+          </script>             
+        </td>
+      </tr>      
 
       <tr>
         <th>

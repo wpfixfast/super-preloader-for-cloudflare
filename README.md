@@ -67,6 +67,9 @@ It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTF
 
 ## Changelog
 
+### 1.0.2 - 20.10.2025
+- **Added:** Manual setting of cron start time
+
 ### 1.0.1 - 27.07.2025
 
 - **Fixed:** Removed deprecated load_plugin_textdomain() call
