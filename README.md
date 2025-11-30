@@ -67,6 +67,11 @@ It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTF
 
 ## Changelog
 
+### 1.0.3 - 30.11.2025 =
+- **Improved:** Log file security by migrating logs to super-preloader-for-cloudflare-log.php
+- **Added:** Prefixes to global variables
+- **Tested:** Compatibility with WordPress 6.9
+
 ### 1.0.2 - 20.10.2025
 - **Added:** Manual setting of cron start time
 

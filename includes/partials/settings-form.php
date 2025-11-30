@@ -69,12 +69,12 @@ echo sprintf(
             class="long-url-field"
           />
           <?php
-$url_count = get_option('wpff_sp_sitemap_url_count');
-if ($url_count) {
+$wpff_sp_url_count = get_option('wpff_sp_sitemap_url_count');
+if ($wpff_sp_url_count) {
   printf(
     '<p class="long-description">%s</p>',
     // translators: %d is the number of URLs found during the last preload run.
-    esc_html(sprintf(__(' %d URLs were found during the last preload run.', 'super-preloader-for-cloudflare'), $url_count))
+    esc_html(sprintf(__(' %d URLs were found during the last preload run.', 'super-preloader-for-cloudflare'), $wpff_sp_url_count))
   );
 } else {
   echo '<p class="long-description">' .
@@ -110,18 +110,18 @@ if ($url_count) {
         <td>
           <select name="cron_interval" id="cron_interval">
             <?php
-$intervals = [
+$wpff_sp_intervals = [
   'manual'     => __('Manual Only', 'super-preloader-for-cloudflare'),
   'hourly'     => __('Hourly', 'super-preloader-for-cloudflare'),
   'daily'      => __('Daily', 'super-preloader-for-cloudflare'),
   'weekly'     => __('Weekly', 'super-preloader-for-cloudflare'),
 ];
-foreach ($intervals as $key => $label) {
+foreach ($wpff_sp_intervals as $wpff_sp_key => $wpff_sp_label) {
   printf(
     '<option value="%s"%s>%s</option>',
-    esc_attr($key),
-    selected($cron_interval, $key, false),
-    esc_html($label)
+    esc_attr($wpff_sp_key),
+    selected($cron_interval, $wpff_sp_key, false),
+    esc_html($wpff_sp_label)
   );
 }
 ?>
@@ -136,12 +136,12 @@ foreach ($intervals as $key => $label) {
         <td>
           <select name="cron_start_hour" style="width: 60px;">
           <?php
-for ($h = 0; $h < 24; $h++):
+for ($wpff_sp_hour = 0; $wpff_sp_hour < 24; $wpff_sp_hour++):
   printf(
     '<option value="%s"%s>%s</option>',
-    esc_attr($h),
-    selected(get_option('wpff_sp_cron_start_hour'), $h, false),
-    esc_html(sprintf('%02d', $h))
+    esc_attr($wpff_sp_hour),
+    selected(get_option('wpff_sp_cron_start_hour'), $wpff_sp_hour, false),
+    esc_html(sprintf('%02d', $wpff_sp_hour))
   );              
 endfor;
         ?>
@@ -160,11 +160,11 @@ endfor;
         ?>
           </select>
 <?php
-$timezone = wp_timezone();
-$current = new DateTime('now', $timezone);
+$wpff_sp_timezone = wp_timezone();
+$wpff_sp_current = new DateTime('now', $wpff_sp_timezone);
 ?>
           <span style="margin-left: 15px; color: #666;">
-              <?php echo esc_html(__('Current time', 'super-preloader-for-cloudflare')); ?>: <strong><?php echo esc_html( $current->format('H:i') ); ?></strong>
+              <?php echo esc_html(__('Current time', 'super-preloader-for-cloudflare')); ?>: <strong><?php echo esc_html( $wpff_sp_current->format('H:i') ); ?></strong>
           </span>          
           <script>
             // Condifional display based on cron interval
@@ -187,12 +187,12 @@ $current = new DateTime('now', $timezone);
         <td>
           <select name="batch_size">
             <?php
-foreach ([5, 10, 20, 50, 100, 500] as $size) {
+foreach ([5, 10, 20, 50, 100, 500] as $wpff_sp_batch_size) {
   printf(
     '<option value="%s"%s>%s</option>',
-    esc_attr($size),
-    selected(get_option('wpff_sp_batch_size', 10), $size, false),
-    esc_html($size)
+    esc_attr($wpff_sp_batch_size),
+    selected(get_option('wpff_sp_batch_size', 10), $wpff_sp_batch_size, false),
+    esc_html($wpff_sp_batch_size)
   );
 }
 ?>

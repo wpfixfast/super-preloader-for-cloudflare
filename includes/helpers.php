@@ -10,18 +10,23 @@ function wpff_sp_log($message) {
 
   $timestamp = current_time('Y-m-d H:i:s');
   $log_line  = "[$timestamp] $message";
-
+  
   if (file_exists(WPFF_SP_LOG_FILE)) {
-    $lines   = file(WPFF_SP_LOG_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $all_lines = file(WPFF_SP_LOG_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    
+    // Skip header lines
+    $lines = array_slice($all_lines, WPFF_SP_LOG_HEADER_LINES);
     $lines[] = $log_line;
 
     if (count($lines) > 1000) {
       $lines = array_slice($lines, -1000);
     }
 
-    file_put_contents(WPFF_SP_LOG_FILE, implode("\n", $lines) . "\n");
+    $log_content = WPFF_SP_LOG_HEADER . implode("\n", $lines) . "\n";
+    file_put_contents(WPFF_SP_LOG_FILE, $log_content);
   } else {
-    file_put_contents(WPFF_SP_LOG_FILE, $log_line);
+    // Create new file with header and first log entry
+    file_put_contents(WPFF_SP_LOG_FILE, WPFF_SP_LOG_HEADER . $log_line . "\n");
   }
 }
 
@@ -392,4 +397,30 @@ function wpff_sp_format_country_frequency($country_frequency, $limit = 5) {
     }
     
     return implode(', ', $formatted);
+}
+
+/**
+ * Migrate old .log file to new .php file format (from version 1.0.2 to 1.0.3)
+ */
+function wpff_sp_migrate_log_file() {
+  // Check if migration has already been done
+  if (get_option('wpff_sp_log_migrated')) {
+    return;
+  }
+  
+  $old_log_file = WPFF_SP_LOG_DIR . '/super-preloader-for-cloudflare.log';
+  
+  if (file_exists($old_log_file)) {
+    $old_content = file_get_contents($old_log_file);
+    
+    if ($old_content) {
+      $new_content = WPFF_SP_LOG_HEADER . trim($old_content) . "\n";
+      file_put_contents(WPFF_SP_LOG_FILE, $new_content);
+    }
+    
+    wp_delete_file($old_log_file);
+  }
+  
+  // Mark migration as complete
+  update_option('wpff_sp_log_migrated', 1);
 }

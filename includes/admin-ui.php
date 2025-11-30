@@ -34,7 +34,7 @@ function wpff_sp_render_settings_page() {
   $sitemap_url   = get_option('wpff_sp_sitemap_url', get_site_url() . '/sitemap.xml');
   $cron_interval = get_option('wpff_sp_cron_interval', 'manual');
   $shared_secret = get_option('wpff_sp_shared_secret', '');
-  $stats         = get_option('wpff_sp_preload_stats', []);
+  $wpff_sp_stats = get_option('wpff_sp_preload_stats', []);
 
   echo '<div class="wrap">';
   echo '<h1>' . esc_html(__('Super Preloader for Cloudflare', 'super-preloader-for-cloudflare')) . '</h1>';

@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
   exit();
 }
 
-$manual_nonce = wp_create_nonce('wpff_sp_preload_nonce');
+$wpff_sp_manual_nonce = wp_create_nonce('wpff_sp_preload_nonce');
 ?>
 
 <div class="d-flex items-center mt-20 gap-10">
@@ -11,7 +11,7 @@ $manual_nonce = wp_create_nonce('wpff_sp_preload_nonce');
     type="button"
     class="button"
     id="wpff-sp-run-now-button"
-    data-nonce="<?php echo esc_attr($manual_nonce); ?>"
+    data-nonce="<?php echo esc_attr($wpff_sp_manual_nonce); ?>"
   >
     <?php echo esc_html(__('Start Manual Preload', 'super-preloader-for-cloudflare')); ?>
   </button>
