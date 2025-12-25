@@ -7,6 +7,10 @@
   margin-top: 40px;
 }
 
+.mr-5 {
+  margin-right: 5px;
+}
+
 .p-10 {
   padding: 10px;
 }
@@ -17,6 +21,10 @@
 
 .items-center {
   align-items: center;
+}
+
+.gap-5 {
+  gap: 5px;
 }
 
 .gap-10 {
@@ -34,6 +42,14 @@
   border-color: #a00 !important;
   color: #fff !important;
 }
+.wpff-sp-danger-button-outline {
+  border-color: #dc3232 !important;
+  color: #dc3232 !important;
+}
+.wpff-sp-danger-button-outline:hover {
+  border-color: #a00 !important;
+  color: #a00 !important;
+}
 .long-url-field {
   width: 100%;
   max-width: 600px;
@@ -44,10 +60,23 @@
   padding: 3px;
   color: #888;
 }
+.default-value-text {
+  color: #888;
+  font-style: italic;
+}
 
 /* manual preload results */
 #wpff-sp-preload-result {
   color: #555;
+}
+
+/* stop button form */
+#wpff-sp-stop-preloader-form {
+  display: none;
+}
+
+#wpff-sp-stop-preloader-form .button {
+  min-width: 148px;
 }
 
 /* stats table */
@@ -165,10 +194,16 @@
 
 /* log output box */
 #wpff-sp-log-output {
-  background: #f9f9f9;
-  padding: 1em;
-  overflow-x: auto;
-  max-height: 500px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 0.5em;
+  overflow: auto;
+  max-height: 525px;
+}
+
+#wpff-sp-refresh-countdown {
+  color: #888;
+  font-style: italic;
 }
 
 /* Cumulative and latest run stats styling */

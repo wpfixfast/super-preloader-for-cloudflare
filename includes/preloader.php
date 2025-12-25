@@ -3,7 +3,23 @@ if (!defined('ABSPATH')) {
   exit();
 }
 
+// Check if the preloader should be stopped using the stop flag
+function wpff_sp_should_stop_preloader() {
+    if (get_transient('wpff_sp_stop_flag')) {
+        delete_transient('wpff_sp_stop_flag');
+        delete_transient('wpff_sp_batch_stats');
+        delete_transient('wpff_sp_preload_cursor');
+        wpff_sp_log(__('Preloader stopped by user.', 'super-preloader-for-cloudflare'));        
+        return true;
+    }
+    return false;
+}
+
 function wpff_sp_run_preloader() {
+  if (wpff_sp_should_stop_preloader()) {
+    return;
+  }
+
   $worker    = get_option('wpff_sp_worker_url');
   $proxy_url = get_option('wpff_sp_proxy_list_url');
   $sitemap   = get_option('wpff_sp_sitemap_url');
@@ -62,7 +78,7 @@ function wpff_sp_run_preloader() {
     }
     shuffle($urls);
     set_transient('wpff_sp_preload_urls', $urls, 24 * HOUR_IN_SECONDS);
-    update_option('wpff_sp_sitemap_url_count', count($urls));
+    update_option('wpff_sp_sitemap_url_count', count($urls), false);
   }
 
   $stats = get_transient('wpff_sp_batch_stats');
@@ -73,11 +89,15 @@ function wpff_sp_run_preloader() {
   $cursor = get_transient('wpff_sp_preload_cursor');
   if (!is_array($cursor)) {
     $cursor = ['index' => 0];
+
+    // Log "started" message only when cursor is new (first batch)
+    wpff_sp_log(__('Preloader started.', 'super-preloader-for-cloudflare'));    
   }
 
-  // Batch size
+  // Batch size and URL delay
   $batch_size = (int)get_option('wpff_sp_batch_size', 10);
   $batch      = array_slice($urls, $cursor['index'], $batch_size);
+  $delay_between_urls = (int)get_option('wpff_sp_delay_between_urls', 1);
 
   // Secret for token generation
   $shared_secret = sanitize_text_field(get_option('wpff_sp_shared_secret', ''));
@@ -103,11 +123,11 @@ function wpff_sp_run_preloader() {
     if ($use_proxy) {
       // translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
       wpff_sp_log(sprintf(esc_html__('Warming: %1$s via %2$s', 'super-preloader-for-cloudflare'), $url, $proxy));
-      $response = wpff_sp_proxy_request($target_url, $proxy, $auth);
+      $response = wpff_sp_http_request($target_url, $proxy, $auth);
     } else {
       // translators: %s is the URL being warmed directly from the server.
       wpff_sp_log(sprintf(esc_html__('Warming: %s directly from server', 'super-preloader-for-cloudflare'), $url));
-      $response = wpff_sp_direct_request($target_url);
+      $response = wpff_sp_http_request($target_url);
     }
 
     // translators: %s is the HTTP response body returned from the preload request.
@@ -131,10 +151,10 @@ function wpff_sp_run_preloader() {
       }
     }
 
-    sleep(1);
+    sleep($delay_between_urls);
   }
 
-  set_transient('wpff_sp_batch_stats', $stats, 15 * MINUTE_IN_SECONDS);
+  set_transient('wpff_sp_batch_stats', $stats, 6 * HOUR_IN_SECONDS);
 
   $cursor['index'] += count($batch);
   if ($cursor['index'] >= count($urls)) {
@@ -154,13 +174,13 @@ function wpff_sp_run_preloader() {
       }
     }
 
-    update_option('wpff_sp_preload_stats', $previous);
+    update_option('wpff_sp_preload_stats', $previous, false); // Avoid autoloading large data
     delete_transient('wpff_sp_batch_stats');
     delete_transient('wpff_sp_preload_cursor');
     delete_transient('wpff_sp_preload_urls'); // Clear cached sitemap
     wpff_sp_log(esc_html__('Preload completed.', 'super-preloader-for-cloudflare'));
   } else {
-    set_transient('wpff_sp_preload_cursor', $cursor, 10 * MINUTE_IN_SECONDS);
+    set_transient('wpff_sp_preload_cursor', $cursor, 24 * HOUR_IN_SECONDS);
     wp_schedule_single_event(time() + 2, 'wpff_sp_run_preloader');
     // translators: %d is the index of the next scheduled preload batch.
     wpff_sp_log(sprintf(esc_html__('Scheduled next batch at index %d', 'super-preloader-for-cloudflare'), $cursor['index']));

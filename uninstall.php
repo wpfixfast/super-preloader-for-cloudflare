@@ -20,6 +20,7 @@ delete_option('wpff_sp_cron_interval');
 delete_option('wpff_sp_cron_start_hour');
 delete_option('wpff_sp_cron_start_minute');
 delete_option('wpff_sp_batch_size');
+delete_option('wpff_sp_delay_between_urls');
 delete_option('wpff_sp_shared_secret');
 delete_option('wpff_sp_preload_stats');
 delete_option('wpff_sp_sitemap_url_count');

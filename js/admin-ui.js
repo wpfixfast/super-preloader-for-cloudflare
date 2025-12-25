@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const button = document.getElementById('wpff-sp-run-now-button')
+  const stopButtonForm = document.getElementById('wpff-sp-stop-preloader-form')
   const spinner = document.getElementById('wpff-sp-spinner')
   const resultBox = document.getElementById('wpff-sp-preload-result')
 
@@ -45,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .finally(() => {
         document.querySelectorAll('button, input[type="submit"]').forEach(btn => (btn.disabled = false))
+        button.style.display = 'none' // Hide start button, show stop button
+        stopButtonForm.style.display = 'block'
       })
   })
 })

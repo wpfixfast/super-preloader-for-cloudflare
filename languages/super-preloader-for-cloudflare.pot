@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Preloader for Cloudflare 1.0.1\n"
+"Project-Id-Version: Super Preloader for Cloudflare 1.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-preloader-for-cloudflare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-20T12:03:14+00:00\n"
+"POT-Creation-Date: 2025-12-25T14:37:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: super-preloader-for-cloudflare.php
 #: includes/admin-ui.php:11
-#: includes/admin-ui.php:40
+#: includes/admin-ui.php:41
 msgid "Super Preloader for Cloudflare"
 msgstr ""
 
@@ -45,28 +45,28 @@ msgstr ""
 msgid "Super Preloader"
 msgstr ""
 
-#: includes/admin-ui.php:72
+#: includes/admin-ui.php:73
 msgid "Preloader running... Please wait for the first batch to complete."
 msgstr ""
 
-#: includes/admin-ui.php:73
+#: includes/admin-ui.php:74
 msgid "All URLs have been processed."
 msgstr ""
 
 #. translators: %d is the number of URLs remaining in the preload queue.
-#: includes/admin-ui.php:75
+#: includes/admin-ui.php:76
 msgid "%d URLs remaining. Background process will continue."
 msgstr ""
 
-#: includes/admin-ui.php:76
+#: includes/admin-ui.php:77
 msgid "Error: "
 msgstr ""
 
-#: includes/admin-ui.php:77
+#: includes/admin-ui.php:78
 msgid "AJAX request failed."
 msgstr ""
 
-#: includes/admin-ui.php:78
+#: includes/admin-ui.php:79
 msgid "Unknown error."
 msgstr ""
 
@@ -82,17 +82,22 @@ msgstr ""
 msgid "First batch completed."
 msgstr ""
 
+#: includes/ajax.php:41
+#: includes/partials/logs-viewer.php:24
+msgid "No log file found."
+msgstr ""
+
 #: includes/cron.php:11
 msgid "Once Weekly"
 msgstr ""
 
-#: includes/helpers.php:33
+#: includes/helpers.php:38
 #: includes/partials/navigation-tabs.php:13
 msgid "Settings"
 msgstr ""
 
-#: includes/partials/logs-viewer.php:13
-msgid "No log file found."
+#: includes/partials/logs-viewer.php:17
+msgid "Auto-refresh logs"
 msgstr ""
 
 #: includes/partials/navigation-tabs.php:16
@@ -103,7 +108,7 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: includes/partials/reset-preloader.php:13
+#: includes/partials/reset-preloader.php:14
 msgid "Clear Stats and Logs"
 msgstr ""
 
@@ -193,15 +198,24 @@ msgstr ""
 msgid "Batch Size (URLs per batch)"
 msgstr ""
 
-#: includes/partials/settings-form.php:205
+#: includes/partials/settings-form.php:200
+#: includes/partials/settings-form.php:221
+msgid "Default"
+msgstr ""
+
+#: includes/partials/settings-form.php:206
+msgid "Delay Between URLs (seconds)"
+msgstr ""
+
+#: includes/partials/settings-form.php:227
 msgid "Delete Data on Uninstall"
 msgstr ""
 
-#: includes/partials/settings-form.php:215
+#: includes/partials/settings-form.php:237
 msgid "Remove all plugin data and logs when the plugin is deleted."
 msgstr ""
 
-#: includes/partials/settings-form.php:225
+#: includes/partials/settings-form.php:247
 msgid "Save Settings"
 msgstr ""
 
@@ -256,6 +270,10 @@ msgstr ""
 
 #: includes/partials/start-preloader.php:16
 msgid "Start Manual Preload"
+msgstr ""
+
+#: includes/partials/start-preloader.php:24
+msgid "Stop Preloader"
 msgstr ""
 
 #. translators: %d is the number of completed runs
@@ -324,55 +342,67 @@ msgstr ""
 msgid "No stats available yet. Run preloader to generate stats."
 msgstr ""
 
-#: includes/post-handlers.php:72
+#: includes/post-handlers.php:76
 msgid "Settings updated."
 msgstr ""
 
-#: includes/post-handlers.php:76
+#: includes/post-handlers.php:80
 msgid "Settings saved."
 msgstr ""
 
-#: includes/post-handlers.php:95
-msgid "Reset Preload: Cleared stats, log, and cursor."
+#: includes/post-handlers.php:97
+msgid "Reset Stats: Stats and logs cleared."
 msgstr ""
 
-#: includes/post-handlers.php:96
-msgid "Preload state has been fully reset."
+#: includes/post-handlers.php:98
+msgid "Stats and logs cleared."
+msgstr ""
+
+#: includes/post-handlers.php:111
+msgid "Stop signal sent. Preloader will stop after the current batch."
 msgstr ""
 
 #: includes/preloader.php:12
+msgid "Preloader stopped by user."
+msgstr ""
+
+#: includes/preloader.php:28
 msgid "Missing required settings: worker or sitemap."
 msgstr ""
 
 #. translators: %s is the error message from the proxy list request.
-#: includes/preloader.php:23
+#: includes/preloader.php:39
 msgid "Failed to download proxy list: %s"
 msgstr ""
 
-#: includes/preloader.php:37
+#: includes/preloader.php:53
 msgid "Failed to download sitemap: "
 msgstr ""
 
+#: includes/preloader.php:94
+msgid "Preloader started."
+msgstr ""
+
 #. translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
-#: includes/preloader.php:105
+#: includes/preloader.php:125
 msgid "Warming: %1$s via %2$s"
 msgstr ""
 
 #. translators: %s is the URL being warmed directly from the server.
-#: includes/preloader.php:109
+#: includes/preloader.php:129
 msgid "Warming: %s directly from server"
 msgstr ""
 
 #. translators: %s is the HTTP response body returned from the preload request.
-#: includes/preloader.php:114
+#: includes/preloader.php:134
 msgid "Response: %s"
 msgstr ""
 
-#: includes/preloader.php:161
+#: includes/preloader.php:181
 msgid "Preload completed."
 msgstr ""
 
 #. translators: %d is the index of the next scheduled preload batch.
-#: includes/preloader.php:166
+#: includes/preloader.php:186
 msgid "Scheduled next batch at index %d"
 msgstr ""

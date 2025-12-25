@@ -2,7 +2,7 @@
 /*
 Plugin Name: Super Preloader for Cloudflare
 Plugin URI: https://wpfixfast.com
-Version: 1.0.3
+Version: 1.0.4
 Description: Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker.
 Author: WP Fix Fast
 Author URI: https://wpfixfast.com/
@@ -34,6 +34,9 @@ define('WPFF_SP_LOG_HEADER', "<?php\nif (!defined('ABSPATH')) exit;\n?>\n// ====
 // Number of header lines to skip when reading logs
 define('WPFF_SP_LOG_HEADER_LINES', 6);
 
+// User‑Agent string used by all preloader HTTP requests
+define('WPFF_SP_USER_AGENT', 'WP Fix Fast Super Preloader/1.0');
+
 // Load includes
 require_once WPFF_SP_PLUGIN_PATH . 'includes/admin-ui.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/http_request_functions.php';
@@ -58,6 +61,9 @@ register_deactivation_hook(__FILE__, 'wpff_sp_deactivation');
 
 // AJAX hook for manual preload via button
 add_action('wp_ajax_wpff_sp_run_preloader', 'wpff_sp_run_preloader_ajax');
+
+// AJAX hook for logs retrieval
+add_action('wp_ajax_wpff_sp_get_logs', 'wpff_sp_get_logs_ajax');
 
 // Cron hook for scheduled preloading
 add_action('wpff_sp_run_preloader', 'wpff_sp_run_preloader');

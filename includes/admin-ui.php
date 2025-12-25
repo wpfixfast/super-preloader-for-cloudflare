@@ -23,6 +23,7 @@ function wpff_sp_render_settings_page() {
 
   wpff_sp_handle_settings_post();
   wpff_sp_handle_reset_post();
+  wpff_sp_handle_stop_preloader();
 
   // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Tab value is only used for read-only display logic.
   $tab = isset($_GET['tab'])
@@ -58,6 +59,11 @@ function wpff_sp_enqueue_admin_assets($hook) {
     return;
   }
 
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Tab value is only used for read-only display logic.
+  $current_tab = isset($_GET['tab'])
+  ? sanitize_text_field(wp_unslash($_GET['tab'])) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Tab value is only used for read-only display logic.
+  : 'settings';    
+
   wp_enqueue_script(
     'wpff-sp-admin-ui',
     plugin_dir_url(__DIR__) . 'js/admin-ui.js',
@@ -79,6 +85,22 @@ function wpff_sp_enqueue_admin_assets($hook) {
     ],
   ]);
 
+  // Only enqueue log auto-refresh on logs tab
+  if ($current_tab === 'logs') {
+    wp_enqueue_script(
+      'wpff-sp-log-auto-refresh',
+      plugin_dir_url(__DIR__) . 'js/log-auto-refresh.js',
+      [],
+      filemtime(plugin_dir_path(__DIR__) . 'js/log-auto-refresh.js'),
+      true
+    );
+
+    wp_localize_script('wpff-sp-log-auto-refresh', 'wpffSpLogs', [
+      'nonce' => wp_create_nonce('wpff_sp_logs_nonce')
+    ]);
+  }  
+
+  // Enqueue CSS
   wp_enqueue_style(
     'wpff-sp-admin-ui-style',
     plugin_dir_url(__DIR__) . 'css/admin-ui.css',

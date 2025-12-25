@@ -185,7 +185,7 @@ $wpff_sp_current = new DateTime('now', $wpff_sp_timezone);
           <label><?php echo esc_html(__('Batch Size (URLs per batch)', 'super-preloader-for-cloudflare')); ?></label>
         </th>
         <td>
-          <select name="batch_size">
+          <select name="batch_size" class="mr-5">
             <?php
 foreach ([5, 10, 20, 50, 100, 500] as $wpff_sp_batch_size) {
   printf(
@@ -197,8 +197,30 @@ foreach ([5, 10, 20, 50, 100, 500] as $wpff_sp_batch_size) {
 }
 ?>
           </select>
+          <span class="default-value-text">(<?php echo esc_html(__('Default', 'super-preloader-for-cloudflare')); ?>: 10)</span>
         </td>
       </tr>
+
+      <tr>
+        <th>
+          <label><?php echo esc_html(__('Delay Between URLs (seconds)', 'super-preloader-for-cloudflare')); ?></label>
+        </th>
+        <td>
+          <select name="delay_between_urls" class="mr-5">
+            <?php
+foreach ([1, 2, 3, 5, 10] as $wpff_sp_delay_between_urls) {
+  printf(
+    '<option value="%s"%s>%s</option>',
+    esc_attr($wpff_sp_delay_between_urls),
+    selected(get_option('wpff_sp_delay_between_urls', 1), $wpff_sp_delay_between_urls, false),
+    esc_html($wpff_sp_delay_between_urls)
+  );
+}
+?>
+          </select>
+          <span class="default-value-text">(<?php echo esc_html(__('Default', 'super-preloader-for-cloudflare')); ?>: 1)</span>
+        </td>
+      </tr>      
 
       <tr>
         <th>

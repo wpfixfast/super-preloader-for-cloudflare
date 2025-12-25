@@ -11,6 +11,13 @@ if (file_exists(WPFF_SP_LOG_FILE)) {
   $wpff_sp_log_content = implode("\n", $wpff_sp_log_lines);
   ?>
   <pre id="wpff-sp-log-output"><?php echo esc_html($wpff_sp_log_content); ?></pre>
+  <div class="mt-20 d-flex items-center gap-10">
+    <label for="wpff-sp-auto-refresh-logs">
+      <input type="checkbox" id="wpff-sp-auto-refresh-logs"> 
+      <?php esc_html_e('Auto-refresh logs', 'super-preloader-for-cloudflare'); ?>
+    </label>
+    <span id="wpff-sp-refresh-countdown"></span>
+  </div>
   <?php
 } else {
   ?>

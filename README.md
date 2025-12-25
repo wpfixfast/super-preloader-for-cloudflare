@@ -67,12 +67,22 @@ It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTF
 
 ## Changelog
 
+### 1.0.4 - 25.12.2025 =
+
+- **Improved:** HTTP request helper function to always send a clear User-Agent
+- **Improved:** Preloader by increasing cursor time out to 24 hours to avoid incomplete batches
+- **Added:** Delay between URLs setting to adjust wait time in seconds between each URL preload
+- **Added:** Auto-refresh to log viewer
+- **Added:** Stop preloader button to cancel the running preloading process
+
 ### 1.0.3 - 30.11.2025 =
+
 - **Improved:** Log file security by migrating logs to super-preloader-for-cloudflare-log.php
 - **Added:** Prefixes to global variables
 - **Tested:** Compatibility with WordPress 6.9
 
 ### 1.0.2 - 20.10.2025
+
 - **Added:** Manual setting of cron start time
 
 ### 1.0.1 - 27.07.2025

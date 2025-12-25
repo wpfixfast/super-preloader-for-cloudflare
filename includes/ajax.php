@@ -29,3 +29,17 @@ function wpff_sp_run_preloader_ajax() {
     'done'      => $remaining === 0,
   ]);
 }
+
+function wpff_sp_get_logs_ajax() {
+    check_ajax_referer('wpff_sp_logs_nonce', 'nonce');
+    
+    if (file_exists(WPFF_SP_LOG_FILE)) {
+        $all_lines = file(WPFF_SP_LOG_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $log_lines = array_slice($all_lines, WPFF_SP_LOG_HEADER_LINES);
+        echo esc_html(implode("\n", $log_lines));
+    } else {
+        echo esc_html(__('No log file found.', 'super-preloader-for-cloudflare'));
+    }
+    
+    wp_die();
+}

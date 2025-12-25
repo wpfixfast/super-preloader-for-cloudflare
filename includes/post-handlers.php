@@ -56,6 +56,10 @@ function wpff_sp_handle_settings_post() {
       update_option('wpff_sp_batch_size', absint($_POST['batch_size']));
     }
 
+    if (isset($_POST['delay_between_urls'])) {
+      update_option('wpff_sp_delay_between_urls', absint($_POST['delay_between_urls']));
+    }    
+
     if (isset($_POST['shared_secret'])) {
       update_option(
         'wpff_sp_shared_secret',
@@ -84,15 +88,26 @@ function wpff_sp_handle_reset_post() {
     isset($_POST['wpff_sp_reset_state']) &&
     check_admin_referer('wpff_sp_reset_state')
   ) {
-    delete_transient('wpff_sp_preload_cursor');
-    delete_transient('wpff_sp_preload_urls');
     delete_option('wpff_sp_preload_stats');
 
     if (file_exists(WPFF_SP_LOG_FILE)) {
       wp_delete_file(WPFF_SP_LOG_FILE);
     }
 
-    wpff_sp_log(__('Reset Preload: Cleared stats, log, and cursor.', 'super-preloader-for-cloudflare'));
-    echo '<div class="notice notice-warning"><p>' . esc_html(__('Preload state has been fully reset.', 'super-preloader-for-cloudflare')) . '</p></div>';
+    wpff_sp_log(__('Reset Stats: Stats and logs cleared.', 'super-preloader-for-cloudflare'));
+    echo '<div class="notice notice-warning"><p>' . esc_html(__('Stats and logs cleared.', 'super-preloader-for-cloudflare')) . '</p></div>';
+  }
+}
+
+function wpff_sp_handle_stop_preloader() {
+  if (
+    isset($_SERVER['REQUEST_METHOD']) &&
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['wpff_sp_stop_preloader']) &&
+    check_admin_referer('wpff_sp_stop_preloader')
+  ) {
+    // Set a stop flag to stop the preloader if it's running
+    set_transient('wpff_sp_stop_flag', true, 5 * MINUTE_IN_SECONDS);
+    echo '<div class="notice notice-warning"><p>' . esc_html(__('Stop signal sent. Preloader will stop after the current batch.', 'super-preloader-for-cloudflare')) . '</p></div>';
   }
 }
