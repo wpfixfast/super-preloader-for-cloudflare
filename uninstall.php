@@ -17,6 +17,7 @@ delete_option('wpff_sp_worker_url');
 delete_option('wpff_sp_proxy_list_url');
 delete_option('wpff_sp_sitemap_url');
 delete_option('wpff_sp_cron_interval');
+delete_option('wpff_sp_custom_hours');
 delete_option('wpff_sp_cron_start_hour');
 delete_option('wpff_sp_cron_start_minute');
 delete_option('wpff_sp_batch_size');

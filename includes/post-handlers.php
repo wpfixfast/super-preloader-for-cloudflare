@@ -32,10 +32,14 @@ function wpff_sp_handle_settings_post() {
     }
 
     if (isset($_POST['cron_interval'])) {
-      update_option(
-        'wpff_sp_cron_interval',
-        sanitize_text_field(wp_unslash($_POST['cron_interval']))
-      );
+      $interval = sanitize_text_field(wp_unslash($_POST['cron_interval']));
+      update_option('wpff_sp_cron_interval', $interval);
+      
+      if ($interval === 'wpff_sp_custom_interval' && isset($_POST['custom_hours'])) {
+        $hours = floatval($_POST['custom_hours']);
+        $hours = max(0.25, min(720, $hours)); // Min 15 minutes, max 30 days
+        update_option('wpff_sp_custom_hours', $hours);
+      }
     }
 
     if (isset($_POST['cron_start_hour'])) {

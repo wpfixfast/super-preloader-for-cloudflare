@@ -109,12 +109,16 @@ if ($wpff_sp_url_count) {
         </th>
         <td>
           <select name="cron_interval" id="cron_interval">
-            <?php
+  <?php
 $wpff_sp_intervals = [
-  'manual'     => __('Manual Only', 'super-preloader-for-cloudflare'),
-  'hourly'     => __('Hourly', 'super-preloader-for-cloudflare'),
-  'daily'      => __('Daily', 'super-preloader-for-cloudflare'),
-  'weekly'     => __('Weekly', 'super-preloader-for-cloudflare'),
+  'manual'         => __('Manual Only', 'super-preloader-for-cloudflare'),
+  'hourly'         => __('Hourly', 'super-preloader-for-cloudflare'),
+  'every_3_hours'  => __('Every 3 Hours', 'super-preloader-for-cloudflare'),
+  'every_6_hours'  => __('Every 6 Hours', 'super-preloader-for-cloudflare'),
+  'every_12_hours' => __('Every 12 Hours', 'super-preloader-for-cloudflare'),
+  'daily'          => __('Daily', 'super-preloader-for-cloudflare'),
+  'weekly'         => __('Weekly', 'super-preloader-for-cloudflare'),
+  'wpff_sp_custom_interval' => __('Custom Interval...', 'super-preloader-for-cloudflare'),
 ];
 foreach ($wpff_sp_intervals as $wpff_sp_key => $wpff_sp_label) {
   printf(
@@ -125,7 +129,44 @@ foreach ($wpff_sp_intervals as $wpff_sp_key => $wpff_sp_label) {
   );
 }
 ?>
-          </select>
+</select>
+
+<div id="custom_interval_field" style="display: none; margin-top: 10px;">
+  <label for="custom_hours">
+    <?php esc_html_e('Run every', 'super-preloader-for-cloudflare'); ?>
+  </label>
+  <input type="number" name="custom_hours" id="custom_hours" 
+         value="<?php echo esc_attr(get_option('wpff_sp_custom_hours', 1)); ?>" 
+         min="0.25" max="720" step="0.25" style="width: 80px;">
+  <span><?php esc_html_e('hour(s)', 'super-preloader-for-cloudflare'); ?></span>
+  <small style="display: block; margin-top: 5px; color: #666;">
+    <?php esc_html_e('Examples: 0.5 = 30 min, 1 = hourly, 24 = daily, 72 = every 3 days', 'super-preloader-for-cloudflare'); ?>
+  </small>
+</div>
+
+<script>
+document.getElementById('cron_interval').addEventListener('change', function() {
+  document.getElementById('custom_interval_field').style.display = 
+    this.value === 'wpff_sp_custom_interval' ? 'block' : 'none';
+});
+// Show on page load if custom is selected
+if (document.getElementById('cron_interval').value === 'wpff_sp_custom_interval') {
+  document.getElementById('custom_interval_field').style.display = 'block';
+}
+</script>
+
+<?php
+// Display next scheduled run time
+if ($cron_interval !== 'manual') {
+  $wpff_sp_next_run = wpff_sp_get_next_cron_run();
+  ?>
+  <p class="description" style="margin-top: 10px;">
+    <strong><?php esc_html_e('Next scheduled run:', 'super-preloader-for-cloudflare'); ?></strong>
+    <?php echo esc_html($wpff_sp_next_run); ?>
+  </p>
+  <?php
+}
+?>
         </td>
       </tr>
 

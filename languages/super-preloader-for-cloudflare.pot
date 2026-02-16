@@ -1,15 +1,15 @@
-# Copyright (C) 2025 WP Fix Fast
+# Copyright (C) 2026 WP Fix Fast
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Preloader for Cloudflare 1.0.4\n"
+"Project-Id-Version: Super Preloader for Cloudflare 1.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-preloader-for-cloudflare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-25T14:37:19+00:00\n"
+"POT-Creation-Date: 2026-02-16T18:21:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
@@ -45,28 +45,28 @@ msgstr ""
 msgid "Super Preloader"
 msgstr ""
 
-#: includes/admin-ui.php:73
+#: includes/admin-ui.php:78
 msgid "Preloader running... Please wait for the first batch to complete."
 msgstr ""
 
-#: includes/admin-ui.php:74
+#: includes/admin-ui.php:79
 msgid "All URLs have been processed."
 msgstr ""
 
 #. translators: %d is the number of URLs remaining in the preload queue.
-#: includes/admin-ui.php:76
+#: includes/admin-ui.php:81
 msgid "%d URLs remaining. Background process will continue."
 msgstr ""
 
-#: includes/admin-ui.php:77
+#: includes/admin-ui.php:82
 msgid "Error: "
 msgstr ""
 
-#: includes/admin-ui.php:78
+#: includes/admin-ui.php:83
 msgid "AJAX request failed."
 msgstr ""
 
-#: includes/admin-ui.php:79
+#: includes/admin-ui.php:84
 msgid "Unknown error."
 msgstr ""
 
@@ -87,8 +87,66 @@ msgstr ""
 msgid "No log file found."
 msgstr ""
 
-#: includes/cron.php:11
+#: includes/cron.php:13
 msgid "Once Weekly"
+msgstr ""
+
+#: includes/cron.php:20
+#: includes/partials/settings-form.php:116
+msgid "Every 3 Hours"
+msgstr ""
+
+#: includes/cron.php:24
+#: includes/partials/settings-form.php:117
+msgid "Every 6 Hours"
+msgstr ""
+
+#: includes/cron.php:28
+#: includes/partials/settings-form.php:118
+msgid "Every 12 Hours"
+msgstr ""
+
+#. translators: %s: Number of hours for the custom interval
+#: includes/cron.php:36
+msgid "Every %.2f Hour(s)"
+msgstr ""
+
+#: includes/cron.php:92
+msgid "Not scheduled"
+msgstr ""
+
+#. translators: 1: Number of hours, 2: Number of minutes
+#: includes/cron.php:108
+msgid "%1$d hours %2$d minutes"
+msgstr ""
+
+#. translators: %d: Number of hours
+#: includes/cron.php:111
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: Number of minutes
+#: includes/cron.php:114
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: Time in 12-hour format (e.g., "9:13 pm")
+#: includes/cron.php:124
+msgid "Today at %s"
+msgstr ""
+
+#. translators: %s: Time in 12-hour format (e.g., "9:13 pm")
+#: includes/cron.php:127
+msgid "Tomorrow at %s"
+msgstr ""
+
+#. translators: 1: Human-readable time difference (e.g., "5 hours 30 minutes"), 2: Formatted date and time or "Today/Tomorrow at time"
+#: includes/cron.php:134
+msgid "In %1$s (%2$s)"
 msgstr ""
 
 #: includes/helpers.php:38
@@ -178,44 +236,64 @@ msgstr ""
 msgid "Hourly"
 msgstr ""
 
-#: includes/partials/settings-form.php:116
+#: includes/partials/settings-form.php:119
 msgid "Daily"
 msgstr ""
 
-#: includes/partials/settings-form.php:117
+#: includes/partials/settings-form.php:120
 msgid "Weekly"
 msgstr ""
 
-#: includes/partials/settings-form.php:134
+#: includes/partials/settings-form.php:121
+msgid "Custom Interval..."
+msgstr ""
+
+#: includes/partials/settings-form.php:136
+msgid "Run every"
+msgstr ""
+
+#: includes/partials/settings-form.php:141
+msgid "hour(s)"
+msgstr ""
+
+#: includes/partials/settings-form.php:143
+msgid "Examples: 0.5 = 30 min, 1 = hourly, 24 = daily, 72 = every 3 days"
+msgstr ""
+
+#: includes/partials/settings-form.php:164
+msgid "Next scheduled run:"
+msgstr ""
+
+#: includes/partials/settings-form.php:175
 msgid "Auto Run Start Time"
 msgstr ""
 
-#: includes/partials/settings-form.php:167
+#: includes/partials/settings-form.php:208
 msgid "Current time"
 msgstr ""
 
-#: includes/partials/settings-form.php:185
+#: includes/partials/settings-form.php:226
 msgid "Batch Size (URLs per batch)"
 msgstr ""
 
-#: includes/partials/settings-form.php:200
-#: includes/partials/settings-form.php:221
+#: includes/partials/settings-form.php:241
+#: includes/partials/settings-form.php:262
 msgid "Default"
 msgstr ""
 
-#: includes/partials/settings-form.php:206
+#: includes/partials/settings-form.php:247
 msgid "Delay Between URLs (seconds)"
 msgstr ""
 
-#: includes/partials/settings-form.php:227
+#: includes/partials/settings-form.php:268
 msgid "Delete Data on Uninstall"
 msgstr ""
 
-#: includes/partials/settings-form.php:237
+#: includes/partials/settings-form.php:278
 msgid "Remove all plugin data and logs when the plugin is deleted."
 msgstr ""
 
-#: includes/partials/settings-form.php:247
+#: includes/partials/settings-form.php:288
 msgid "Save Settings"
 msgstr ""
 
@@ -342,23 +420,23 @@ msgstr ""
 msgid "No stats available yet. Run preloader to generate stats."
 msgstr ""
 
-#: includes/post-handlers.php:76
+#: includes/post-handlers.php:80
 msgid "Settings updated."
 msgstr ""
 
-#: includes/post-handlers.php:80
+#: includes/post-handlers.php:84
 msgid "Settings saved."
 msgstr ""
 
-#: includes/post-handlers.php:97
+#: includes/post-handlers.php:101
 msgid "Reset Stats: Stats and logs cleared."
 msgstr ""
 
-#: includes/post-handlers.php:98
+#: includes/post-handlers.php:102
 msgid "Stats and logs cleared."
 msgstr ""
 
-#: includes/post-handlers.php:111
+#: includes/post-handlers.php:115
 msgid "Stop signal sent. Preloader will stop after the current batch."
 msgstr ""
 

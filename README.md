@@ -67,6 +67,11 @@ It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTF
 
 ## Changelog
 
+### 1.0.5 - 16.02.2026
+
+- **Added** Extra intervals 3hrs, 6hrs, 12 hrs, and custom
+- **Added:** Next scheduled run date/time display
+
 ### 1.0.4 - 25.12.2025
 
 - **Improved:** HTTP request helper function to always send a clear User-Agent
