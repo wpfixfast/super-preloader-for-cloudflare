@@ -68,20 +68,6 @@ echo sprintf(
             value="<?php echo esc_url($sitemap_url); ?>"
             class="long-url-field"
           />
-          <?php
-$wpff_sp_url_count = get_option('wpff_sp_sitemap_url_count');
-if ($wpff_sp_url_count) {
-  printf(
-    '<p class="long-description">%s</p>',
-    // translators: %d is the number of URLs found during the last preload run.
-    esc_html(sprintf(__(' %d URLs were found during the last preload run.', 'super-preloader-for-cloudflare'), $wpff_sp_url_count))
-  );
-} else {
-  echo '<p class="long-description">' .
-  esc_html(__('No sitemap data available yet. Run the preloader to count URLs.', 'super-preloader-for-cloudflare')) .
-    '</p>';
-}
-?>
         </td>
       </tr>
 
@@ -109,7 +95,7 @@ if ($wpff_sp_url_count) {
         </th>
         <td>
           <select name="cron_interval" id="cron_interval">
-  <?php
+<?php
 $wpff_sp_intervals = [
   'manual'         => __('Manual Only', 'super-preloader-for-cloudflare'),
   'hourly'         => __('Hourly', 'super-preloader-for-cloudflare'),
@@ -158,7 +144,7 @@ if (document.getElementById('cron_interval').value === 'wpff_sp_custom_interval'
 <?php
 // Display next scheduled run time
 if ($cron_interval !== 'manual') {
-  $wpff_sp_next_run = wpff_sp_get_next_cron_run();
+  $wpff_sp_next_run = WPFF_SP_Cron::get_next_run();
   ?>
   <p class="description" style="margin-top: 10px;">
     <strong><?php esc_html_e('Next scheduled run:', 'super-preloader-for-cloudflare'); ?></strong>
@@ -202,10 +188,10 @@ endfor;
           </select>
 <?php
 $wpff_sp_timezone = wp_timezone();
-$wpff_sp_current = new DateTime('now', $wpff_sp_timezone);
+$wpff_sp_current  = new DateTime('now', $wpff_sp_timezone);
 ?>
           <span style="margin-left: 15px; color: #666;">
-              <?php echo esc_html(__('Current time', 'super-preloader-for-cloudflare')); ?>: <strong><?php echo esc_html( $wpff_sp_current->format('H:i') ); ?></strong>
+              <?php echo esc_html(__('Current time', 'super-preloader-for-cloudflare')); ?>: <strong><?php echo esc_html($wpff_sp_current->format('H:i')); ?></strong>
           </span>          
           <script>
             // Condifional display based on cron interval
@@ -261,7 +247,29 @@ foreach ([1, 2, 3, 5, 10] as $wpff_sp_delay_between_urls) {
           </select>
           <span class="default-value-text">(<?php echo esc_html(__('Default', 'super-preloader-for-cloudflare')); ?>: 1)</span>
         </td>
-      </tr>      
+      </tr>
+
+      <tr>
+        <th>
+          <label for="wpff_sp_full_proxy_pass"><?php echo esc_html(__('Full Proxy Pass Mode', 'super-preloader-for-cloudflare')); ?></label>
+        </th>
+        <td>
+          <input
+            type="checkbox"
+            name="wpff_sp_full_proxy_pass"
+            id="wpff_sp_full_proxy_pass"
+            value="1"
+            <?php checked(get_option('wpff_sp_full_proxy_pass'), '1'); ?>
+          />
+          <label for="wpff_sp_full_proxy_pass">
+            <?php echo esc_html(__('Send every URL through every proxy.', 'super-preloader-for-cloudflare')); ?>
+            <p class="long-description wpff-sp-warning-text">
+              <img class="wpff-sp-settings-form-alert-icon" src="<?php echo esc_url(WPFF_SP_PLUGIN_URL . 'images/alert.svg'); ?>" width="14" height="14" alt="Alert icon" />  
+              <?php echo esc_html(__('Switching modes will clear existing stats.', 'super-preloader-for-cloudflare')); ?>
+            </p>
+          </label>
+        </td>
+      </tr>
 
       <tr>
         <th>

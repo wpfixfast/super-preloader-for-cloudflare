@@ -40,6 +40,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1000)
   }
 
+  if (checkbox.checked) {
+    updateLogs()
+    startCountdown()
+    refreshInterval = setInterval(() => {
+      updateLogs()
+      startCountdown()
+    }, 5000)
+  }
+
   checkbox.addEventListener('change', function () {
     if (this.checked) {
       updateLogs()
@@ -51,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       clearInterval(refreshInterval)
       clearInterval(countdownInterval)
+      refreshInterval = null
+      countdownInterval = null
       countdown.textContent = ''
     }
   })

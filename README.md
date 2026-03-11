@@ -46,36 +46,77 @@ Recommended steps:
 
 **What do I need to use this plugin?**
 
-You need a Cloudflare Worker URL (required) and optionally Webshare.io proxies for better global coverage. The plugin provides the Worker script code to deploy to your Cloudflare account.
+You need a Cloudflare Worker URL (required) and optionally Webshare.io proxies for better global coverage. The plugin provides the Worker script code to deploy to your Cloudflare account. A sitemap is also required — any SEO plugin like Yoast or RankMath will generate one automatically.
 
 **Do I need a caching plugin?**
 
-It's highly recommended. Cloudflare only caches static files by default, not HTML pages. Use it with Super Page Cache or similar plugins for best results.
+Yes, strongly recommended. Cloudflare only caches static files by default — not HTML pages. Without a full-page caching plugin like Super Page Cache, preloading your URLs will have no effect on page load times. Always set up full-page caching before running the preloader.
 
 **How does this improve my site performance?**
 
-It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTFB) and improving Core Web Vitals scores. Users worldwide get faster page loads instead of slow "cache miss" responses.
+It pre-warms Cloudflare's edge caches globally, reducing Time to First Byte (TTFB) and improving Core Web Vitals scores — especially Largest Contentful Paint (LCP). Instead of the first visitor in a region triggering a slow cache miss, content is already cached near them before they arrive.
+
+**What is Full Proxy Pass mode?**
+
+Full Proxy Pass sends every URL through every proxy in your list, maximizing the number of Cloudflare edge locations warmed in a single run. It significantly increases run time and request volume, so it's best used occasionally rather than as your regular scheduled interval. Per-URL stats are not recorded in this mode.
+
+**How many proxies do I need?**
+
+There is no fixed requirement. More proxies from diverse geographic locations means more Cloudflare edge locations get warmed. Webshare.io's rotating residential proxies work well. Even a small list of 10 proxies from different regions can make a meaningful difference.
+
+**Will this slow down my server?**
+
+No. The plugin runs via WordPress cron in the background and processes URLs in small batches with a configurable delay between requests. It does not affect your site's frontend performance or normal traffic.
+
+**What happens if the preloader is already running when the cron fires again?**
+
+The new cron event is automatically skipped. The plugin uses overlapping run protection to ensure only one preload run is active at a time, preventing duplicate requests and server overload.
+
+**How often should I run the preloader?**
+
+It depends on how frequently your content changes and how aggressively Cloudflare expires cached content. For most sites, once or twice daily is sufficient. If you update content frequently, hourly may be more appropriate.
+
+**Why do some URLs show different edge locations each run?**
+
+Cloudflare routes requests to the nearest available edge based on the proxy's geographic location. As proxies rotate and network conditions change, different edges may serve the same URL across runs. This is normal and expected.
+
+**Does this plugin work without proxies?**
+
+Yes. Without proxies, requests go directly from your server and only warm the nearest Cloudflare edge location to your server. Adding proxies from multiple regions is what enables global cache warming.
 
 ## Screenshots
 
-1. On settings tab you can configure Cloudflare Worker URL, Webshare.io Proxies URL, Sitemap.xml URL, and auto run interval.
-2. The Stats tab displays a table showing the last 5 runs and the edge locations where your URLs are cached.
-3. Logs tab for checking HTTP responses and debugging.
-4. Cloudflare Worker script code to deploy. Set secret key here.
-5. How to check if your Cache is HIT, MISS, or BYPASS.
-6. Comparison of proxy usage versus direct connections
+1. On settings tab you can configure Cloudflare Worker URL, Webshare.io Proxies URL, Sitemap.xml URL, and auto run (Cron) scheduler.
+2. Auto Run Interval displays the Next scheduled run and Auto Run Start Time lets you adjust the exact moment to start the preloader.
+3. Sidebar shows current mode, running or idle status, last run times, URL count and proxy count. Stop Preloader button allows stopping the current operation.
+4. Full proxy pass mode allows sending every URL through every proxy for maximum Cloudflare edge coverage.
+5. The Stats tab displays detailed information on edge locations where your URLs are cached.
+6. If full proxy pass mode is selected, per-URL stats are not recorded.
+7. Logs tab with Auto refresh feature helps you follow the live HTTP responses and keep track of other important events.
+8. How to use tab guides you with the setup process and includes FAQs.
+9. Detailed cron scheduler.
+10. Cloudflare Worker script code to deploy. Set secret key here.
+11. How to check if your Cache is HIT, MISS, or BYPASS.
 
 ## Changelog
 
+### 1.0.6 - 11.03.2026
+
+- **Refactor:** Converted plugin internals to class-based architecture for improved maintainability
+- **Improved:** Overlapping run protection — if a cron event fires while a run is already in progress, it is automatically skipped
+- **Improved:** Auto-refresh logs are now enabled by default on the Logs tab
+- **Added:** Full Proxy Pass mode that sends every URL through every proxy for maximum Cloudflare edge coverage
+- **Added:** New sidebar on the Settings page shows current mode, running or idle status, last run times, URL count and proxy count
+
 ### 1.0.5 - 16.02.2026
 
-- **Added** Extra intervals 3hrs, 6hrs, 12 hrs, and custom
+- **Added:** Extra intervals 3hrs, 6hrs, 12hrs, and custom
 - **Added:** Next scheduled run date/time display
 
 ### 1.0.4 - 25.12.2025
 
 - **Improved:** HTTP request helper function to always send a clear User-Agent
-- **Improved:** Preloader by increasing cursor time out to 24 hours to avoid incomplete batches
+- **Improved:** Preloader by increasing cursor timeout to 24 hours to avoid incomplete batches
 - **Added:** Delay between URLs setting to adjust wait time in seconds between each URL preload
 - **Added:** Auto-refresh to log viewer
 - **Added:** Stop preloader button to cancel the running preloading process

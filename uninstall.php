@@ -10,7 +10,7 @@ if (get_option('wpff_sp_delete_data_on_uninstall') !== '1') {
 // Recalculate log paths since main plugin is not loaded
 $wpff_sp_upload_dir = wp_upload_dir();
 $wpff_sp_log_dir    = trailingslashit($wpff_sp_upload_dir['basedir']) . 'super-preloader-for-cloudflare';
-$wpff_sp_log_file = $wpff_sp_log_dir . '/super-preloader-for-cloudflare-log.php';
+$wpff_sp_log_file   = $wpff_sp_log_dir . '/super-preloader-for-cloudflare-log.php';
 
 // Delete options
 delete_option('wpff_sp_worker_url');
@@ -27,11 +27,14 @@ delete_option('wpff_sp_preload_stats');
 delete_option('wpff_sp_sitemap_url_count');
 delete_option('wpff_sp_delete_data_on_uninstall');
 delete_option('wpff_sp_log_migrated');
+delete_option('wpff_sp_last_run_meta');
+delete_option('wpff_sp_full_proxy_pass');
 
 // Delete transients
 delete_transient('wpff_sp_preload_cursor');
 delete_transient('wpff_sp_preload_urls');
 delete_transient('wpff_sp_batch_stats');
+delete_transient('wpff_sp_stop_flag');
 
 // Delete log file
 if (file_exists($wpff_sp_log_file)) {

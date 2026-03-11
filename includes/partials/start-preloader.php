@@ -28,14 +28,3 @@ $wpff_sp_manual_nonce = wp_create_nonce('wpff_sp_preload_nonce');
   <div id="wpff-sp-preload-result"></div>
 </div>
 
-<?php
-if (get_transient('wpff_sp_preload_cursor')) {
-?>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('wpff-sp-run-now-button').style.display = 'none';
-      document.getElementById('wpff-sp-stop-preloader-form').style.display = 'block';
-    });
-  </script>
-<?php
-}

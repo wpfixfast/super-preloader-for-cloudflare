@@ -60,6 +60,18 @@
   padding: 3px;
   color: #888;
 }
+.wpff-sp-warning-text {
+  display: flex;
+  align-items: center;
+}
+.wpff-sp-settings-form-alert-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  filter: invert(15%) sepia(100%) saturate(7000%) hue-rotate(0deg) brightness(100%) contrast(100%);
+  margin-left: -2px;
+  margin-right: 9px;
+}
 .default-value-text {
   color: #888;
   font-style: italic;
@@ -361,5 +373,181 @@
 
   .wpff-sp-metric-value {
     font-size: 18px;
+  }
+}
+
+/* ============================================================
+   Settings page two-column layout
+   ============================================================ */
+.wpff-sp-settings-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.wpff-sp-settings-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.wpff-sp-settings-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 32px;
+  padding-top: 20px;
+}
+
+/* ============================================================
+   Sidebar cards
+   ============================================================ */
+.wpff-sp-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wpff-sp-sidebar-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.wpff-sp-sidebar-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.wpff-sp-sidebar-icon {
+  width: 20px;
+  height: 20px;
+  filter: invert(71%) sepia(8%) saturate(468%) hue-rotate(182deg) brightness(92%) contrast(87%);
+}
+
+.wpff-sp-sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #9ca3af;
+}
+
+.wpff-sp-sidebar-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wpff-sp-sidebar-count {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Mode badges */
+.wpff-sp-mode-normal {
+  background: #dcfce7;
+  color: #15803d;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wpff-sp-mode-fpp {
+  background: #ffedd5;
+  color: #c2410c;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Status badges */
+.wpff-sp-status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wpff-sp-status-running {
+  background: #eff7ff;
+  color: #1e40af;
+}
+
+.wpff-sp-status-idle {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Last run meta rows */
+.wpff-sp-sidebar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wpff-sp-sidebar-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wpff-sp-sidebar-meta-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.wpff-sp-sidebar-meta-value {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.wpff-sp-sidebar-note {
+  font-size: 11px;
+  color: #b45309;
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Responsive — sidebar collapses below form on mobile
+   ============================================================ */
+@media (max-width: 900px) {
+  .wpff-sp-settings-layout {
+    flex-direction: column;
+  }
+
+  .wpff-sp-settings-sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .wpff-sp-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .wpff-sp-sidebar-card {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .wpff-sp-sidebar-card-last-run {
+    min-width: 90.5%;
   }
 }

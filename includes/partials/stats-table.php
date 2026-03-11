@@ -6,10 +6,69 @@ if (!defined('ABSPATH')) {
 if (!isset($wpff_sp_stats) || !is_array($wpff_sp_stats)) {
   $wpff_sp_stats = [];
 }
-$wpff_sp_site_url = get_site_url();
+$wpff_sp_site_url    = get_site_url();
+$wpff_sp_last_run    = get_option('wpff_sp_last_run_meta', []);
+$wpff_sp_full_proxy  = get_option('wpff_sp_full_proxy_pass');
+
+
+// ============================================================
+// Full Proxy Pass mode — simple stats block, no URL table
+// ============================================================
+if ($wpff_sp_full_proxy):
+?>
+
+<?php if (!empty($wpff_sp_stats)): ?>
+<div class="wpff-sp-summary">
+  <section>
+    <div class="wpff-sp-summary-section">
+      <div class="wpff-sp-section-header">
+        <h5><?php echo esc_html(__('Full Proxy Pass Stats', 'super-preloader-for-cloudflare')); ?></h5>
+        <p class="wpff-sp-section-description"><?php echo esc_html(__('Summary from the last Full Proxy Pass run. Per-URL stats are not recorded in this mode.', 'super-preloader-for-cloudflare')); ?></p>
+      </div>
+      <div class="wpff-sp-summary-grid">
+        <?php if (isset($wpff_sp_stats['total_urls'])): ?>
+        <div class="wpff-sp-summary-item">
+          <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_stats['total_urls']); ?></div>
+          <div class="wpff-sp-metric-label"><?php echo esc_html(__('URLs', 'super-preloader-for-cloudflare')); ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (isset($wpff_sp_stats['total_proxies'])): ?>
+        <div class="wpff-sp-summary-item">
+          <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_stats['total_proxies']); ?></div>
+          <div class="wpff-sp-metric-label"><?php echo esc_html(__('Proxies', 'super-preloader-for-cloudflare')); ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (isset($wpff_sp_stats['total_requests'])): ?>
+        <div class="wpff-sp-summary-item">
+          <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_stats['total_requests']); ?></div>
+          <div class="wpff-sp-metric-label"><?php echo esc_html(__('Total requests', 'super-preloader-for-cloudflare')); ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($wpff_sp_stats['edges'])): ?>
+        <div class="wpff-sp-summary-item">
+          <div class="wpff-sp-metric-value"><?php echo esc_html(count(array_unique($wpff_sp_stats['edges']))); ?></div>
+          <div class="wpff-sp-metric-label"><?php echo esc_html(__('Unique edge locations', 'super-preloader-for-cloudflare')); ?></div>
+        </div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </section>
+</div>
+<?php else: ?>
+<div class="notice notice-info">
+  <p><?php echo esc_html(__('No stats available yet. Run preloader to generate stats.', 'super-preloader-for-cloudflare')); ?></p>
+</div>
+<?php endif; ?>
+
+<?php
+// ============================================================
+// Normal mode — existing summary and URL table, fully unchanged
+// ============================================================
+else:
 
 // Get summary data
-$wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
+$wpff_sp_summary = WPFF_SP_Helpers::get_stats_summary($wpff_sp_stats);
+
 ?>
 
 <?php if (!empty($wpff_sp_stats)): ?>
@@ -47,7 +106,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['cumulative']['most_common_edge']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common edge', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_edge_frequency($wpff_sp_summary['cumulative']['edge_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_edge_frequency($wpff_sp_summary['cumulative']['edge_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>
@@ -56,7 +115,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['cumulative']['most_common_country']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common country', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_edge_frequency($wpff_sp_summary['cumulative']['country_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_edge_frequency($wpff_sp_summary['cumulative']['country_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>        
@@ -65,7 +124,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['cumulative']['most_common_region']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common region', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_region_frequency($wpff_sp_summary['cumulative']['region_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_region_frequency($wpff_sp_summary['cumulative']['region_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>
@@ -105,7 +164,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['latest_run']['most_common_edge']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common edge', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_edge_frequency($wpff_sp_summary['latest_run']['edge_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_edge_frequency($wpff_sp_summary['latest_run']['edge_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>
@@ -114,7 +173,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['latest_run']['most_common_country']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common country', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_edge_frequency($wpff_sp_summary['latest_run']['country_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_edge_frequency($wpff_sp_summary['latest_run']['country_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>          
@@ -123,7 +182,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
           <div class="wpff-sp-metric-value"><?php echo esc_html($wpff_sp_summary['latest_run']['most_common_region']); ?></div>
           <div class="wpff-sp-metric-label"><?php echo esc_html(__('Most common region', 'super-preloader-for-cloudflare')); ?></div>
           <div class="wpff-sp-frequency">
-            <?php echo wp_kses_post(wpff_sp_format_region_frequency($wpff_sp_summary['latest_run']['region_frequency'], 3)); ?>
+            <?php echo wp_kses_post(WPFF_SP_Helpers::format_region_frequency($wpff_sp_summary['latest_run']['region_frequency'], 3)); ?>
           </div>
         </div>
         <?php endif; ?>
@@ -181,7 +240,7 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
             <?php
   $wpff_sp_entries = array_slice($wpff_sp_entries, -5);
     foreach ($wpff_sp_entries as $wpff_sp_entry) {
-      echo '<td>' . wp_kses_post(wpff_sp_format_edge_entry($wpff_sp_entry)) . '</td>';
+      echo '<td>' . wp_kses_post(WPFF_SP_Helpers::format_edge_entry($wpff_sp_entry)) . '</td>';
     }
 
     for ($wpff_sp_i = count($wpff_sp_entries); $wpff_sp_i < 5; $wpff_sp_i++) {
@@ -201,3 +260,5 @@ $wpff_sp_summary = wpff_sp_get_stats_summary($wpff_sp_stats);
   <p><?php echo esc_html(__('No stats available yet. Run preloader to generate stats.', 'super-preloader-for-cloudflare')); ?></p>
   </div>  
 <?php endif; ?>
+
+<?php endif; // end normal mode ?>

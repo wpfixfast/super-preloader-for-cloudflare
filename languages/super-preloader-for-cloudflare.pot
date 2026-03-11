@@ -2,22 +2,22 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Preloader for Cloudflare 1.0.5\n"
+"Project-Id-Version: Super Preloader for Cloudflare 1.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-preloader-for-cloudflare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-16T18:21:14+00:00\n"
+"POT-Creation-Date: 2026-03-11T08:08:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
 
 #. Plugin Name of the plugin
 #: super-preloader-for-cloudflare.php
-#: includes/admin-ui.php:11
-#: includes/admin-ui.php:41
+#: includes/class-admin-ui.php:13
+#: includes/class-admin-ui.php:47
 msgid "Super Preloader for Cloudflare"
 msgstr ""
 
@@ -41,129 +41,233 @@ msgstr ""
 msgid "https://wpfixfast.com/"
 msgstr ""
 
-#: includes/admin-ui.php:12
+#: includes/class-admin-ui.php:14
 msgid "Super Preloader"
 msgstr ""
 
-#: includes/admin-ui.php:78
+#: includes/class-admin-ui.php:100
 msgid "Preloader running... Please wait for the first batch to complete."
 msgstr ""
 
-#: includes/admin-ui.php:79
+#: includes/class-admin-ui.php:101
 msgid "All URLs have been processed."
 msgstr ""
 
-#. translators: %d is the number of URLs remaining in the preload queue.
-#: includes/admin-ui.php:81
-msgid "%d URLs remaining. Background process will continue."
+#. translators: %d is the number of items remaining in the preload queue.
+#: includes/class-admin-ui.php:103
+msgid "%d items remaining. Background process will continue."
 msgstr ""
 
-#: includes/admin-ui.php:82
+#: includes/class-admin-ui.php:104
 msgid "Error: "
 msgstr ""
 
-#: includes/admin-ui.php:83
+#: includes/class-admin-ui.php:105
 msgid "AJAX request failed."
 msgstr ""
 
-#: includes/admin-ui.php:84
+#: includes/class-admin-ui.php:106
 msgid "Unknown error."
 msgstr ""
 
-#: includes/ajax.php:8
+#: includes/class-admin-ui.php:107
+#: includes/partials/sidebar.php:66
+msgid "Running"
+msgstr ""
+
+#: includes/class-admin-ui.php:108
+#: includes/partials/sidebar.php:68
+msgid "Idle"
+msgstr ""
+
+#: includes/class-ajax.php:14
+#: includes/class-ajax.php:59
 msgid "Unauthorized"
 msgstr ""
 
-#: includes/ajax.php:14
-msgid "Preloader function not found."
-msgstr ""
-
-#: includes/ajax.php:27
+#: includes/class-ajax.php:29
 msgid "First batch completed."
 msgstr ""
 
-#: includes/ajax.php:41
+#: includes/class-ajax.php:47
 #: includes/partials/logs-viewer.php:24
 msgid "No log file found."
 msgstr ""
 
-#: includes/cron.php:13
+#: includes/class-cron.php:19
 msgid "Once Weekly"
 msgstr ""
 
-#: includes/cron.php:20
-#: includes/partials/settings-form.php:116
+#: includes/class-cron.php:32
+#: includes/partials/settings-form.php:102
 msgid "Every 3 Hours"
 msgstr ""
 
-#: includes/cron.php:24
-#: includes/partials/settings-form.php:117
+#: includes/class-cron.php:36
+#: includes/partials/settings-form.php:103
 msgid "Every 6 Hours"
 msgstr ""
 
-#: includes/cron.php:28
-#: includes/partials/settings-form.php:118
+#: includes/class-cron.php:40
+#: includes/partials/settings-form.php:104
 msgid "Every 12 Hours"
 msgstr ""
 
 #. translators: %s: Number of hours for the custom interval
-#: includes/cron.php:36
+#: includes/class-cron.php:48
 msgid "Every %.2f Hour(s)"
 msgstr ""
 
-#: includes/cron.php:92
+#: includes/class-cron.php:120
 msgid "Not scheduled"
 msgstr ""
 
 #. translators: 1: Number of hours, 2: Number of minutes
-#: includes/cron.php:108
+#: includes/class-cron.php:136
 msgid "%1$d hours %2$d minutes"
 msgstr ""
 
 #. translators: %d: Number of hours
-#: includes/cron.php:111
+#: includes/class-cron.php:139
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: Number of minutes
-#: includes/cron.php:114
+#: includes/class-cron.php:142
+#: includes/class-preloader.php:88
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: Time in 12-hour format (e.g., "9:13 pm")
-#: includes/cron.php:124
+#: includes/class-cron.php:152
 msgid "Today at %s"
 msgstr ""
 
 #. translators: %s: Time in 12-hour format (e.g., "9:13 pm")
-#: includes/cron.php:127
+#: includes/class-cron.php:155
 msgid "Tomorrow at %s"
 msgstr ""
 
 #. translators: 1: Human-readable time difference (e.g., "5 hours 30 minutes"), 2: Formatted date and time or "Today/Tomorrow at time"
-#: includes/cron.php:134
+#: includes/class-cron.php:162
 msgid "In %1$s (%2$s)"
 msgstr ""
 
-#: includes/helpers.php:38
-#: includes/partials/navigation-tabs.php:13
+#: includes/class-helpers.php:86
+#: includes/partials/navigation-tabs.php:14
 msgid "Settings"
+msgstr ""
+
+#: includes/class-post-handlers.php:102
+msgid "Settings updated."
+msgstr ""
+
+#: includes/class-post-handlers.php:112
+msgid "Settings saved."
+msgstr ""
+
+#: includes/class-post-handlers.php:134
+msgid "Reset Stats: Stats and logs cleared."
+msgstr ""
+
+#: includes/class-post-handlers.php:142
+msgid "Stats and logs cleared."
+msgstr ""
+
+#: includes/class-post-handlers.php:161
+msgid "Stop signal sent. Preloader will stop after the current batch."
+msgstr ""
+
+#: includes/class-preloader.php:19
+msgid "Preloader stopped by user."
+msgstr ""
+
+#. translators: %d: Number of minutes
+#: includes/class-preloader.php:91
+msgid "%d minutes"
+msgstr ""
+
+#: includes/class-preloader.php:104
+msgid "Preloader already running, skipping this cron event."
+msgstr ""
+
+#: includes/class-preloader.php:117
+msgid "Missing required settings: worker or sitemap."
+msgstr ""
+
+#. translators: %s is the error message from the proxy list request.
+#: includes/class-preloader.php:129
+msgid "Failed to download proxy list: %s"
+msgstr ""
+
+#: includes/class-preloader.php:138
+msgid "Failed to download sitemap: "
+msgstr ""
+
+#: includes/class-preloader.php:196
+msgid "Preloader started."
+msgstr ""
+
+#. translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
+#: includes/class-preloader.php:238
+msgid "Warming: %1$s via %2$s"
+msgstr ""
+
+#. translators: %s is the URL being warmed directly from the server.
+#: includes/class-preloader.php:242
+msgid "Warming: %s directly from server"
+msgstr ""
+
+#. translators: %s is the HTTP response body returned from the preload request.
+#: includes/class-preloader.php:247
+msgid "Response: %s"
+msgstr ""
+
+#: includes/class-preloader.php:289
+msgid "Unknown"
+msgstr ""
+
+#. translators: 1: URL count, 2: proxy count, 3: total requests
+#: includes/class-preloader.php:318
+msgid "Full Proxy Pass completed. %1$d URLs x %2$d proxies = %3$d requests processed."
+msgstr ""
+
+#. translators: %s: duration string
+#: includes/class-preloader.php:325
+msgid "Time taken: %s."
+msgstr ""
+
+#: includes/class-preloader.php:329
+msgid "CF Edge locations reached:"
+msgstr ""
+
+#: includes/class-preloader.php:354
+msgid "Preload completed."
+msgstr ""
+
+#. translators: %d is the index of the next scheduled preload batch.
+#: includes/class-preloader.php:371
+msgid "Scheduled next batch at index %d"
 msgstr ""
 
 #: includes/partials/logs-viewer.php:17
 msgid "Auto-refresh logs"
 msgstr ""
 
-#: includes/partials/navigation-tabs.php:16
+#: includes/partials/navigation-tabs.php:17
 msgid "Stats"
 msgstr ""
 
-#: includes/partials/navigation-tabs.php:19
+#: includes/partials/navigation-tabs.php:20
 msgid "Logs"
+msgstr ""
+
+#: includes/partials/navigation-tabs.php:23
+msgid "How to Use"
 msgstr ""
 
 #: includes/partials/reset-preloader.php:14
@@ -203,147 +307,220 @@ msgstr ""
 msgid "https://your-domain.com/sitemap.xml"
 msgstr ""
 
-#. translators: %d is the number of URLs found during the last preload run.
-#: includes/partials/settings-form.php:77
-msgid " %d URLs were found during the last preload run."
-msgstr ""
-
-#: includes/partials/settings-form.php:81
-msgid "No sitemap data available yet. Run the preloader to count URLs."
-msgstr ""
-
-#: includes/partials/settings-form.php:90
+#: includes/partials/settings-form.php:76
 msgid "Shared Secret"
 msgstr ""
 
-#: includes/partials/settings-form.php:96
+#: includes/partials/settings-form.php:82
 msgid "Secret key defined in CF Worker"
 msgstr ""
 
-#: includes/partials/settings-form.php:101
+#: includes/partials/settings-form.php:87
 msgid "A secret key used to authenticate requests between your site and the Cloudflare Worker. This must match the value defined in your Worker code."
 msgstr ""
 
-#: includes/partials/settings-form.php:108
+#: includes/partials/settings-form.php:94
 msgid "Auto Run Interval"
 msgstr ""
 
-#: includes/partials/settings-form.php:114
+#: includes/partials/settings-form.php:100
 msgid "Manual Only"
 msgstr ""
 
-#: includes/partials/settings-form.php:115
+#: includes/partials/settings-form.php:101
 msgid "Hourly"
 msgstr ""
 
-#: includes/partials/settings-form.php:119
+#: includes/partials/settings-form.php:105
 msgid "Daily"
 msgstr ""
 
-#: includes/partials/settings-form.php:120
+#: includes/partials/settings-form.php:106
 msgid "Weekly"
 msgstr ""
 
-#: includes/partials/settings-form.php:121
+#: includes/partials/settings-form.php:107
 msgid "Custom Interval..."
 msgstr ""
 
-#: includes/partials/settings-form.php:136
+#: includes/partials/settings-form.php:122
 msgid "Run every"
 msgstr ""
 
-#: includes/partials/settings-form.php:141
+#: includes/partials/settings-form.php:127
 msgid "hour(s)"
 msgstr ""
 
-#: includes/partials/settings-form.php:143
+#: includes/partials/settings-form.php:129
 msgid "Examples: 0.5 = 30 min, 1 = hourly, 24 = daily, 72 = every 3 days"
 msgstr ""
 
-#: includes/partials/settings-form.php:164
+#: includes/partials/settings-form.php:150
 msgid "Next scheduled run:"
 msgstr ""
 
-#: includes/partials/settings-form.php:175
+#: includes/partials/settings-form.php:161
 msgid "Auto Run Start Time"
 msgstr ""
 
-#: includes/partials/settings-form.php:208
+#: includes/partials/settings-form.php:194
 msgid "Current time"
 msgstr ""
 
-#: includes/partials/settings-form.php:226
+#: includes/partials/settings-form.php:212
 msgid "Batch Size (URLs per batch)"
 msgstr ""
 
-#: includes/partials/settings-form.php:241
-#: includes/partials/settings-form.php:262
+#: includes/partials/settings-form.php:227
+#: includes/partials/settings-form.php:248
 msgid "Default"
 msgstr ""
 
-#: includes/partials/settings-form.php:247
+#: includes/partials/settings-form.php:233
 msgid "Delay Between URLs (seconds)"
 msgstr ""
 
+#: includes/partials/settings-form.php:254
+msgid "Full Proxy Pass Mode"
+msgstr ""
+
+#: includes/partials/settings-form.php:265
+msgid "Send every URL through every proxy."
+msgstr ""
+
 #: includes/partials/settings-form.php:268
+msgid "Switching modes will clear existing stats."
+msgstr ""
+
+#: includes/partials/settings-form.php:276
 msgid "Delete Data on Uninstall"
 msgstr ""
 
-#: includes/partials/settings-form.php:278
+#: includes/partials/settings-form.php:286
 msgid "Remove all plugin data and logs when the plugin is deleted."
 msgstr ""
 
-#: includes/partials/settings-form.php:288
+#: includes/partials/settings-form.php:296
 msgid "Save Settings"
 msgstr ""
 
 #: includes/partials/setup-guide.php:9
-msgid "Getting Started"
+msgid "Setup Guide"
 msgstr ""
 
 #: includes/partials/setup-guide.php:11
-msgid "This plugin helps warm up Cloudflare edge caches by preloading your public URLs using a Worker script and optional rotating proxies. It helps reduce time-to-first-byte (TTFB) and improve real user performance metrics by ensuring content is already cached near your visitors."
+msgid "This plugin helps warm up Cloudflare edge caches by preloading your public URLs using a Worker script and optional rotating proxies."
 msgstr ""
 
-#: includes/partials/setup-guide.php:18
-msgid "Normally, Cloudflare only populates its edge cache in a specific location when a visitor from that region requests the page. This means content may be slow for first-time visitors in other geographic regions. By sending preload requests from various IP locations, the plugin helps increase Cloudflare cache hit rates across multiple edges."
+#: includes/partials/setup-guide.php:17
+msgid "It helps reduce time-to-first-byte (TTFB) and improve real user performance metrics by ensuring content is already cached near your visitors."
+msgstr ""
+
+#: includes/partials/setup-guide.php:23
+msgid "Normally, Cloudflare only populates its edge cache in a specific location when a visitor from that region requests the page. This means users in some regions may experience slower load times until the cache is warmed up. By sending preload requests from various IP locations, the plugin helps increase Cloudflare cache hit rates across multiple edges."
 msgstr ""
 
 #. translators: %s is a clickable link to the Super Page Cache plugin.
-#: includes/partials/setup-guide.php:29
-msgid "It works best when used together with a caching plugin like %s, since Cloudflare does not cache HTML responses by default—only static assets like images, CSS, and JS. This can lead to better scores in Core Web Vitals—especially the Largest Contentful Paint (LCP)—which is a key factor in SEO and user experience."
+#: includes/partials/setup-guide.php:33
+msgid "It works best when used together with a caching plugin like %s, since Cloudflare does not cache HTML responses by default—only static assets like images, CSS, and JS. This can lead to better scores in Core Web Vitals, especially the Largest Contentful Paint (LCP), which is a key factor in SEO and user experience."
 msgstr ""
 
-#: includes/partials/setup-guide.php:39
-msgid "To get started, follow the detailes instructions at our How to Use section below. Recommended steps: 1) Create and Deploy Cloudflare Worker URL. 2) Get Webshare Proxies Download Link. 3) Create your sitemap using Yoast SEO, RankMath SEO, or similar plugin. 4) Start Preloading."
+#: includes/partials/setup-guide.php:42
+msgid "Steps to Get Started:"
 msgstr ""
 
 #: includes/partials/setup-guide.php:44
-msgid "How to Use"
+msgid "Create and Deploy Cloudflare Worker URL"
 msgstr ""
 
-#: includes/partials/setup-guide.php:48
-msgid "What is Cloudflare Edge?"
+#: includes/partials/setup-guide.php:45
+msgid "Register and Use Webshare Proxies"
+msgstr ""
+
+#: includes/partials/setup-guide.php:46
+msgid "Create your sitemap using Yoast, RankMath, or similar SEO plugin"
+msgstr ""
+
+#: includes/partials/setup-guide.php:47
+msgid "Start Preloading"
+msgstr ""
+
+#: includes/partials/setup-guide.php:49
+msgid "FAQs"
 msgstr ""
 
 #: includes/partials/setup-guide.php:53
-msgid "Why you should set up Super Page Cache first"
+msgid "What is Cloudflare Edge?"
 msgstr ""
 
 #: includes/partials/setup-guide.php:58
-msgid "Why a Cloudflare Worker is needed to preload cache"
+msgid "Why you should set up Super Page Cache first"
 msgstr ""
 
 #: includes/partials/setup-guide.php:63
-msgid "How to create and deploy a Cloudflare Worker"
+msgid "Why a Cloudflare Worker is needed to preload cache"
 msgstr ""
 
 #: includes/partials/setup-guide.php:68
-msgid "How to register and use Webshare Proxies"
+msgid "How to Check if it's working"
 msgstr ""
 
 #: includes/partials/setup-guide.php:73
-msgid "Usage Notes and Key Considerations"
+msgid "Usage notes and key considerations"
+msgstr ""
+
+#: includes/partials/setup-guide.php:78
+msgid "What's new"
+msgstr ""
+
+#: includes/partials/sidebar.php:9
+msgid "Full Proxy Pass"
+msgstr ""
+
+#: includes/partials/sidebar.php:10
+msgid "Normal"
+msgstr ""
+
+#: includes/partials/sidebar.php:47
+msgid "Mode"
+msgstr ""
+
+#: includes/partials/sidebar.php:54
+msgid "As every URL will hit each proxy, run times may be significantly longer in this mode."
+msgstr ""
+
+#: includes/partials/sidebar.php:61
+msgid "Status"
+msgstr ""
+
+#: includes/partials/sidebar.php:77
+msgid "Last Run"
+msgstr ""
+
+#: includes/partials/sidebar.php:83
+msgid "Started"
+msgstr ""
+
+#: includes/partials/sidebar.php:89
+msgid "Completed"
+msgstr ""
+
+#: includes/partials/sidebar.php:95
+msgid "Duration"
+msgstr ""
+
+#: includes/partials/sidebar.php:107
+#: includes/partials/stats-table.php:32
+msgid "URLs"
+msgstr ""
+
+#: includes/partials/sidebar.php:119
+#: includes/partials/stats-table.php:38
+msgid "Proxies"
+msgstr ""
+
+#: includes/partials/sidebar.php:123
+msgid "None"
 msgstr ""
 
 #: includes/partials/start-preloader.php:16
@@ -354,133 +531,82 @@ msgstr ""
 msgid "Stop Preloader"
 msgstr ""
 
-#. translators: %d is the number of completed runs
-#: includes/partials/stats-table.php:24
-msgid "Cumulative Stats Across All Runs (%d Completed)"
+#: includes/partials/stats-table.php:25
+msgid "Full Proxy Pass Stats"
 msgstr ""
 
 #: includes/partials/stats-table.php:26
-msgid "Aggregated data from all completed preloader runs"
+msgid "Summary from the last Full Proxy Pass run. Per-URL stats are not recorded in this mode."
 msgstr ""
 
-#: includes/partials/stats-table.php:31
-#: includes/partials/stats-table.php:89
-msgid "URLs preloaded"
+#: includes/partials/stats-table.php:44
+msgid "Total requests"
 msgstr ""
 
-#: includes/partials/stats-table.php:35
-#: includes/partials/stats-table.php:93
+#: includes/partials/stats-table.php:50
+#: includes/partials/stats-table.php:94
+#: includes/partials/stats-table.php:152
 msgid "Unique edge locations"
 msgstr ""
 
-#: includes/partials/stats-table.php:39
-#: includes/partials/stats-table.php:97
+#: includes/partials/stats-table.php:59
+#: includes/partials/stats-table.php:260
+msgid "No stats available yet. Run preloader to generate stats."
+msgstr ""
+
+#. translators: %d is the number of completed runs
+#: includes/partials/stats-table.php:83
+msgid "Cumulative Stats Across All Runs (%d Completed)"
+msgstr ""
+
+#: includes/partials/stats-table.php:85
+msgid "Aggregated data from all completed preloader runs"
+msgstr ""
+
+#: includes/partials/stats-table.php:90
+#: includes/partials/stats-table.php:148
+msgid "URLs preloaded"
+msgstr ""
+
+#: includes/partials/stats-table.php:98
+#: includes/partials/stats-table.php:156
 msgid "Unique regions"
 msgstr ""
 
-#: includes/partials/stats-table.php:43
-#: includes/partials/stats-table.php:101
+#: includes/partials/stats-table.php:102
+#: includes/partials/stats-table.php:160
 msgid "Unique countries"
 msgstr ""
 
-#: includes/partials/stats-table.php:48
-#: includes/partials/stats-table.php:106
+#: includes/partials/stats-table.php:107
+#: includes/partials/stats-table.php:165
 msgid "Most common edge"
 msgstr ""
 
-#: includes/partials/stats-table.php:57
-#: includes/partials/stats-table.php:115
+#: includes/partials/stats-table.php:116
+#: includes/partials/stats-table.php:174
 msgid "Most common country"
 msgstr ""
 
-#: includes/partials/stats-table.php:66
-#: includes/partials/stats-table.php:124
+#: includes/partials/stats-table.php:125
+#: includes/partials/stats-table.php:183
 msgid "Most common region"
 msgstr ""
 
 #. translators: %d is the latest run number
-#: includes/partials/stats-table.php:82
+#: includes/partials/stats-table.php:141
 msgid "Latest Run (#%d)"
 msgstr ""
 
-#: includes/partials/stats-table.php:84
+#: includes/partials/stats-table.php:143
 msgid "Performance data from the most recent preloader run"
 msgstr ""
 
-#: includes/partials/stats-table.php:144
+#: includes/partials/stats-table.php:203
 msgid "URL"
 msgstr ""
 
 #. translators: %d is the run number in the preload stats table header.
-#: includes/partials/stats-table.php:149
+#: includes/partials/stats-table.php:208
 msgid "Run #%d"
-msgstr ""
-
-#: includes/partials/stats-table.php:201
-msgid "No stats available yet. Run preloader to generate stats."
-msgstr ""
-
-#: includes/post-handlers.php:80
-msgid "Settings updated."
-msgstr ""
-
-#: includes/post-handlers.php:84
-msgid "Settings saved."
-msgstr ""
-
-#: includes/post-handlers.php:101
-msgid "Reset Stats: Stats and logs cleared."
-msgstr ""
-
-#: includes/post-handlers.php:102
-msgid "Stats and logs cleared."
-msgstr ""
-
-#: includes/post-handlers.php:115
-msgid "Stop signal sent. Preloader will stop after the current batch."
-msgstr ""
-
-#: includes/preloader.php:12
-msgid "Preloader stopped by user."
-msgstr ""
-
-#: includes/preloader.php:28
-msgid "Missing required settings: worker or sitemap."
-msgstr ""
-
-#. translators: %s is the error message from the proxy list request.
-#: includes/preloader.php:39
-msgid "Failed to download proxy list: %s"
-msgstr ""
-
-#: includes/preloader.php:53
-msgid "Failed to download sitemap: "
-msgstr ""
-
-#: includes/preloader.php:94
-msgid "Preloader started."
-msgstr ""
-
-#. translators: %1$s is the URL being warmed, %2$s is the proxy IP and port.
-#: includes/preloader.php:125
-msgid "Warming: %1$s via %2$s"
-msgstr ""
-
-#. translators: %s is the URL being warmed directly from the server.
-#: includes/preloader.php:129
-msgid "Warming: %s directly from server"
-msgstr ""
-
-#. translators: %s is the HTTP response body returned from the preload request.
-#: includes/preloader.php:134
-msgid "Response: %s"
-msgstr ""
-
-#: includes/preloader.php:181
-msgid "Preload completed."
-msgstr ""
-
-#. translators: %d is the index of the next scheduled preload batch.
-#: includes/preloader.php:186
-msgid "Scheduled next batch at index %d"
 msgstr ""
