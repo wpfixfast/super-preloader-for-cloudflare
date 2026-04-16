@@ -21,6 +21,7 @@ node_modules/
 package-lock.json
 
 # WordPress
+readme.txt
 wp-config.php
 wp-content/uploads/
 wp-content/cache/

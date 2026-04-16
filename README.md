@@ -100,6 +100,11 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.0.7 - 16.04.2026
+
+- **Fixed:** Sitemap download timeout increased to 30 seconds to prevent cURL error 28 on slow servers
+- **Refactor:** Code internals for better compatibility with WordPress coding standards
+
 ### 1.0.6 - 11.03.2026
 
 - **Refactor:** Converted plugin internals to class-based architecture for improved maintainability
