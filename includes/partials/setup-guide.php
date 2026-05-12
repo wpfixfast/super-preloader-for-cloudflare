@@ -80,10 +80,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</a>
 		</li>   
 	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.0.7", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<h2><?php echo esc_html( __( "What's New in 1.0.8", 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Fixed: Sitemap download timeout increased to 30 seconds to prevent cURL error 28 on slow servers.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Refactored code internals for better compatibility with WordPress coding standards.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Updated: Screenshots, how to use guide, and donate plugin link.', 'super-preloader-for-cloudflare' ); ?></li>
 	</ul>
 	</div>
 </div>
