@@ -2,7 +2,7 @@
 
 **Preload your sitemap URLs into multiple Cloudflare edge locations using proxies and a custom Cloudflare Worker.**
 
-[![Donate](https://img.shields.io/badge/Donate-WPFixFast-blue)](https://wpfixfast.com/)
+[![Donate](https://img.shields.io/badge/Donate-WPFixFast-blue)](https://buymeacoffee.com/ozgursar)
 
 ---
 
