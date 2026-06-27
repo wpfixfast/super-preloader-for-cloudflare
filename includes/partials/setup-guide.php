@@ -80,9 +80,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</a>
 		</li>   
 	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.0.8", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<h2><?php echo esc_html( __( "What's New in 1.1.0", 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Updated: Screenshots, how to use guide, and donate plugin link.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Added: New "Exclusions" tab that allows manual and keyword-based URL exclusions.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Added: Optional "Start Preload" shortcut in the WordPress admin bar to trigger a manual preload from any page.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Added: Auto-dismissing toast notifications confirm when the preload starts and completes.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Added: Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Improved: Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Tested: Compatibility with WordPress 7.0.', 'super-preloader-for-cloudflare' ); ?></li>
 	</ul>
 	</div>
 </div>

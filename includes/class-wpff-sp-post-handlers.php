@@ -83,6 +83,12 @@ class WPFF_SP_Post_Handlers {
 				delete_option( 'wpff_sp_delete_data_on_uninstall' );
 			}
 
+			if ( isset( $_POST['wpff_sp_admin_bar_shortcut'] ) ) {
+				update_option( 'wpff_sp_admin_bar_shortcut', '1' );
+			} else {
+				delete_option( 'wpff_sp_admin_bar_shortcut' );
+			}
+
 			// Handle the Full Proxy Pass mode toggle (which clears stats when changed)
 			$wpff_sp_previous_mode = get_option( 'wpff_sp_full_proxy_pass', '' );
 			$wpff_sp_new_mode      = isset( $_POST['wpff_sp_full_proxy_pass'] ) ? '1' : '';
@@ -159,6 +165,28 @@ class WPFF_SP_Post_Handlers {
 			// Clear the cursor so the overlapping run protection is reset
 			delete_transient( 'wpff_sp_preload_cursor' );
 			echo '<div class="notice notice-warning"><p>' . esc_html( __( 'Stop signal sent. Preloader will stop after the current batch.', 'super-preloader-for-cloudflare' ) ) . '</p></div>';
+		}
+	}
+
+	/**
+	 * Handle the URL exclusion keywords form POST request.
+	 * Saves the textarea's lines as the wpff_sp_excluded_keywords option.
+	 */
+	public static function handle_url_exclusions() {
+		if (
+		isset( $_SERVER['REQUEST_METHOD'] ) &&
+		'POST' === $_SERVER['REQUEST_METHOD'] &&
+		isset( $_POST['wpff_sp_url_exclusions'] ) &&
+		check_admin_referer( 'wpff_sp_save_url_exclusions' )
+		) {
+			$raw      = isset( $_POST['excluded_keywords'] ) ? sanitize_textarea_field( wp_unslash( $_POST['excluded_keywords'] ) ) : '';
+			$keywords = array_values( array_filter( array_map( 'trim', preg_split( '/\r?\n/', $raw ) ) ) );
+
+			update_option( 'wpff_sp_excluded_keywords', $keywords );
+
+			WPFF_SP_Helpers::log( __( 'URL exclusion keywords updated.', 'super-preloader-for-cloudflare' ) );
+
+			echo '<div class="updated"><p>' . esc_html( __( 'Exclusions saved.', 'super-preloader-for-cloudflare' ) ) . '</p></div>';
 		}
 	}
 }

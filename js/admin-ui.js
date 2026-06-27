@@ -3,13 +3,29 @@ document.addEventListener('DOMContentLoaded', function () {
   const stopForm = document.getElementById('wpff-sp-stop-preloader-form')
   const spinner = document.getElementById('wpff-sp-spinner')
   const resultBox = document.getElementById('wpff-sp-preload-result')
-  const statusBadge = document.querySelector('.wpff-sp-status-badge')
+  const statusBadge = document.getElementById('wpff-sp-status-badge')
+  const remainingTag = document.getElementById('wpff-sp-sidebar-remaining')
   const logBox = document.getElementById('wpff-sp-log-output')
 
   let statusPollInterval = null
 
   // Auto scroll to the bottom of the log output box
   if (logBox) logBox.scrollTop = logBox.scrollHeight
+
+  // ============================================================
+  // Show immediate feedback when opening the Exclusions tab — it
+  // can take a couple seconds (sitemap re-fetch), and a full page
+  // reload gives no other chance to signal "working" in the meantime.
+  // ============================================================
+  const exclusionsTabLink = document.querySelector('.nav-tab-wrapper a[href*="tab=exclusions"]')
+  if (exclusionsTabLink) {
+    exclusionsTabLink.addEventListener('click', function () {
+      const overlay = document.createElement('div')
+      overlay.className = 'wpff-sp-tab-loading-overlay'
+      overlay.innerHTML = '<span class="spinner is-active"></span><span>' + wpff.i18n.loadingTab + '</span>'
+      document.body.appendChild(overlay)
+    })
+  }
 
   // ============================================================
   // Update UI based on running state
@@ -31,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function setRemainingTag(remaining) {
+    if (!remainingTag) return
+    remainingTag.textContent = typeof remaining === 'number' ? wpff.i18n.remainingTag.replace('%d', remaining) : ''
+  }
+
   // ============================================================
   // Poll server for real running state
   // ============================================================
@@ -48,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         if (data.success) {
           setRunningState(data.data.running)
+          setRemainingTag(data.data.remaining)
           // if (!data.data.running) {
           //   clearInterval(statusPollInterval)
           //   statusPollInterval = null

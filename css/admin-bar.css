@@ -1,0 +1,57 @@
+/* Admin bar shortcut */
+#wpadminbar #wp-admin-bar-wpff-sp-preload .ab-icon {
+  margin-right: 2px;
+}
+
+#wpadminbar #wp-admin-bar-wpff-sp-preload.wpff-sp-admin-bar-loading .ab-icon:before {
+  display: inline-block;
+  animation: wpff-sp-spin 1s linear infinite;
+}
+
+#wpadminbar #wp-admin-bar-wpff-sp-preload.wpff-sp-admin-bar-loading > .ab-item {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@keyframes wpff-sp-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Toast notification */
+.wpff-sp-toast {
+  position: fixed;
+  top: 46px;
+  right: 20px;
+  z-index: 99999;
+  max-width: 320px;
+  padding: 12px 18px;
+  border-radius: 4px;
+  background: #1d2327;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.wpff-sp-toast-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wpff-sp-toast-error {
+  background: #d63638;
+}
+
+@media screen and (min-width: 783px) {
+  .wpff-sp-toast {
+    top: 40px;
+  }
+}

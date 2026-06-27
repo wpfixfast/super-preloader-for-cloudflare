@@ -11,6 +11,7 @@ $wpff_sp_sidebar_mode_label = $wpff_sp_sidebar_full_proxy
 
 // Current status
 $wpff_sp_sidebar_is_running = (bool) get_transient( 'wpff_sp_preload_cursor' );
+$wpff_sp_sidebar_remaining  = WPFF_SP_Preloader::get_remaining_count();
 
 // Last run meta
 $wpff_sp_sidebar_last_run = get_option( 'wpff_sp_last_run_meta', array() );
@@ -65,10 +66,23 @@ if ( false === $wpff_sp_sidebar_proxy_count ) {
 	</div>
 	<div class="wpff-sp-sidebar-value">
 		<?php if ( $wpff_sp_sidebar_is_running ) : ?>
-		<span class="wpff-sp-status-badge wpff-sp-status-running"><?php echo esc_html( __( 'Running', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<span id="wpff-sp-status-badge" class="wpff-sp-status-badge wpff-sp-status-running"><?php echo esc_html( __( 'Running', 'super-preloader-for-cloudflare' ) ); ?></span>
 		<?php else : ?>
-		<span class="wpff-sp-status-badge wpff-sp-status-idle"><?php echo esc_html( __( 'Idle', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<span id="wpff-sp-status-badge" class="wpff-sp-status-badge wpff-sp-status-idle"><?php echo esc_html( __( 'Idle', 'super-preloader-for-cloudflare' ) ); ?></span>
 		<?php endif; ?>
+		<span class="wpff-sp-sidebar-remaining" id="wpff-sp-sidebar-remaining">
+		<?php
+		if ( null !== $wpff_sp_sidebar_remaining ) {
+			echo esc_html(
+				sprintf(
+					/* translators: %d is the number of items remaining in the preload queue. */
+					__( '(%d remaining)', 'super-preloader-for-cloudflare' ),
+					$wpff_sp_sidebar_remaining
+				)
+			);
+		}
+		?>
+		</span>
 	</div>
 	</div>
 

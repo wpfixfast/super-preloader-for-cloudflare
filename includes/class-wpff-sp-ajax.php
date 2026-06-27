@@ -16,6 +16,11 @@ class WPFF_SP_Ajax {
 
 		check_ajax_referer( 'wpff_sp_preload_nonce', 'nonce' );
 
+		// Detect whether a run was already in progress before this call —
+		// WPFF_SP_Preloader::run() silently no-ops in that case, so the caller
+		// needs this to tell a "started" response apart from a "skipped" one.
+		$already_running = (bool) get_transient( 'wpff_sp_preload_cursor' );
+
 		WPFF_SP_Preloader::run();
 
 		$cursor = get_transient( 'wpff_sp_preload_cursor' );
@@ -27,9 +32,12 @@ class WPFF_SP_Ajax {
 
 		wp_send_json_success(
 			array(
-				'message'   => esc_html__( 'First batch completed.', 'super-preloader-for-cloudflare' ),
-				'remaining' => $remaining,
-				'done'      => 0 === $remaining,
+				'message'        => $already_running
+					? esc_html__( 'Preloader is already running.', 'super-preloader-for-cloudflare' )
+					: esc_html__( 'First batch completed.', 'super-preloader-for-cloudflare' ),
+				'remaining'      => $remaining,
+				'done'           => 0 === $remaining,
+				'alreadyRunning' => $already_running,
 			)
 		);
 	}
@@ -63,7 +71,8 @@ class WPFF_SP_Ajax {
 		check_ajax_referer( 'wpff_sp_status_nonce', 'nonce' );
 		wp_send_json_success(
 			array(
-				'running' => (bool) get_transient( 'wpff_sp_preload_cursor' ),
+				'running'   => (bool) get_transient( 'wpff_sp_preload_cursor' ),
+				'remaining' => WPFF_SP_Preloader::get_remaining_count(),
 			)
 		);
 	}

@@ -100,6 +100,15 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.1.0 - 27.06.2026
+
+- **Added:** New "Exclusions" tab that allows manual and keyword-based URL exclusions
+- **Added:** Optional "Start Preload" shortcut in the WordPress admin bar to trigger a manual preload from any page
+- **Added:** Auto-dismissing toast notifications confirm when the preload starts and completes
+- **Added:** Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress
+- **Improved:** Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron
+- **Tested:** Compatibility with WordPress 7.0
+
 ### 1.0.8 - 12.05.2026
 
 - **Updated:** Screenshots, how to use guide, and donate plugin link

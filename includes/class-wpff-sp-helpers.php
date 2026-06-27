@@ -66,6 +66,128 @@ class WPFF_SP_Helpers {
 	}
 
 	/**
+	 * Fetch and parse a sitemap (or sitemap index) into a flat array of page URLs.
+	 * Used by both the preloader run loop and the URLs tab so both always see
+	 * the same data and the same nested sitemap-index handling.
+	 *
+	 * @param string $sitemap_url The sitemap (or sitemap index) URL.
+	 * @return array|WP_Error Flat array of URL strings, or WP_Error if the sitemap itself could not be fetched.
+	 */
+	public static function get_sitemap_urls( $sitemap_url ) {
+		$sitemap_xml = wp_remote_get( $sitemap_url, array( 'timeout' => 30 ) );
+
+		if ( is_wp_error( $sitemap_xml ) ) {
+			return $sitemap_xml;
+		}
+
+		$urls   = array();
+		$parsed = simplexml_load_string( wp_remote_retrieve_body( $sitemap_xml ) );
+
+		if ( isset( $parsed->url ) ) {
+			foreach ( $parsed->url as $entry ) {
+				$urls[] = (string) $entry->loc;
+			}
+		} elseif ( isset( $parsed->sitemap ) ) {
+			foreach ( $parsed->sitemap as $entry ) {
+				$loc   = (string) $entry->loc;
+				$child = wp_remote_get( $loc, array( 'timeout' => 30 ) );
+				if ( ! is_wp_error( $child ) ) {
+					$sub = simplexml_load_string( wp_remote_retrieve_body( $child ) );
+					foreach ( $sub->url as $e ) {
+						$urls[] = (string) $e->loc;
+					}
+				}
+			}
+		}
+
+		return $urls;
+	}
+
+	/**
+	 * Get the saved list of typed exclusion keywords (the URLs tab textarea).
+	 * Plain substrings like "cart" matched case-insensitively.
+	 *
+	 * @return array Indexed array of non-empty keyword strings.
+	 */
+	public static function get_exclusion_keywords() {
+		$keywords = get_option( 'wpff_sp_excluded_keywords', array() );
+
+		if ( ! is_array( $keywords ) ) {
+			return array();
+		}
+
+		return array_values( array_filter( array_map( 'trim', $keywords ), 'strlen' ) );
+	}
+
+	/**
+	 * Get the saved list of exact URLs excluded via the URLs tab's checkbox
+	 * bulk actions. Stored separately from typed keywords so saving the
+	 * keyword textarea never wipes these out.
+	 *
+	 * @return array Indexed array of non-empty URL strings.
+	 */
+	public static function get_excluded_urls() {
+		$urls = get_option( 'wpff_sp_excluded_urls', array() );
+
+		if ( ! is_array( $urls ) ) {
+			return array();
+		}
+
+		return array_values( array_filter( array_map( 'trim', $urls ), 'strlen' ) );
+	}
+
+	/**
+	 * Get the combined list of exclusion terms — typed keywords plus exact
+	 * checkbox-excluded URLs — used wherever URLs are actually matched.
+	 *
+	 * @return array
+	 */
+	public static function get_all_exclusion_terms() {
+		return array_merge( self::get_exclusion_keywords(), self::get_excluded_urls() );
+	}
+
+	/**
+	 * Find which exclusion term (if any) matches a given URL.
+	 *
+	 * @param string $url   The URL to check.
+	 * @param array  $terms Exclusion terms from get_all_exclusion_terms().
+	 * @return string|null The matched term, or null if the URL is not excluded.
+	 */
+	public static function get_matched_exclusion_keyword( $url, $terms ) {
+		foreach ( $terms as $term ) {
+			if ( false !== stripos( $url, $term ) ) {
+				return $term;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Filter callback for the wpff_sp_preload_urls hook — removes any URL that
+	 * matches a saved exclusion term before the preload queue is built.
+	 *
+	 * @param array $urls Flat array of URLs parsed from the sitemap.
+	 * @return array Filtered array with excluded URLs removed.
+	 */
+	public static function filter_excluded_urls( $urls ) {
+		$keywords = self::get_all_exclusion_terms();
+
+		if ( empty( $keywords ) ) {
+			return $urls;
+		}
+
+		return array_values(
+			array_filter(
+				$urls,
+				function ( $url ) use ( $keywords ) {
+					return null === self::get_matched_exclusion_keyword( $url, $keywords );
+				}
+			)
+		);
+	}
+
+	/**
 	 * Generate a SHA-256 token for a URL and shared secret pair.
 	 *
 	 * @param string $url    The URL to generate the token for.

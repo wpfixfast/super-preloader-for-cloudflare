@@ -29,12 +29,17 @@ delete_option( 'wpff_sp_delete_data_on_uninstall' );
 delete_option( 'wpff_sp_log_migrated' );
 delete_option( 'wpff_sp_last_run_meta' );
 delete_option( 'wpff_sp_full_proxy_pass' );
+delete_option( 'wpff_sp_admin_bar_shortcut' );
+delete_option( 'wpff_sp_excluded_keywords' );
+delete_option( 'wpff_sp_excluded_urls' );
 
 // Delete transients
 delete_transient( 'wpff_sp_preload_cursor' );
 delete_transient( 'wpff_sp_preload_urls' );
 delete_transient( 'wpff_sp_batch_stats' );
 delete_transient( 'wpff_sp_stop_flag' );
+delete_transient( 'wpff_sp_proxy_count_cache' );
+delete_transient( 'wpff_sp_urls_tab_cache' );
 
 // Delete log file
 if ( file_exists( $wpff_sp_log_file ) ) {

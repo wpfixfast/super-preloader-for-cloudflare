@@ -273,6 +273,23 @@ $wpff_sp_current  = new DateTime( 'now', $wpff_sp_timezone );
 
 		<tr>
 		<th>
+			<label for="wpff_sp_admin_bar_shortcut"><?php echo esc_html( __( 'Admin Bar Shortcut', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<input
+			type="checkbox"
+			name="wpff_sp_admin_bar_shortcut"
+			id="wpff_sp_admin_bar_shortcut"
+			value="1"
+			<?php checked( get_option( 'wpff_sp_admin_bar_shortcut' ), '1' ); ?>
+			/>
+			<label for="wpff_sp_admin_bar_shortcut"><?php echo esc_html( __( 'Show a "Start Preload" shortcut in the admin bar.', 'super-preloader-for-cloudflare' ) ); ?></label>
+			<p class="long-description"><?php echo esc_html( __( 'Lets you trigger a manual preload directly from the admin bar.', 'super-preloader-for-cloudflare' ) ); ?></p>
+		</td>
+		</tr>
+
+		<tr>
+		<th>
 			<label for="wpff_sp_delete_data_on_uninstall"><?php echo esc_html( __( 'Delete Data on Uninstall', 'super-preloader-for-cloudflare' ) ); ?></label>
 		</th>
 		<td>

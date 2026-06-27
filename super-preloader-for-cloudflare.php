@@ -2,7 +2,7 @@
 /*
 Plugin Name: Super Preloader for Cloudflare
 Plugin URI: https://wpfixfast.com
-Version: 1.0.8
+Version: 1.1.0
 Description: Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker.
 Author: WP Fix Fast
 Author URI: https://wpfixfast.com/
@@ -73,12 +73,23 @@ add_filter(
 // Custom cron intervals
 add_filter( 'cron_schedules', array( 'WPFF_SP_Cron', 'add_custom_intervals' ) );
 
+// Remove URLs matching a saved exclusion keyword before the preload queue is built.
+add_filter( 'wpff_sp_preload_urls', array( 'WPFF_SP_Helpers', 'filter_excluded_urls' ) );
+
+// Persist the URLs tab's "items per page" Screen Option.
+add_filter( 'set_screen_option_wpff_sp_urls_per_page', array( 'WPFF_SP_Admin_UI', 'save_screen_options' ), 10, 3 );
+
 // ============================================================
 // Actions — Admin
 // ============================================================
 
 add_action( 'admin_menu', array( 'WPFF_SP_Admin_UI', 'register_menu' ) );
 add_action( 'admin_enqueue_scripts', array( 'WPFF_SP_Admin_UI', 'enqueue_assets' ) );
+
+// Admin bar "Start Preload" shortcut (optional, admin and front end)
+add_action( 'admin_bar_menu', array( 'WPFF_SP_Admin_UI', 'add_admin_bar_shortcut' ), 100 );
+add_action( 'admin_enqueue_scripts', array( 'WPFF_SP_Admin_UI', 'enqueue_admin_bar_assets' ) );
+add_action( 'wp_enqueue_scripts', array( 'WPFF_SP_Admin_UI', 'enqueue_admin_bar_assets' ) );
 
 // ============================================================
 // Actions — AJAX

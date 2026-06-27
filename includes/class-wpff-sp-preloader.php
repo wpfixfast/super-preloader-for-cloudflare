@@ -6,6 +6,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WPFF_SP_Preloader {
 
 	/**
+	 * Get the number of items remaining in the current preload run.
+	 * Derived from the existing cursor and queue transients — no separate
+	 * counter is maintained.
+	 *
+	 * @return int|null Remaining item count, or null if no run is in progress.
+	 */
+	public static function get_remaining_count() {
+		$cursor = get_transient( 'wpff_sp_preload_cursor' );
+		$queue  = get_transient( 'wpff_sp_preload_urls' );
+
+		if ( ! is_array( $cursor ) || ! is_array( $queue ) ) {
+			return null;
+		}
+
+		return max( 0, count( $queue ) - (int) $cursor['index'] );
+	}
+
+	/**
 	 * Check if the preloader has been asked to stop.
 	 * Clears all related transients and logs if a stop flag is found.
 	 *
@@ -132,34 +150,16 @@ class WPFF_SP_Preloader {
 			}
 		}
 
-		$sitemap_xml = wp_remote_get( $sitemap, array( 'timeout' => 30 ) );
-		if ( is_wp_error( $sitemap_xml ) ) {
-			WPFF_SP_Helpers::log(
-				esc_html__( 'Failed to download sitemap: ', 'super-preloader-for-cloudflare' ) .
-				esc_html( $sitemap_xml->get_error_message() )
-			);
-			return;
-		}
-
 		$queue = get_transient( 'wpff_sp_preload_urls' );
 		if ( ! is_array( $queue ) ) {
-			$urls   = array();
-			$parsed = simplexml_load_string( wp_remote_retrieve_body( $sitemap_xml ) );
-			if ( isset( $parsed->url ) ) {
-				foreach ( $parsed->url as $entry ) {
-					$urls[] = (string) $entry->loc;
-				}
-			} elseif ( isset( $parsed->sitemap ) ) {
-				foreach ( $parsed->sitemap as $entry ) {
-					$loc   = (string) $entry->loc;
-					$child = wp_remote_get( $loc, array( 'timeout' => 30 ) );
-					if ( ! is_wp_error( $child ) ) {
-						$sub = simplexml_load_string( wp_remote_retrieve_body( $child ) );
-						foreach ( $sub->url as $e ) {
-							$urls[] = (string) $e->loc;
-						}
-					}
-				}
+			$urls = WPFF_SP_Helpers::get_sitemap_urls( $sitemap );
+
+			if ( is_wp_error( $urls ) ) {
+				WPFF_SP_Helpers::log(
+					esc_html__( 'Failed to download sitemap: ', 'super-preloader-for-cloudflare' ) .
+					esc_html( $urls->get_error_message() )
+				);
+				return;
 			}
 
 			/**

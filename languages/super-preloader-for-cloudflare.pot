@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Preloader for Cloudflare 1.0.8\n"
+"Project-Id-Version: Super Preloader for Cloudflare 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-preloader-for-cloudflare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-12T16:39:49+00:00\n"
+"POT-Creation-Date: 2026-06-27T14:35:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: super-preloader-for-cloudflare.php
 #: includes/class-wpff-sp-admin-ui.php:13
-#: includes/class-wpff-sp-admin-ui.php:47
+#: includes/class-wpff-sp-admin-ui.php:129
 msgid "Super Preloader for Cloudflare"
 msgstr ""
 
@@ -45,51 +45,102 @@ msgstr ""
 msgid "Super Preloader"
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:103
-msgid "Preloader running... Please wait for the first batch to complete."
-msgstr ""
-
-#: includes/class-wpff-sp-admin-ui.php:104
-msgid "All URLs have been processed."
+#: includes/class-wpff-sp-admin-ui.php:49
+msgid "URLs per page"
 msgstr ""
 
 #. translators: %d is the number of items remaining in the preload queue.
-#: includes/class-wpff-sp-admin-ui.php:106
+#: includes/class-wpff-sp-admin-ui.php:176
+#: includes/class-wpff-sp-admin-ui.php:244
+msgid "Running... (%d remaining)"
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:180
+#: includes/class-wpff-sp-admin-ui.php:236
+msgid "Start Preload"
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:184
+#: includes/partials/start-preloader.php:16
+msgid "Start Manual Preload"
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:237
+msgid "Preloader started..."
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:238
+msgid "Preloader is already running..."
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:239
+#: includes/class-wpff-sp-admin-ui.php:284
+msgid "Preload Complete"
+msgstr ""
+
+#. translators: %d is the number of items remaining in the preload queue.
+#: includes/class-wpff-sp-admin-ui.php:241
+#: includes/class-wpff-sp-admin-ui.php:286
 msgid "%d items remaining. Background process will continue."
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:107
+#: includes/class-wpff-sp-admin-ui.php:242
+msgid "Running..."
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:245
+#: includes/class-wpff-sp-admin-ui.php:287
 msgid "Error: "
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:108
+#: includes/class-wpff-sp-admin-ui.php:246
+#: includes/class-wpff-sp-admin-ui.php:288
 msgid "AJAX request failed."
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:109
+#: includes/class-wpff-sp-admin-ui.php:247
+#: includes/class-wpff-sp-admin-ui.php:289
 msgid "Unknown error."
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:110
-#: includes/partials/sidebar.php:68
+#: includes/class-wpff-sp-admin-ui.php:283
+msgid "Preloader running... Please wait for the first batch to complete."
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:290
+#: includes/partials/sidebar.php:69
 msgid "Running"
 msgstr ""
 
-#: includes/class-wpff-sp-admin-ui.php:111
-#: includes/partials/sidebar.php:70
+#: includes/class-wpff-sp-admin-ui.php:291
+#: includes/partials/sidebar.php:71
 msgid "Idle"
 msgstr ""
 
+#. translators: %d is the number of items remaining in the preload queue.
+#: includes/class-wpff-sp-admin-ui.php:293
+#: includes/partials/sidebar.php:79
+msgid "(%d remaining)"
+msgstr ""
+
+#: includes/class-wpff-sp-admin-ui.php:294
+msgid "Loading URLs…"
+msgstr ""
+
 #: includes/class-wpff-sp-ajax.php:14
-#: includes/class-wpff-sp-ajax.php:61
+#: includes/class-wpff-sp-ajax.php:69
 msgid "Unauthorized"
 msgstr ""
 
-#: includes/class-wpff-sp-ajax.php:30
+#: includes/class-wpff-sp-ajax.php:36
+msgid "Preloader is already running."
+msgstr ""
+
+#: includes/class-wpff-sp-ajax.php:37
 msgid "First batch completed."
 msgstr ""
 
-#: includes/class-wpff-sp-ajax.php:49
+#: includes/class-wpff-sp-ajax.php:57
 #: includes/partials/logs-viewer.php:24
 msgid "No log file found."
 msgstr ""
@@ -136,7 +187,7 @@ msgstr[1] ""
 
 #. translators: %d: Number of minutes
 #: includes/class-wpff-sp-cron.php:142
-#: includes/class-wpff-sp-preloader.php:88
+#: includes/class-wpff-sp-preloader.php:106
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
@@ -157,54 +208,62 @@ msgstr ""
 msgid "In %1$s (%2$s)"
 msgstr ""
 
-#: includes/class-wpff-sp-helpers.php:86
-#: includes/partials/navigation-tabs.php:14
+#: includes/class-wpff-sp-helpers.php:208
+#: includes/partials/navigation-tabs.php:15
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wpff-sp-post-handlers.php:102
+#: includes/class-wpff-sp-post-handlers.php:108
 msgid "Settings updated."
 msgstr ""
 
-#: includes/class-wpff-sp-post-handlers.php:112
+#: includes/class-wpff-sp-post-handlers.php:118
 msgid "Settings saved."
 msgstr ""
 
-#: includes/class-wpff-sp-post-handlers.php:134
+#: includes/class-wpff-sp-post-handlers.php:140
 msgid "Reset Stats: Stats and logs cleared."
 msgstr ""
 
-#: includes/class-wpff-sp-post-handlers.php:142
+#: includes/class-wpff-sp-post-handlers.php:148
 msgid "Stats and logs cleared."
 msgstr ""
 
-#: includes/class-wpff-sp-post-handlers.php:161
+#: includes/class-wpff-sp-post-handlers.php:167
 msgid "Stop signal sent. Preloader will stop after the current batch."
 msgstr ""
 
-#: includes/class-wpff-sp-preloader.php:19
+#: includes/class-wpff-sp-post-handlers.php:187
+msgid "URL exclusion keywords updated."
+msgstr ""
+
+#: includes/class-wpff-sp-post-handlers.php:189
+msgid "Exclusions saved."
+msgstr ""
+
+#: includes/class-wpff-sp-preloader.php:37
 msgid "Preloader stopped by user."
 msgstr ""
 
 #. translators: %d: Number of minutes
-#: includes/class-wpff-sp-preloader.php:91
+#: includes/class-wpff-sp-preloader.php:109
 msgid "%d minutes"
 msgstr ""
 
-#: includes/class-wpff-sp-preloader.php:104
+#: includes/class-wpff-sp-preloader.php:122
 msgid "Preloader already running, skipping this cron event."
 msgstr ""
 
-#: includes/class-wpff-sp-preloader.php:117
+#: includes/class-wpff-sp-preloader.php:135
 msgid "Missing required settings: worker or sitemap."
 msgstr ""
 
 #. translators: %s is the error message from the proxy list request.
-#: includes/class-wpff-sp-preloader.php:129
+#: includes/class-wpff-sp-preloader.php:147
 msgid "Failed to download proxy list: %s"
 msgstr ""
 
-#: includes/class-wpff-sp-preloader.php:138
+#: includes/class-wpff-sp-preloader.php:159
 msgid "Failed to download sitemap: "
 msgstr ""
 
@@ -254,19 +313,58 @@ msgstr ""
 msgid "Scheduled next batch at index %d"
 msgstr ""
 
+#: includes/class-wpff-sp-urls-list-table.php:40
+#: includes/partials/stats-table.php:207
+msgid "URL"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:41
+#: includes/partials/sidebar.php:64
+msgid "Status"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:81
+msgid "Exclude Selected"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:84
+msgid "Include Selected"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:121
+msgid "Included"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:125
+msgid "Excluded"
+msgstr ""
+
+#. translators: %s is the matched exclusion keyword.
+#: includes/class-wpff-sp-urls-list-table.php:131
+msgid "Excluded by keyword: %s"
+msgstr ""
+
+#: includes/class-wpff-sp-urls-list-table.php:152
+msgid "No URLs found."
+msgstr ""
+
 #: includes/partials/logs-viewer.php:17
 msgid "Auto-refresh logs"
 msgstr ""
 
-#: includes/partials/navigation-tabs.php:17
+#: includes/partials/navigation-tabs.php:18
+msgid "Exclusions"
+msgstr ""
+
+#: includes/partials/navigation-tabs.php:21
 msgid "Stats"
 msgstr ""
 
-#: includes/partials/navigation-tabs.php:20
+#: includes/partials/navigation-tabs.php:24
 msgid "Logs"
 msgstr ""
 
-#: includes/partials/navigation-tabs.php:23
+#: includes/partials/navigation-tabs.php:27
 msgid "How to Use"
 msgstr ""
 
@@ -393,14 +491,26 @@ msgid "Switching modes will clear existing stats."
 msgstr ""
 
 #: includes/partials/settings-form.php:276
-msgid "Delete Data on Uninstall"
+msgid "Admin Bar Shortcut"
 msgstr ""
 
 #: includes/partials/settings-form.php:286
+msgid "Show a \"Start Preload\" shortcut in the admin bar."
+msgstr ""
+
+#: includes/partials/settings-form.php:287
+msgid "Lets you trigger a manual preload directly from the admin bar."
+msgstr ""
+
+#: includes/partials/settings-form.php:293
+msgid "Delete Data on Uninstall"
+msgstr ""
+
+#: includes/partials/settings-form.php:303
 msgid "Remove all plugin data and logs when the plugin is deleted."
 msgstr ""
 
-#: includes/partials/settings-form.php:296
+#: includes/partials/settings-form.php:313
 msgid "Save Settings"
 msgstr ""
 
@@ -470,11 +580,31 @@ msgid "Usage notes and key considerations"
 msgstr ""
 
 #: includes/partials/setup-guide.php:83
-msgid "What's New in 1.0.8"
+msgid "What's New in 1.1.0"
 msgstr ""
 
 #: includes/partials/setup-guide.php:85
-msgid "Updated: Screenshots, how to use guide, and donate plugin link."
+msgid "Added: New \"Exclusions\" tab that allows manual and keyword-based URL exclusions."
+msgstr ""
+
+#: includes/partials/setup-guide.php:86
+msgid "Added: Optional \"Start Preload\" shortcut in the WordPress admin bar to trigger a manual preload from any page."
+msgstr ""
+
+#: includes/partials/setup-guide.php:87
+msgid "Added: Auto-dismissing toast notifications confirm when the preload starts and completes."
+msgstr ""
+
+#: includes/partials/setup-guide.php:88
+msgid "Added: Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress."
+msgstr ""
+
+#: includes/partials/setup-guide.php:89
+msgid "Improved: Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron."
+msgstr ""
+
+#: includes/partials/setup-guide.php:90
+msgid "Tested: Compatibility with WordPress 7.0."
 msgstr ""
 
 #: includes/partials/sidebar.php:9
@@ -485,50 +615,42 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
-#: includes/partials/sidebar.php:49
+#: includes/partials/sidebar.php:50
 msgid "Mode"
 msgstr ""
 
-#: includes/partials/sidebar.php:56
+#: includes/partials/sidebar.php:57
 msgid "As every URL will hit each proxy, run times may be significantly longer in this mode."
 msgstr ""
 
-#: includes/partials/sidebar.php:63
-msgid "Status"
-msgstr ""
-
-#: includes/partials/sidebar.php:79
+#: includes/partials/sidebar.php:93
 msgid "Last Run"
 msgstr ""
 
-#: includes/partials/sidebar.php:85
+#: includes/partials/sidebar.php:99
 msgid "Started"
 msgstr ""
 
-#: includes/partials/sidebar.php:91
+#: includes/partials/sidebar.php:105
 msgid "Completed"
 msgstr ""
 
-#: includes/partials/sidebar.php:97
+#: includes/partials/sidebar.php:111
 msgid "Duration"
 msgstr ""
 
-#: includes/partials/sidebar.php:109
+#: includes/partials/sidebar.php:123
 #: includes/partials/stats-table.php:32
 msgid "URLs"
 msgstr ""
 
-#: includes/partials/sidebar.php:121
+#: includes/partials/sidebar.php:135
 #: includes/partials/stats-table.php:38
 msgid "Proxies"
 msgstr ""
 
-#: includes/partials/sidebar.php:125
+#: includes/partials/sidebar.php:139
 msgid "None"
-msgstr ""
-
-#: includes/partials/start-preloader.php:16
-msgid "Start Manual Preload"
 msgstr ""
 
 #: includes/partials/start-preloader.php:24
@@ -606,11 +728,41 @@ msgstr ""
 msgid "Performance data from the most recent preloader run"
 msgstr ""
 
-#: includes/partials/stats-table.php:207
-msgid "URL"
-msgstr ""
-
 #. translators: %d is the run number in the preload stats table header.
 #: includes/partials/stats-table.php:212
 msgid "Run #%d"
+msgstr ""
+
+#. translators: %s is the sitemap fetch error message.
+#: includes/partials/urls-list.php:14
+msgid "Could not refresh the URL list: %s"
+msgstr ""
+
+#: includes/partials/urls-list.php:36
+msgid "Exclude URLs by Keyword"
+msgstr ""
+
+#: includes/partials/urls-list.php:39
+msgid "One keyword per line. Any URL containing a keyword (case-insensitive) is skipped during preloading. Useful for excluding dynamically generated pages such as cart or checkout."
+msgstr ""
+
+#: includes/partials/urls-list.php:49
+msgid "e.g. cart"
+msgstr ""
+
+#: includes/partials/urls-list.php:56
+msgid "Save Keyword Exclusions"
+msgstr ""
+
+#. translators: 1: number of URLs that will be preloaded, 2: total number of URLs found in the sitemap.
+#: includes/partials/urls-list.php:66
+msgid "%1$d of %2$d URLs will be preloaded."
+msgstr ""
+
+#: includes/partials/urls-list.php:78
+msgid "Manual URL Exclusions"
+msgstr ""
+
+#: includes/partials/urls-list.php:79
+msgid "Search URLs"
 msgstr ""

@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $wpff_sp_settings_class = 'settings' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
+$wpff_sp_urls_class     = 'exclusions' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_stats_class    = 'stats' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_logs_class     = 'logs' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_howto_class    = 'howto' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
@@ -12,6 +13,9 @@ $wpff_sp_howto_class    = 'howto' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab
 <h2 class="nav-tab-wrapper">
 	<a href="?page=super-preloader-for-cloudflare&tab=settings" class="<?php echo esc_attr( $wpff_sp_settings_class ); ?>">
 	<?php echo esc_html( __( 'Settings', 'super-preloader-for-cloudflare' ) ); ?>
+	</a>
+	<a href="?page=super-preloader-for-cloudflare&tab=exclusions" class="<?php echo esc_attr( $wpff_sp_urls_class ); ?>">
+	<?php echo esc_html( __( 'Exclusions', 'super-preloader-for-cloudflare' ) ); ?>
 	</a>
 	<a href="?page=super-preloader-for-cloudflare&tab=stats" class="<?php echo esc_attr( $wpff_sp_stats_class ); ?>">
 	<?php echo esc_html( __( 'Stats', 'super-preloader-for-cloudflare' ) ); ?>
