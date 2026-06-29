@@ -114,8 +114,9 @@ class WPFF_SP_Urls_List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		$keywords = WPFF_SP_Helpers::get_all_exclusion_terms();
-		$matched  = WPFF_SP_Helpers::get_matched_exclusion_keyword( $item, $keywords );
+		$excluded_urls = WPFF_SP_Helpers::get_excluded_urls();
+		$keywords      = WPFF_SP_Helpers::get_exclusion_keywords();
+		$matched       = WPFF_SP_Helpers::get_matched_exclusion_keyword( $item, $excluded_urls, $keywords );
 
 		if ( null === $matched ) {
 			return '<span class="wpff-sp-status-badge wpff-sp-status-running">' . esc_html__( 'Included', 'super-preloader-for-cloudflare' ) . '</span>';
@@ -274,14 +275,15 @@ class WPFF_SP_Urls_List_Table extends WP_List_Table {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only sort direction, not a state-changing action.
 		$order = isset( $_REQUEST['order'] ) && 'desc' === strtolower( sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) ) ? 'desc' : 'asc';
 
-		$keywords = WPFF_SP_Helpers::get_all_exclusion_terms();
+		$excluded_urls = WPFF_SP_Helpers::get_excluded_urls();
+		$keywords      = WPFF_SP_Helpers::get_exclusion_keywords();
 
 		usort(
 			$urls,
-			function ( $a, $b ) use ( $orderby, $keywords ) {
+			function ( $a, $b ) use ( $orderby, $excluded_urls, $keywords ) {
 				if ( 'status' === $orderby ) {
-					$a_val = null === WPFF_SP_Helpers::get_matched_exclusion_keyword( $a, $keywords ) ? 0 : 1;
-					$b_val = null === WPFF_SP_Helpers::get_matched_exclusion_keyword( $b, $keywords ) ? 0 : 1;
+					$a_val = null === WPFF_SP_Helpers::get_matched_exclusion_keyword( $a, $excluded_urls, $keywords ) ? 0 : 1;
+					$b_val = null === WPFF_SP_Helpers::get_matched_exclusion_keyword( $b, $excluded_urls, $keywords ) ? 0 : 1;
 					return $a_val <=> $b_val;
 				}
 				return strcasecmp( $a, $b );

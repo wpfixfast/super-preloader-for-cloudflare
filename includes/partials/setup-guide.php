@@ -80,6 +80,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</a>
 		</li>   
 	</ul>
+	<h2><?php echo esc_html( __( "What's New in 1.1.1", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<ul class="ul-disc">
+		<li><?php echo esc_html__( 'Fixed: Manually excluded URLs on the Exclusions tab were matched as substrings, causing similar URLs to be excluded unintentionally; manual exclusions now require an exact URL match.', 'super-preloader-for-cloudflare' ); ?></li>
+	</ul>
 	<h2><?php echo esc_html( __( "What's New in 1.1.0", 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
 		<li><?php echo esc_html__( 'Added: New "Exclusions" tab that allows manual and keyword-based URL exclusions.', 'super-preloader-for-cloudflare' ); ?></li>

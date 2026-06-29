@@ -137,26 +137,25 @@ class WPFF_SP_Helpers {
 	}
 
 	/**
-	 * Get the combined list of exclusion terms — typed keywords plus exact
-	 * checkbox-excluded URLs — used wherever URLs are actually matched.
+	 * Find which exclusion term (if any) matches a given URL. Checkbox-excluded
+	 * URLs only match the URL itself (exact match); typed keywords match as
+	 * substrings anywhere in the URL.
 	 *
-	 * @return array
-	 */
-	public static function get_all_exclusion_terms() {
-		return array_merge( self::get_exclusion_keywords(), self::get_excluded_urls() );
-	}
-
-	/**
-	 * Find which exclusion term (if any) matches a given URL.
-	 *
-	 * @param string $url   The URL to check.
-	 * @param array  $terms Exclusion terms from get_all_exclusion_terms().
+	 * @param string $url           The URL to check.
+	 * @param array  $excluded_urls Exact-match URLs from get_excluded_urls().
+	 * @param array  $keywords      Substring keywords from get_exclusion_keywords().
 	 * @return string|null The matched term, or null if the URL is not excluded.
 	 */
-	public static function get_matched_exclusion_keyword( $url, $terms ) {
-		foreach ( $terms as $term ) {
-			if ( false !== stripos( $url, $term ) ) {
-				return $term;
+	public static function get_matched_exclusion_keyword( $url, $excluded_urls, $keywords ) {
+		foreach ( $excluded_urls as $excluded_url ) {
+			if ( 0 === strcasecmp( untrailingslashit( $url ), untrailingslashit( $excluded_url ) ) ) {
+				return $excluded_url;
+			}
+		}
+
+		foreach ( $keywords as $keyword ) {
+			if ( false !== stripos( $url, $keyword ) ) {
+				return $keyword;
 			}
 		}
 
@@ -171,17 +170,18 @@ class WPFF_SP_Helpers {
 	 * @return array Filtered array with excluded URLs removed.
 	 */
 	public static function filter_excluded_urls( $urls ) {
-		$keywords = self::get_all_exclusion_terms();
+		$excluded_urls = self::get_excluded_urls();
+		$keywords      = self::get_exclusion_keywords();
 
-		if ( empty( $keywords ) ) {
+		if ( empty( $excluded_urls ) && empty( $keywords ) ) {
 			return $urls;
 		}
 
 		return array_values(
 			array_filter(
 				$urls,
-				function ( $url ) use ( $keywords ) {
-					return null === self::get_matched_exclusion_keyword( $url, $keywords );
+				function ( $url ) use ( $excluded_urls, $keywords ) {
+					return null === self::get_matched_exclusion_keyword( $url, $excluded_urls, $keywords );
 				}
 			)
 		);

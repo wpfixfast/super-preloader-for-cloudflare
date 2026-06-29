@@ -2,7 +2,7 @@
 /*
 Plugin Name: Super Preloader for Cloudflare
 Plugin URI: https://wpfixfast.com
-Version: 1.1.0
+Version: 1.1.1
 Description: Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker.
 Author: WP Fix Fast
 Author URI: https://wpfixfast.com/

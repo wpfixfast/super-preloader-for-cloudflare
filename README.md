@@ -100,6 +100,10 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.1.1 - 29.06.2026
+
+- **Fixed:** Manually excluded URLs on the Exclusions tab were matched as substrings, causing similar URLs to be excluded unintentionally; manual exclusions now require an exact URL match
+
 ### 1.1.0 - 27.06.2026
 
 - **Added:** New "Exclusions" tab that allows manual and keyword-based URL exclusions

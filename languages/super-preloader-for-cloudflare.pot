@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Super Preloader for Cloudflare 1.1.0\n"
+"Project-Id-Version: Super Preloader for Cloudflare 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/super-preloader-for-cloudflare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-27T14:35:00+00:00\n"
+"POT-Creation-Date: 2026-06-29T07:34:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: super-preloader-for-cloudflare\n"
@@ -331,20 +331,20 @@ msgstr ""
 msgid "Include Selected"
 msgstr ""
 
-#: includes/class-wpff-sp-urls-list-table.php:121
+#: includes/class-wpff-sp-urls-list-table.php:122
 msgid "Included"
 msgstr ""
 
-#: includes/class-wpff-sp-urls-list-table.php:125
+#: includes/class-wpff-sp-urls-list-table.php:126
 msgid "Excluded"
 msgstr ""
 
 #. translators: %s is the matched exclusion keyword.
-#: includes/class-wpff-sp-urls-list-table.php:131
+#: includes/class-wpff-sp-urls-list-table.php:132
 msgid "Excluded by keyword: %s"
 msgstr ""
 
-#: includes/class-wpff-sp-urls-list-table.php:152
+#: includes/class-wpff-sp-urls-list-table.php:153
 msgid "No URLs found."
 msgstr ""
 
@@ -580,30 +580,38 @@ msgid "Usage notes and key considerations"
 msgstr ""
 
 #: includes/partials/setup-guide.php:83
-msgid "What's New in 1.1.0"
+msgid "What's New in 1.1.1"
 msgstr ""
 
 #: includes/partials/setup-guide.php:85
-msgid "Added: New \"Exclusions\" tab that allows manual and keyword-based URL exclusions."
-msgstr ""
-
-#: includes/partials/setup-guide.php:86
-msgid "Added: Optional \"Start Preload\" shortcut in the WordPress admin bar to trigger a manual preload from any page."
+msgid "Fixed: Manually excluded URLs on the Exclusions tab were matched as substrings, causing similar URLs to be excluded unintentionally; manual exclusions now require an exact URL match."
 msgstr ""
 
 #: includes/partials/setup-guide.php:87
-msgid "Added: Auto-dismissing toast notifications confirm when the preload starts and completes."
-msgstr ""
-
-#: includes/partials/setup-guide.php:88
-msgid "Added: Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress."
+msgid "What's New in 1.1.0"
 msgstr ""
 
 #: includes/partials/setup-guide.php:89
-msgid "Improved: Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron."
+msgid "Added: New \"Exclusions\" tab that allows manual and keyword-based URL exclusions."
 msgstr ""
 
 #: includes/partials/setup-guide.php:90
+msgid "Added: Optional \"Start Preload\" shortcut in the WordPress admin bar to trigger a manual preload from any page."
+msgstr ""
+
+#: includes/partials/setup-guide.php:91
+msgid "Added: Auto-dismissing toast notifications confirm when the preload starts and completes."
+msgstr ""
+
+#: includes/partials/setup-guide.php:92
+msgid "Added: Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress."
+msgstr ""
+
+#: includes/partials/setup-guide.php:93
+msgid "Improved: Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron."
+msgstr ""
+
+#: includes/partials/setup-guide.php:94
 msgid "Tested: Compatibility with WordPress 7.0."
 msgstr ""
 
