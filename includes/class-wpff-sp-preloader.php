@@ -56,6 +56,30 @@ class WPFF_SP_Preloader {
 	}
 
 	/**
+	 * Fetch a proxy list URL, count the proxies in it, and store the result
+	 * in the wpff_sp_proxy_count option so the dashboard can display it
+	 * without re-fetching the list on every page load.
+	 *
+	 * @param string $proxy_url Proxy list URL. Empty clears the count.
+	 * @return int Number of proxies found.
+	 */
+	public static function refresh_proxy_count( $proxy_url ) {
+		$count = 0;
+
+		if ( ! empty( $proxy_url ) ) {
+			$response = wp_remote_get( $proxy_url );
+
+			if ( ! is_wp_error( $response ) ) {
+				$count = count( self::parse_proxies( wp_remote_retrieve_body( $response ) ) );
+			}
+		}
+
+		update_option( 'wpff_sp_proxy_count', $count, false );
+
+		return $count;
+	}
+
+	/**
 	 * Build the preload queue depending on the active mode.
 	 *
 	 * Normal mode: returns a flat array of URLs. A random proxy is picked
@@ -99,7 +123,7 @@ class WPFF_SP_Preloader {
 	 * @return string e.g. "4 minutes 32 seconds" or "45 seconds".
 	 */
 	private static function format_duration( $seconds ) {
-		$minutes = round( $seconds / 60 );
+		$minutes = (int) round( $seconds / 60 );
 
 		if ( 1 === $minutes ) {
 			/* translators: %d: Number of minutes */
@@ -172,6 +196,7 @@ class WPFF_SP_Preloader {
 
 			shuffle( $urls );
 			update_option( 'wpff_sp_sitemap_url_count', count( $urls ), false );
+			update_option( 'wpff_sp_proxy_count', count( $proxies ), false );
 
 			$queue = self::build_queue( $urls, $proxies, $full_proxy_pass );
 			set_transient( 'wpff_sp_preload_urls', $queue, 24 * HOUR_IN_SECONDS );

@@ -36,9 +36,15 @@ $wpff_sp_included_urls = WPFF_SP_Helpers::filter_excluded_urls( $wpff_sp_all_url
 	<h3><?php echo esc_html( __( 'Exclude URLs by Keyword', 'super-preloader-for-cloudflare' ) ); ?></h3>
 	<p class="long-description">
 		<?php
-		echo esc_html__(
-			'One keyword per line. Any URL containing a keyword (case-insensitive) is skipped during preloading. Useful for excluding dynamically generated pages such as cart or checkout.',
-			'super-preloader-for-cloudflare'
+		echo wp_kses_post(
+			sprintf(
+			// translators: %1$s is a line break, used twice.
+				__(
+					'One keyword per line.%1$sAny URL matching a path (case-insensitive), such as /wishlist, is skipped during preloading.%1$sUseful for saving time by avoiding pages that don\'t need to be cached.',
+					'super-preloader-for-cloudflare'
+				),
+				'<br>'
+			)
 		);
 		?>
 	</p>
@@ -46,7 +52,7 @@ $wpff_sp_included_urls = WPFF_SP_Helpers::filter_excluded_urls( $wpff_sp_all_url
 		name="excluded_keywords"
 		rows="6"
 		class="large-text code"
-		placeholder="<?php echo esc_attr( __( 'e.g. cart', 'super-preloader-for-cloudflare' ) ); ?>"
+		placeholder="<?php echo esc_attr( __( "/wishlist\n/my-page\n/my-main-page/my-sub-page", 'super-preloader-for-cloudflare' ) ); ?>"
 	><?php echo esc_textarea( implode( "\n", $wpff_sp_url_keywords ) ); ?></textarea>
 
 	<p>

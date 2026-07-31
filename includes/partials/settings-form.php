@@ -25,12 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="long-description">
 			<?php
 			echo sprintf(
-			// translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag.
+			// translators: %1$s is the opening anchor tag for Download, %2$s is the closing anchor tag, %3$s is the opening anchor tag for How to Use, %4$s is the closing anchor tag.
 				esc_html__(
-					'%1$sDownload%2$s and deploy this Cloudflare Worker code to create your Worker URL. More details and detailed guide at our How to Use section below.',
+					'%1$sDownload%2$s and deploy this Cloudflare Worker code to create your Worker URL. More details and detailed guide at our %3$sHow to Use%4$s section.',
 					'super-preloader-for-cloudflare'
 				),
 				'<a href="https://gist.github.com/wpfixfast/1d8dc70931f9db5cbda4735227dbe065" target="_blank" rel="noopener">',
+				'</a>',
+				'<a href="?page=super-preloader-for-cloudflare&tab=howto">',
 				'</a>'
 			);
 			?>
@@ -51,7 +53,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 			class="long-url-field"
 			/>
 			<p class="long-description">
-			<?php echo esc_html( __( 'Optional. If not set, requests will go directly from your server and only warm cache at its nearest Cloudflare edge location.', 'super-preloader-for-cloudflare' ) ); ?>
+			<?php
+			echo sprintf(
+			// translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag.
+				esc_html__(
+					'Optional. If not set, requests will go directly from your server and only warm cache at its nearest Cloudflare edge location. Sign up for %1$sWebShare%2$s to get 10 free rotating proxies for wider Cloudflare edge coverage.',
+					'super-preloader-for-cloudflare'
+				),
+				'<a href="https://www.webshare.io/?referral_code=vgg79pzfd876" target="_blank" rel="noopener">',
+				'</a>'
+			);
+			?>
 			</p>
 		</td>
 		</tr>

@@ -24,10 +24,9 @@ class WPFF_SP_Post_Handlers {
 			}
 
 			if ( isset( $_POST['proxy_list_url'] ) ) {
-				update_option(
-					'wpff_sp_proxy_list_url',
-					esc_url_raw( wp_unslash( $_POST['proxy_list_url'] ) )
-				);
+				$wpff_sp_proxy_list_url = esc_url_raw( wp_unslash( $_POST['proxy_list_url'] ) );
+				update_option( 'wpff_sp_proxy_list_url', $wpff_sp_proxy_list_url );
+				WPFF_SP_Preloader::refresh_proxy_count( $wpff_sp_proxy_list_url );
 			}
 
 			if ( isset( $_POST['sitemap_url'] ) ) {

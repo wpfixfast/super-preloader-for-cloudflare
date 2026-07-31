@@ -100,6 +100,12 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.1.2 - 31.07.2026
+
+- **Fixed:** Proxy count in the sidebar could get stuck showing "None" after saving a new proxy list URL because of a stale 24-hour cache; the count now updates immediately when the URL is saved and after each preload run
+- **Fixed:** Last run duration always showed "minutes" (plural) even for a single minute, e.g. "1 minutes"
+- **Improved:** Minor wording and clarity improvements to Settings and Exclusions tab descriptions
+
 ### 1.1.1 - 29.06.2026
 
 - **Fixed:** Manually excluded URLs on the Exclusions tab were matched as substrings, causing similar URLs to be excluded unintentionally; manual exclusions now require an exact URL match

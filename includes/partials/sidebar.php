@@ -19,27 +19,8 @@ $wpff_sp_sidebar_last_run = get_option( 'wpff_sp_last_run_meta', array() );
 // URL count
 $wpff_sp_sidebar_url_count = get_option( 'wpff_sp_sitemap_url_count', null );
 
-// Proxy count — cached for 24 hours to avoid fetching on every page load
-$wpff_sp_sidebar_proxy_count = get_transient( 'wpff_sp_proxy_count_cache' );
-if ( false === $wpff_sp_sidebar_proxy_count ) {
-	$wpff_sp_sidebar_proxy_url = get_option( 'wpff_sp_proxy_list_url' );
-	if ( ! empty( $wpff_sp_sidebar_proxy_url ) ) {
-		$wpff_sp_sidebar_proxy_response = wp_remote_get( $wpff_sp_sidebar_proxy_url );
-		if ( ! is_wp_error( $wpff_sp_sidebar_proxy_response ) ) {
-			$wpff_sp_sidebar_proxy_lines = array_values(
-				array_filter(
-					array_map( 'trim', preg_split( '/\r?\n/', wp_remote_retrieve_body( $wpff_sp_sidebar_proxy_response ) ) )
-				)
-			);
-			$wpff_sp_sidebar_proxy_count = count( $wpff_sp_sidebar_proxy_lines );
-		} else {
-			$wpff_sp_sidebar_proxy_count = 0;
-		}
-	} else {
-		$wpff_sp_sidebar_proxy_count = 0;
-	}
-	set_transient( 'wpff_sp_proxy_count_cache', $wpff_sp_sidebar_proxy_count, 24 * HOUR_IN_SECONDS );
-}
+// Proxy count — refreshed when the proxy list URL is saved and after each run
+$wpff_sp_sidebar_proxy_count = (int) get_option( 'wpff_sp_proxy_count', 0 );
 ?>
 
 <div class="wpff-sp-sidebar">

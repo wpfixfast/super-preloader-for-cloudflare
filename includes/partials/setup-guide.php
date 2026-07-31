@@ -52,6 +52,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<li><a href="https://wordpress.org/plugins/search/seo/" target="_blank" rel="noopener"><?php echo esc_html( __( 'Create your sitemap using Yoast, RankMath, or similar SEO plugin', 'super-preloader-for-cloudflare' ) ); ?></a></li>
 		<li><?php echo esc_html( __( 'Start Preloading', 'super-preloader-for-cloudflare' ) ); ?></li>
 	</ol>
+	<p class="description">
+		<?php echo esc_html( __( 'Note: The WebShare link on the Settings tab includes our referral code, which supports our plugin development at no extra cost to you.', 'super-preloader-for-cloudflare' ) ); ?>
+	</p>
 	<h2><?php echo esc_html( __( 'FAQs', 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
 		<li>
@@ -79,6 +82,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php echo esc_html( __( 'Usage notes and key considerations', 'super-preloader-for-cloudflare' ) ); ?>
 		</a>
 		</li>   
+	</ul>
+	<h2><?php echo esc_html( __( "What's New in 1.1.2", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<ul class="ul-disc">
+		<li><?php echo esc_html__( 'Fixed: Proxy count in the sidebar could get stuck showing "None" after saving a new proxy list URL because of a stale 24-hour cache; the count now updates immediately when the URL is saved and after each preload run.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Fixed: Last run duration always showed "minutes" (plural) even for a single minute, e.g. "1 minutes".', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Improved: Minor wording and clarity improvements to Settings and Exclusions tab descriptions.', 'super-preloader-for-cloudflare' ); ?></li>
 	</ul>
 	<h2><?php echo esc_html( __( "What's New in 1.1.1", 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
