@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const node = document.getElementById('wp-admin-bar-wpff-sp-preload')
+  // The "Super Preloader" parent item is just a plain link to Settings now —
+  // all the click/busy-state behavior lives on the "Start Preload" child
+  // item nested under it.
+  const node = document.getElementById('wp-admin-bar-wpff-sp-preload-start')
   if (!node) return
 
   const link = node.querySelector('a.ab-item')
@@ -29,16 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Busy covers the whole background run, not just the click's own request —
   // this is what keeps repeat clicks from spamming the server while it runs.
-  function setBusy(isBusy, remaining) {
+  // The admin bar label intentionally just says "Running…" with no item
+  // count — the count is still shown in the toast notification below.
+  function setBusy(isBusy) {
     node.classList.toggle('wpff-sp-admin-bar-loading', isBusy)
-
-    if (!isBusy) {
-      label.textContent = wpffSpAdminBar.i18n.startLabel
-    } else if (typeof remaining === 'number') {
-      label.textContent = wpffSpAdminBar.i18n.runningWithCount.replace('%d', remaining)
-    } else {
-      label.textContent = wpffSpAdminBar.i18n.running
-    }
+    label.textContent = isBusy ? wpffSpAdminBar.i18n.running : wpffSpAdminBar.i18n.startLabel
   }
 
   function stopPolling() {
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!data.success) return
 
         if (data.data.running) {
-          setBusy(true, data.data.remaining)
+          setBusy(true)
         } else {
           stopPolling()
           setBusy(false)
@@ -116,9 +114,8 @@ document.addEventListener('DOMContentLoaded', function () {
           if (payload.done) {
             setBusy(false)
           } else {
-            // Stay busy and keep polling until the background run actually finishes —
-            // refresh the count now so the label doesn't wait for the first poll tick
-            setBusy(true, remaining)
+            // Stay busy and keep polling until the background run actually finishes.
+            setBusy(true)
             startPolling()
           }
         } else {

@@ -100,6 +100,11 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.2.0 - 16.08.2026
+
+- **Added:** Optional automated Cloudflare Worker deployment
+- **Improved:** Admin bar shortcut
+
 ### 1.1.2 - 31.07.2026
 
 - **Fixed:** Proxy count in the sidebar could get stuck showing "None" after saving a new proxy list URL because of a stale 24-hour cache; the count now updates immediately when the URL is saved and after each preload run

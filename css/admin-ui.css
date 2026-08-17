@@ -50,6 +50,77 @@
   border-color: #a00 !important;
   color: #a00 !important;
 }
+
+/* Manual/Automatic Worker deploy mode toggle — active state matches the
+   Save Settings button's color (WP's admin theme color, respects any
+   admin color scheme the user has picked, e.g. Blue, Coffee, Midnight). */
+.wpff-sp-toggle-group {
+  display: inline-flex;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--wp-admin-theme-color, #2271b1);
+}
+.wpff-sp-toggle-btn {
+  background: #fff;
+  border: none;
+  padding: 6px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wp-admin-theme-color, #2271b1);
+  cursor: pointer;
+}
+.wpff-sp-toggle-btn.active {
+  background: var(--wp-admin-theme-color, #2271b1);
+  color: #fff;
+}
+
+/* Cloudflare connection card — same neutral white card + pill-badge status
+   language as the sidebar's Mode/Status cards, not a colored block. */
+.wpff-sp-connection-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.wpff-sp-connection-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.wpff-sp-connection-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+.wpff-sp-status-connected {
+  background: #dcfce7;
+  color: #15803d;
+}
+.wpff-sp-connection-card-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 8px;
+}
+.wpff-sp-connection-card-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+.wpff-sp-connection-card-value {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
 .long-url-field {
   width: 100%;
   max-width: 600px;
@@ -80,6 +151,12 @@
 /* manual preload results */
 #wpff-sp-preload-result {
   color: #555;
+}
+
+/* Connect/Deploy/Disconnect result messages */
+.wpff-sp-result-error {
+  color: #dc2626;
+  margin-top: 12px;
 }
 
 /* stop button form */
@@ -506,6 +583,11 @@
 .wpff-sp-status-idle {
   background: #f3f4f6;
   color: #6b7280;
+}
+
+.wpff-sp-status-error {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
 .wpff-sp-urls-tab .wp-list-table .column-status {

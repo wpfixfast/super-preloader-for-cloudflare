@@ -1,25 +1,8 @@
-/* Admin bar shortcut */
-#wpadminbar #wp-admin-bar-wpff-sp-preload .ab-icon {
-  margin-right: 2px;
-}
-
-#wpadminbar #wp-admin-bar-wpff-sp-preload.wpff-sp-admin-bar-loading .ab-icon:before {
-  display: inline-block;
-  animation: wpff-sp-spin 1s linear infinite;
-}
-
-#wpadminbar #wp-admin-bar-wpff-sp-preload.wpff-sp-admin-bar-loading > .ab-item {
+/* Admin bar shortcut — busy state applies to the "Start Preload" child
+   item, not the plain-link "Super Preloader" parent. Text-only, no icon. */
+#wpadminbar #wp-admin-bar-wpff-sp-preload-start.wpff-sp-admin-bar-loading > .ab-item {
   pointer-events: none;
   opacity: 0.6;
-}
-
-@keyframes wpff-sp-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* Toast notification */

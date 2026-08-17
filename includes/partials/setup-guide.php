@@ -83,6 +83,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</a>
 		</li>   
 	</ul>
+	<h2><?php echo esc_html( __( "What's New in 1.2.0", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<ul class="ul-disc">
+		<li><?php echo esc_html__( 'Added: Optional automated Cloudflare Worker deployment.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Improved: Admin bar shortcut', 'super-preloader-for-cloudflare' ); ?></li>
+	</ul>
 	<h2><?php echo esc_html( __( "What's New in 1.1.2", 'super-preloader-for-cloudflare' ) ); ?></h2>
 	<ul class="ul-disc">
 		<li><?php echo esc_html__( 'Fixed: Proxy count in the sidebar could get stuck showing "None" after saving a new proxy list URL because of a stale 24-hour cache; the count now updates immediately when the URL is saved and after each preload run.', 'super-preloader-for-cloudflare' ); ?></li>

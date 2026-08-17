@@ -2,14 +2,37 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
+
+$wpff_sp_worker_mode_is_auto = ( 'auto' === $wpff_sp_worker_mode );
+$wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name' );
 ?>
 
 <form method="post">
 	<?php wp_nonce_field( 'wpff_sp_save_settings' ); ?>
 	<input type="hidden" name="wpff_sp_settings" value="1">
+	<input type="hidden" name="worker_mode" id="wpff_sp_worker_mode_input" value="<?php echo esc_attr( $wpff_sp_worker_mode ); ?>">
 
 	<table class="form-table">
 	<tbody>
+		<tr>
+		<th>
+			<label><?php echo esc_html( __( 'Deploy Worker via Cloudflare API Token?', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<div class="wpff-sp-toggle-group">
+				<button type="button" class="wpff-sp-toggle-btn<?php echo $wpff_sp_worker_mode_is_auto ? ' active' : ''; ?>" id="wpff-sp-worker-mode-yes" data-value="auto">
+					<?php echo esc_html( __( 'Yes', 'super-preloader-for-cloudflare' ) ); ?>
+				</button>
+				<button type="button" class="wpff-sp-toggle-btn<?php echo $wpff_sp_worker_mode_is_auto ? '' : ' active'; ?>" id="wpff-sp-worker-mode-no" data-value="manual">
+					<?php echo esc_html( __( 'No', 'super-preloader-for-cloudflare' ) ); ?>
+				</button>
+			</div>
+			<p class="long-description"><?php echo esc_html( __( '"Yes" deploys the Worker automatically using a Cloudflare API Token. "No" lets you create and paste in your own Worker URL manually.', 'super-preloader-for-cloudflare' ) ); ?></p>
+		</td>
+		</tr>
+	</tbody>
+
+	<tbody id="wpff-sp-manual-panel" style="<?php echo $wpff_sp_worker_mode_is_auto ? 'display: none;' : ''; ?>">
 		<tr>
 		<th>
 			<label><?php echo esc_html( __( 'Cloudflare Worker URL', 'super-preloader-for-cloudflare' ) ); ?></label>
@@ -24,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			/>
 		<p class="long-description">
 			<?php
-			echo sprintf(
+			printf(
 			// translators: %1$s is the opening anchor tag for Download, %2$s is the closing anchor tag, %3$s is the opening anchor tag for How to Use, %4$s is the closing anchor tag.
 				esc_html__(
 					'%1$sDownload%2$s and deploy this Cloudflare Worker code to create your Worker URL. More details and detailed guide at our %3$sHow to Use%4$s section.',
@@ -42,6 +65,169 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<tr>
 		<th>
+			<label><?php echo esc_html( __( 'Shared Secret', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<input
+			type="text"
+			name="shared_secret"
+			placeholder="<?php echo esc_attr( __( 'Secret key defined in CF Worker', 'super-preloader-for-cloudflare' ) ); ?>"
+			value="<?php echo esc_attr( $shared_secret ); ?>"
+			class="regular-text"
+			/>
+			<p class="long-description">
+			<?php echo esc_html( __( 'A secret key used to authenticate requests between your site and the Cloudflare Worker. This must match the value defined in your Worker code.', 'super-preloader-for-cloudflare' ) ); ?>
+			</p>
+		</td>
+		</tr>
+	</tbody>
+
+	<tbody id="wpff-sp-auto-panel" style="<?php echo $wpff_sp_worker_mode_is_auto ? '' : 'display: none;'; ?>">
+		<tr id="wpff-sp-auto-deploy-token-row" style="<?php echo $wpff_sp_worker_connected ? 'display: none;' : ''; ?>">
+		<th>
+			<label for="wpff_sp_cf_api_token"><?php echo esc_html( __( 'Cloudflare API Token', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<input
+			type="password"
+			name="cf_api_token"
+			id="wpff_sp_cf_api_token"
+			placeholder="<?php echo esc_attr( __( 'Required to deploy the Worker automatically', 'super-preloader-for-cloudflare' ) ); ?>"
+			value="<?php echo esc_attr( $cf_api_token ); ?>"
+			class="regular-text"
+			autocomplete="off"
+			/>
+			<div class="long-description">
+				<?php echo esc_html( __( 'To get your API token:', 'super-preloader-for-cloudflare' ) ); ?>
+				<ol>
+					<li>
+					<?php
+					printf(
+					// translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag.
+						esc_html__( 'Log into your Cloudflare dashboard and go to %1$sMy Profile > API Tokens%2$s.', 'super-preloader-for-cloudflare' ),
+						'<a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">',
+						'</a>'
+					);
+					?>
+					</li>
+					<li><?php echo esc_html( __( 'Click "Create Token", then click "Get Started" next to "Create Custom Token".', 'super-preloader-for-cloudflare' ) ); ?></li>
+					<li>
+					<?php
+					printf(
+					// translators: %1$s is the opening strong tag, %2$s is the closing strong tag.
+						esc_html__( 'Add the %1$sAccount > Workers Scripts > Edit%2$s permission.', 'super-preloader-for-cloudflare' ),
+						'<strong>',
+						'</strong>'
+					);
+					?>
+					</li>
+					<li><?php echo esc_html( __( 'Under "Account Resources", select the account that your domain is connected to.', 'super-preloader-for-cloudflare' ) ); ?></li>
+					<li><?php echo esc_html( __( 'Click "Continue to summary", review the permission, and click "Create Token".', 'super-preloader-for-cloudflare' ) ); ?></li>
+					<li><?php echo esc_html( __( 'Copy the generated token and paste it above.', 'super-preloader-for-cloudflare' ) ); ?></li>
+				</ol>
+			</div>
+		</td>
+		</tr>
+
+		<tr id="wpff-sp-auto-deploy-account-row" style="<?php echo ( $wpff_sp_worker_connected || empty( $cf_account_id ) ) ? 'display: none;' : ''; ?>">
+		<th>
+			<label for="wpff_sp_cf_account_id"><?php echo esc_html( __( 'Cloudflare Account ID', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<select id="wpff-sp-account-id-picker" class="regular-text" style="display: none;">
+				<option value=""><?php echo esc_html( __( 'Select an account…', 'super-preloader-for-cloudflare' ) ); ?></option>
+			</select>
+			<input
+			type="text"
+			name="cf_account_id"
+			id="wpff_sp_cf_account_id"
+			placeholder="<?php echo esc_attr( __( 'Only needed if the token has access to more than one account', 'super-preloader-for-cloudflare' ) ); ?>"
+			value="<?php echo esc_attr( $cf_account_id ); ?>"
+			class="regular-text"
+			/>
+			<p class="long-description" id="wpff-sp-auto-deploy-account-hint">
+				<?php echo esc_html( __( 'Only needed if your API Token has access to more than one Cloudflare account.', 'super-preloader-for-cloudflare' ) ); ?>
+			</p>
+		</td>
+		</tr>
+
+		<tr id="wpff-sp-auto-deploy-button-row" style="<?php echo $wpff_sp_worker_connected ? 'display: none;' : ''; ?>">
+		<th></th>
+		<td>
+			<div class="d-flex items-center gap-10">
+				<button
+				type="button"
+				class="button"
+				id="wpff-sp-deploy-worker-button"
+				>
+				<?php echo esc_html( __( 'Connect & Deploy', 'super-preloader-for-cloudflare' ) ); ?>
+				</button>
+				<span class="spinner" id="wpff-sp-deploy-spinner"></span>
+			</div>
+			<div id="wpff-sp-deploy-result" class="long-description"></div>
+		</td>
+		</tr>
+
+		<tr id="wpff-sp-connected-row" style="<?php echo $wpff_sp_worker_connected ? '' : 'display: none;'; ?>">
+		<th>
+			<label><?php echo esc_html( __( 'Cloudflare Connection', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<div class="wpff-sp-connection-card" id="wpff-sp-connection-card">
+				<div class="wpff-sp-connection-card-header">
+					<span class="wpff-sp-connection-card-title"><?php echo esc_html( __( 'Connected', 'super-preloader-for-cloudflare' ) ); ?></span>
+					<button type="button" class="button wpff-sp-danger-button-outline" id="wpff-sp-disconnect-button">
+						<?php echo esc_html( __( 'Disconnect', 'super-preloader-for-cloudflare' ) ); ?>
+					</button>
+				</div>
+				<div class="wpff-sp-result-error" id="wpff-sp-connection-deleted-warning" style="display: none;">
+					<?php
+					printf(
+					// translators: %s is a line break.
+						esc_html__( '⚠ This Worker seems to be deleted from Cloudflare.%sClick Disconnect to reset and deploy again.', 'super-preloader-for-cloudflare' ),
+						'<br>'
+					);
+					?>
+				</div>
+				<div class="wpff-sp-connection-card-row" id="wpff-sp-connection-account-row" style="<?php echo empty( $cf_account_name ) ? 'display: none;' : ''; ?>">
+					<span class="wpff-sp-connection-card-label"><?php echo esc_html( __( 'Account', 'super-preloader-for-cloudflare' ) ); ?></span>
+					<span class="wpff-sp-connection-card-value" id="wpff-sp-connection-account-name"><?php echo esc_html( $cf_account_name ); ?></span>
+				</div>
+				<div class="wpff-sp-connection-card-row">
+					<span class="wpff-sp-connection-card-label"><?php echo esc_html( __( 'Worker URL', 'super-preloader-for-cloudflare' ) ); ?></span>
+					<span class="wpff-sp-connection-card-value" id="wpff-sp-connection-worker-url"><?php echo esc_html( $cf_auto_worker_url ); ?></span>
+				</div>
+			</div>
+			<span class="spinner" id="wpff-sp-disconnect-spinner"></span>
+			<div id="wpff-sp-disconnect-result" class="long-description"></div>
+		</td>
+		</tr>
+	</tbody>
+
+	<script>
+	(function () {
+		var modeInput = document.getElementById('wpff_sp_worker_mode_input');
+		var manualPanel = document.getElementById('wpff-sp-manual-panel');
+		var autoPanel = document.getElementById('wpff-sp-auto-panel');
+		var noBtn = document.getElementById('wpff-sp-worker-mode-no');
+		var yesBtn = document.getElementById('wpff-sp-worker-mode-yes');
+
+		function setMode(value) {
+			modeInput.value = value;
+			manualPanel.style.display = value === 'auto' ? 'none' : '';
+			autoPanel.style.display = value === 'auto' ? '' : 'none';
+			noBtn.classList.toggle('active', value !== 'auto');
+			yesBtn.classList.toggle('active', value === 'auto');
+		}
+
+		noBtn.addEventListener('click', function () { setMode('manual'); });
+		yesBtn.addEventListener('click', function () { setMode('auto'); });
+	})();
+	</script>
+
+	<tbody>
+		<tr>
+		<th>
 			<label><?php echo esc_html( __( 'Proxy List URL', 'super-preloader-for-cloudflare' ) ); ?></label>
 		</th>
 		<td>
@@ -54,7 +240,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			/>
 			<p class="long-description">
 			<?php
-			echo sprintf(
+			printf(
 			// translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag.
 				esc_html__(
 					'Optional. If not set, requests will go directly from your server and only warm cache at its nearest Cloudflare edge location. Sign up for %1$sWebShare%2$s to get 10 free rotating proxies for wider Cloudflare edge coverage.',
@@ -80,24 +266,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 			value="<?php echo esc_url( $sitemap_url ); ?>"
 			class="long-url-field"
 			/>
-		</td>
-		</tr>
-
-		<tr>
-		<th>
-			<label><?php echo esc_html( __( 'Shared Secret', 'super-preloader-for-cloudflare' ) ); ?></label>
-		</th>
-		<td>
-			<input
-			type="text"
-			name="shared_secret"
-			placeholder="<?php echo esc_attr( __( 'Secret key defined in CF Worker', 'super-preloader-for-cloudflare' ) ); ?>"
-			value="<?php echo esc_attr( $shared_secret ); ?>"
-			class="regular-text"
-			/>
-			<p class="long-description">
-			<?php echo esc_html( __( 'A secret key used to authenticate requests between your site and the Cloudflare Worker. This must match the value defined in your Worker code.', 'super-preloader-for-cloudflare' ) ); ?>
-			</p>
 		</td>
 		</tr>
 
@@ -295,8 +463,7 @@ $wpff_sp_current  = new DateTime( 'now', $wpff_sp_timezone );
 			value="1"
 			<?php checked( get_option( 'wpff_sp_admin_bar_shortcut' ), '1' ); ?>
 			/>
-			<label for="wpff_sp_admin_bar_shortcut"><?php echo esc_html( __( 'Show a "Start Preload" shortcut in the admin bar.', 'super-preloader-for-cloudflare' ) ); ?></label>
-			<p class="long-description"><?php echo esc_html( __( 'Lets you trigger a manual preload directly from the admin bar.', 'super-preloader-for-cloudflare' ) ); ?></p>
+			<label for="wpff_sp_admin_bar_shortcut"><?php echo esc_html( __( 'Show a "Super Preloader" shortcut in the admin bar.', 'super-preloader-for-cloudflare' ) ); ?></label>
 		</td>
 		</tr>
 
@@ -312,7 +479,7 @@ $wpff_sp_current  = new DateTime( 'now', $wpff_sp_timezone );
 			value="1"
 			<?php checked( get_option( 'wpff_sp_delete_data_on_uninstall' ), '1' ); ?>
 			/>
-			<label for="wpff_sp_delete_data_on_uninstall"><?php echo esc_html( __( 'Remove all plugin data and logs when the plugin is deleted.', 'super-preloader-for-cloudflare' ) ); ?></label>
+			<label for="wpff_sp_delete_data_on_uninstall"><?php echo esc_html( __( 'Remove all plugin data, automatically deployed worker, and logs when the plugin is deleted.', 'super-preloader-for-cloudflare' ) ); ?></label>
 		</td>
 		</tr>
 	</tbody>

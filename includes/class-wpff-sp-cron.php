@@ -60,6 +60,14 @@ class WPFF_SP_Cron {
 		if ( 'manual' !== $interval && ! wp_next_scheduled( 'wpff_sp_run_preloader' ) ) {
 			wp_schedule_event( time(), $interval, 'wpff_sp_run_preloader' );
 		}
+
+		// add_option() (not update_option()) is deliberate: it only writes
+		// when the option doesn't exist yet, so this switches the admin bar
+		// shortcut on for a genuinely fresh install without overriding an
+		// existing user's saved choice — including an explicit "off", which
+		// is stored as the option being absent (see WPFF_SP_Post_Handlers::
+		// handle_settings(), which delete_option()s it when unchecked).
+		add_option( 'wpff_sp_admin_bar_shortcut', '1' );
 	}
 
 	/**

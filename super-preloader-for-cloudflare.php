@@ -2,7 +2,7 @@
 /*
 Plugin Name: Super Preloader for Cloudflare
 Plugin URI: https://wpfixfast.com
-Version: 1.1.2
+Version: 1.2.0
 Description: Preload pages into multiple Cloudflare Edge locations using proxies and a Cloudflare Worker.
 Author: WP Fix Fast
 Author URI: https://wpfixfast.com/
@@ -50,6 +50,7 @@ require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-http-request.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-cron.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-post-handlers.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-preloader.php';
+require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-cloudflare-client.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-ajax.php';
 require_once WPFF_SP_PLUGIN_PATH . 'includes/class-wpff-sp-admin-ui.php';
 
@@ -101,6 +102,11 @@ add_action( 'wp_ajax_wpff_sp_run_preloader', array( 'WPFF_SP_Ajax', 'run_preload
 // AJAX hook for logs retrieval
 add_action( 'wp_ajax_wpff_sp_get_logs', array( 'WPFF_SP_Ajax', 'get_logs' ) );
 add_action( 'wp_ajax_wpff_sp_get_status', array( 'WPFF_SP_Ajax', 'get_status' ) );
+add_action( 'wp_ajax_wpff_sp_get_worker_status', array( 'WPFF_SP_Ajax', 'get_worker_status' ) );
+
+// AJAX hooks for automated Worker deployment
+add_action( 'wp_ajax_wpff_sp_deploy_worker', array( 'WPFF_SP_Ajax', 'deploy_worker' ) );
+add_action( 'wp_ajax_wpff_sp_disconnect_worker', array( 'WPFF_SP_Ajax', 'disconnect_worker' ) );
 
 // ============================================================
 // Actions — Cron

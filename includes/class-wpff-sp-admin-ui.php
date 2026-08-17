@@ -108,11 +108,36 @@ class WPFF_SP_Admin_UI {
 		: 'settings';
 
 		$worker_url    = get_option( 'wpff_sp_worker_url', '' );
-		$proxy_url     = get_option( 'wpff_sp_proxy_list_url', '' );
-		$sitemap_url   = get_option( 'wpff_sp_sitemap_url', get_site_url() . '/sitemap.xml' );
-		$cron_interval = get_option( 'wpff_sp_cron_interval', 'manual' );
-		$shared_secret = get_option( 'wpff_sp_shared_secret', '' );
-		$wpff_sp_stats = get_option( 'wpff_sp_preload_stats', array() );
+		$cf_api_token  = defined( 'WPFF_SP_CF_API_TOKEN' ) && '' !== (string) WPFF_SP_CF_API_TOKEN ? WPFF_SP_CF_API_TOKEN : get_option( 'wpff_sp_cf_api_token', '' );
+		$cf_account_id = get_option( 'wpff_sp_cf_account_id', '' );
+
+		// Infer a default the first time this is ever read (before the user has
+		// explicitly toggled or saved a mode).
+		$wpff_sp_worker_mode = get_option( 'wpff_sp_worker_mode', '' );
+		if ( '' === $wpff_sp_worker_mode ) {
+			if ( get_option( 'wpff_sp_cf_worker_script_name' ) ) {
+				// Already completed an auto-deploy — land in "auto", not manual.
+				$wpff_sp_worker_mode = 'auto';
+			} elseif ( empty( $worker_url ) ) {
+				// Nothing manually configured yet (a genuinely fresh install, or
+				// a pre-upgrade install that was never set up) — default new
+				// setups to the simpler API Token flow instead of the old
+				// manual gist setup.
+				$wpff_sp_worker_mode = 'auto';
+			} else {
+				// An existing manual user already has a Worker URL configured —
+				// keep them on Manual so nothing changes for them on upgrade.
+				$wpff_sp_worker_mode = 'manual';
+			}
+		}
+
+		$cf_account_name    = get_option( 'wpff_sp_cf_account_name', '' );
+		$cf_auto_worker_url = get_option( 'wpff_sp_auto_worker_url', '' );
+		$proxy_url          = get_option( 'wpff_sp_proxy_list_url', '' );
+		$sitemap_url        = get_option( 'wpff_sp_sitemap_url', get_site_url() . '/sitemap.xml' );
+		$cron_interval      = get_option( 'wpff_sp_cron_interval', 'manual' );
+		$shared_secret      = get_option( 'wpff_sp_shared_secret', '' );
+		$wpff_sp_stats      = get_option( 'wpff_sp_preload_stats', array() );
 
 		// Bulk actions are already handled earlier via load-{hook} (see
 		// maybe_process_url_bulk_action) since a redirect can't happen here —
@@ -155,7 +180,9 @@ class WPFF_SP_Admin_UI {
 	}
 
 	/**
-	 * Add the "Start Preload" shortcut node to the admin bar.
+	 * Add the "Super Preloader" admin bar menu, a plain link to the plugin's
+	 * Settings page with a "Start Preload" shortcut nested under it — leaves
+	 * room for more shortcuts to be added under the same parent later.
 	 * Only shown when the admin bar shortcut setting is enabled.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar The admin bar instance.
@@ -165,20 +192,21 @@ class WPFF_SP_Admin_UI {
 			return;
 		}
 
-		// Render the real running state up front so the button is correct on
+		$wp_admin_bar->add_node(
+			array(
+				'id'    => 'wpff-sp-preload',
+				'title' => esc_html__( 'Super Preloader', 'super-preloader-for-cloudflare' ),
+				'href'  => admin_url( 'options-general.php?page=super-preloader-for-cloudflare' ),
+			)
+		);
+
+		// Render the real running state up front so the item is correct on
 		// first paint and the JS never has to guess (or poll) while idle.
 		$remaining  = WPFF_SP_Preloader::get_remaining_count();
 		$is_running = null !== $remaining;
-
-		if ( $is_running ) {
-			$label_text = sprintf(
-				/* translators: %d is the number of items remaining in the preload queue. */
-				__( 'Running... (%d remaining)', 'super-preloader-for-cloudflare' ),
-				$remaining
-			);
-		} else {
-			$label_text = __( 'Start Preload', 'super-preloader-for-cloudflare' );
-		}
+		$label_text = $is_running
+			? __( 'Running…', 'super-preloader-for-cloudflare' )
+			: __( 'Start Preload', 'super-preloader-for-cloudflare' );
 
 		$meta = array(
 			'title' => esc_attr__( 'Start Manual Preload', 'super-preloader-for-cloudflare' ),
@@ -189,10 +217,11 @@ class WPFF_SP_Admin_UI {
 
 		$wp_admin_bar->add_node(
 			array(
-				'id'    => 'wpff-sp-preload',
-				'title' => '<span class="ab-icon dashicons-before dashicons-update"></span><span class="wpff-sp-preload-label">' . esc_html( $label_text ) . '</span>',
-				'href'  => '#',
-				'meta'  => $meta,
+				'id'     => 'wpff-sp-preload-start',
+				'parent' => 'wpff-sp-preload',
+				'title'  => '<span class="wpff-sp-preload-label">' . esc_html( $label_text ) . '</span>',
+				'href'   => '#',
+				'meta'   => $meta,
 			)
 		);
 	}
@@ -233,18 +262,16 @@ class WPFF_SP_Admin_UI {
 				'nonce'       => wp_create_nonce( 'wpff_sp_preload_nonce' ),
 				'statusNonce' => wp_create_nonce( 'wpff_sp_status_nonce' ),
 				'i18n'        => array(
-					'startLabel'       => __( 'Start Preload', 'super-preloader-for-cloudflare' ),
-					'starting'         => __( 'Preloader started...', 'super-preloader-for-cloudflare' ),
-					'alreadyRunning'   => __( 'Preloader is already running...', 'super-preloader-for-cloudflare' ),
-					'complete'         => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
+					'startLabel'     => __( 'Start Preload', 'super-preloader-for-cloudflare' ),
+					'starting'       => __( 'Preloader started...', 'super-preloader-for-cloudflare' ),
+					'alreadyRunning' => __( 'Preloader is already running...', 'super-preloader-for-cloudflare' ),
+					'complete'       => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
 					// translators: %d is the number of items remaining in the preload queue.
-					'remaining'        => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
-					'running'          => __( 'Running...', 'super-preloader-for-cloudflare' ),
-					// translators: %d is the number of items remaining in the preload queue.
-					'runningWithCount' => __( 'Running... (%d remaining)', 'super-preloader-for-cloudflare' ),
-					'error'            => __( 'Error: ', 'super-preloader-for-cloudflare' ),
-					'ajaxFailed'       => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
-					'unknown'          => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
+					'remaining'      => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
+					'running'        => __( 'Running...', 'super-preloader-for-cloudflare' ),
+					'error'          => __( 'Error: ', 'super-preloader-for-cloudflare' ),
+					'ajaxFailed'     => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
+					'unknown'        => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
 				),
 			)
 		);
@@ -277,21 +304,35 @@ class WPFF_SP_Admin_UI {
 			'wpff-sp-admin-ui',
 			'wpff',
 			array(
-				'nonce'       => wp_create_nonce( 'wpff_sp_preload_nonce' ),
-				'statusNonce' => wp_create_nonce( 'wpff_sp_status_nonce' ),
-				'i18n'        => array(
-					'running'       => __( 'Preloader running... Please wait for the first batch to complete.', 'super-preloader-for-cloudflare' ),
-					'complete'      => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
+				'nonce'             => wp_create_nonce( 'wpff_sp_preload_nonce' ),
+				'statusNonce'       => wp_create_nonce( 'wpff_sp_status_nonce' ),
+				'deployNonce'       => wp_create_nonce( 'wpff_sp_deploy_worker_nonce' ),
+				'disconnectNonce'   => wp_create_nonce( 'wpff_sp_disconnect_worker_nonce' ),
+				'workerStatusNonce' => wp_create_nonce( 'wpff_sp_worker_status_nonce' ),
+				'i18n'              => array(
+					'running'                   => __( 'Preloader running... Please wait for the first batch to complete.', 'super-preloader-for-cloudflare' ),
+					'complete'                  => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
 					// translators: %d is the number of items remaining in the preload queue.
-					'remaining'     => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
-					'error'         => __( 'Error: ', 'super-preloader-for-cloudflare' ),
-					'ajaxFailed'    => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
-					'unknown'       => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
-					'statusRunning' => __( 'Running', 'super-preloader-for-cloudflare' ),
-					'statusIdle'    => __( 'Idle', 'super-preloader-for-cloudflare' ),
+					'remaining'                 => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
+					'error'                     => __( 'Error: ', 'super-preloader-for-cloudflare' ),
+					'ajaxFailed'                => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
+					'unknown'                   => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
+					'statusRunning'             => __( 'Running', 'super-preloader-for-cloudflare' ),
+					'statusIdle'                => __( 'Idle', 'super-preloader-for-cloudflare' ),
 					// translators: %d is the number of items remaining in the preload queue.
-					'remainingTag'  => __( '(%d remaining)', 'super-preloader-for-cloudflare' ),
-					'loadingTab'    => __( 'Loading URLs…', 'super-preloader-for-cloudflare' ),
+					'remainingTag'              => __( '(%d remaining)', 'super-preloader-for-cloudflare' ),
+					'loadingTab'                => __( 'Loading URLs…', 'super-preloader-for-cloudflare' ),
+					'deploying'                 => __( 'Deploying Worker to Cloudflare…', 'super-preloader-for-cloudflare' ),
+					'deploySuccess'             => __( 'Worker deployed successfully and your settings have been saved.', 'super-preloader-for-cloudflare' ),
+					'deployMissing'             => __( 'Enter your Cloudflare API Token first.', 'super-preloader-for-cloudflare' ),
+					'disconnectConfirm'         => __( 'This will delete the deployed Worker from your Cloudflare account. Continue?', 'super-preloader-for-cloudflare' ),
+					'disconnecting'             => __( 'Disconnecting…', 'super-preloader-for-cloudflare' ),
+					'disconnectSuccess'         => __( 'Worker disconnected and removed from Cloudflare.', 'super-preloader-for-cloudflare' ),
+					'workerStatusChecking'      => __( 'Checking…', 'super-preloader-for-cloudflare' ),
+					'workerStatusDeploying'     => __( 'Waiting for the Worker', 'super-preloader-for-cloudflare' ),
+					'workerStatusWorking'       => __( 'Deployed & Working', 'super-preloader-for-cloudflare' ),
+					'workerStatusNotDeployed'   => __( 'Not Deployed', 'super-preloader-for-cloudflare' ),
+					'workerStatusNotResponding' => __( 'Not Responding', 'super-preloader-for-cloudflare' ),
 				),
 			)
 		);

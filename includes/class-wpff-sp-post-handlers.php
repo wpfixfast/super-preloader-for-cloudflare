@@ -23,6 +23,28 @@ class WPFF_SP_Post_Handlers {
 				);
 			}
 
+			if ( isset( $_POST['worker_mode'] ) ) {
+				$wpff_sp_worker_mode = sanitize_text_field( wp_unslash( $_POST['worker_mode'] ) );
+
+				if ( in_array( $wpff_sp_worker_mode, array( 'manual', 'auto' ), true ) ) {
+					update_option( 'wpff_sp_worker_mode', $wpff_sp_worker_mode );
+				}
+			}
+
+			if ( isset( $_POST['cf_api_token'] ) ) {
+				update_option(
+					'wpff_sp_cf_api_token',
+					sanitize_text_field( wp_unslash( $_POST['cf_api_token'] ) )
+				);
+			}
+
+			if ( isset( $_POST['cf_account_id'] ) ) {
+				update_option(
+					'wpff_sp_cf_account_id',
+					sanitize_text_field( wp_unslash( $_POST['cf_account_id'] ) )
+				);
+			}
+
 			if ( isset( $_POST['proxy_list_url'] ) ) {
 				$wpff_sp_proxy_list_url = esc_url_raw( wp_unslash( $_POST['proxy_list_url'] ) );
 				update_option( 'wpff_sp_proxy_list_url', $wpff_sp_proxy_list_url );
@@ -107,6 +129,11 @@ class WPFF_SP_Post_Handlers {
 			WPFF_SP_Helpers::log( __( 'Settings updated.', 'super-preloader-for-cloudflare' ) );
 
 			WPFF_SP_Cron::update_schedule();
+
+			// The Worker URL/secret in effect may have just changed (manual
+			// fields edited, or the mode switched) — force the status card
+			// to re-check instead of showing a stale cached result.
+			WPFF_SP_Preloader::clear_worker_status_cache();
 
 			/**
 			 * Fires after all plugin settings have been saved.

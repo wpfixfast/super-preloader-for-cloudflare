@@ -21,14 +21,47 @@ $wpff_sp_sidebar_url_count = get_option( 'wpff_sp_sitemap_url_count', null );
 
 // Proxy count — refreshed when the proxy list URL is saved and after each run
 $wpff_sp_sidebar_proxy_count = (int) get_option( 'wpff_sp_proxy_count', 0 );
+
+// Worker status — read-only cache lookup, never triggers a live check on
+// page render. JS refreshes this via AJAX after load (see js/admin-ui.js).
+$wpff_sp_sidebar_worker_status = WPFF_SP_Preloader::get_cached_worker_status();
+
+$wpff_sp_worker_status_labels = array(
+	'working'        => __( 'Deployed & Working', 'super-preloader-for-cloudflare' ),
+	'not_deployed'   => __( 'Not Deployed', 'super-preloader-for-cloudflare' ),
+	'not_responding' => __( 'Not Responding', 'super-preloader-for-cloudflare' ),
+);
+
+$wpff_sp_worker_status_classes = array(
+	'working'        => 'wpff-sp-status-connected',
+	'not_deployed'   => 'wpff-sp-status-idle',
+	'not_responding' => 'wpff-sp-status-error',
+);
 ?>
 
 <div class="wpff-sp-sidebar">
 
+	<?php // Worker Status ?>
+	<div class="wpff-sp-sidebar-card">
+	<div class="wpff-sp-sidebar-card-header">
+		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Worker Status', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<img class="wpff-sp-sidebar-icon" src="<?php echo esc_url( WPFF_SP_PLUGIN_URL . 'images/cloud-cog.svg' ); ?>" width="20" height="20" alt="Worker status icon" />
+	</div>
+	<div class="wpff-sp-sidebar-value">
+		<?php if ( null === $wpff_sp_sidebar_worker_status ) : ?>
+		<span id="wpff-sp-worker-status-badge" class="wpff-sp-status-badge wpff-sp-status-idle"><?php echo esc_html( __( 'Checking…', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<?php else : ?>
+		<span id="wpff-sp-worker-status-badge" class="wpff-sp-status-badge <?php echo esc_attr( $wpff_sp_worker_status_classes[ $wpff_sp_sidebar_worker_status ] ); ?>">
+			<?php echo esc_html( $wpff_sp_worker_status_labels[ $wpff_sp_sidebar_worker_status ] ); ?>
+		</span>
+		<?php endif; ?>
+	</div>
+	</div>
+
 	<?php // Mode ?>
 	<div class="wpff-sp-sidebar-card">
 	<div class="wpff-sp-sidebar-card-header">      
-		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Mode', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Preloader Mode', 'super-preloader-for-cloudflare' ) ); ?></span>
 		<img class="wpff-sp-sidebar-icon" src="<?php echo esc_url( WPFF_SP_PLUGIN_URL . 'images/mode.svg' ); ?>" width="20" height="20" alt="Settings icon" />
 	</div>
 	<div class="wpff-sp-sidebar-value <?php echo $wpff_sp_sidebar_full_proxy ? 'wpff-sp-mode-fpp' : 'wpff-sp-mode-normal'; ?>">
@@ -42,7 +75,7 @@ $wpff_sp_sidebar_proxy_count = (int) get_option( 'wpff_sp_proxy_count', 0 );
 	<?php // Status ?>
 	<div class="wpff-sp-sidebar-card">
 	<div class="wpff-sp-sidebar-card-header">
-		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Status', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Preloader Status', 'super-preloader-for-cloudflare' ) ); ?></span>
 		<img class="wpff-sp-sidebar-icon" src="<?php echo esc_url( WPFF_SP_PLUGIN_URL . 'images/status.svg' ); ?>" width="20" height="20" alt="Status icon" />
 	</div>
 	<div class="wpff-sp-sidebar-value">

@@ -7,6 +7,32 @@ if ( get_option( 'wpff_sp_delete_data_on_uninstall' ) !== '1' ) {
 	return;
 }
 
+// Delete the Worker this plugin deployed automatically, if any — part of
+// "Delete Data on Uninstall" rather than a separate opt-in. Best-effort
+// only — no plugin classes or logging are available here, this file runs
+// standalone, so a failed request is silently ignored; the Worker simply
+// stays on the account for the user to remove by hand if this misses.
+$wpff_sp_cf_token       = get_option( 'wpff_sp_cf_api_token' );
+$wpff_sp_cf_account_id  = get_option( 'wpff_sp_cf_resolved_account_id' );
+$wpff_sp_cf_script_name = get_option( 'wpff_sp_cf_worker_script_name' );
+
+if ( $wpff_sp_cf_token && $wpff_sp_cf_account_id && $wpff_sp_cf_script_name ) {
+	wp_remote_request(
+		sprintf(
+			'https://api.cloudflare.com/client/v4/accounts/%s/workers/scripts/%s',
+			rawurlencode( $wpff_sp_cf_account_id ),
+			rawurlencode( $wpff_sp_cf_script_name )
+		),
+		array(
+			'method'  => 'DELETE',
+			'timeout' => 30,
+			'headers' => array(
+				'Authorization' => 'Bearer ' . $wpff_sp_cf_token,
+			),
+		)
+	);
+}
+
 // Recalculate log paths since main plugin is not loaded
 $wpff_sp_upload_dir = wp_upload_dir();
 $wpff_sp_log_dir    = trailingslashit( $wpff_sp_upload_dir['basedir'] ) . 'super-preloader-for-cloudflare';
@@ -14,6 +40,15 @@ $wpff_sp_log_file   = $wpff_sp_log_dir . '/super-preloader-for-cloudflare-log.ph
 
 // Delete options
 delete_option( 'wpff_sp_worker_url' );
+delete_option( 'wpff_sp_cf_api_token' );
+delete_option( 'wpff_sp_cf_account_id' );
+delete_option( 'wpff_sp_cf_resolved_account_id' );
+delete_option( 'wpff_sp_cf_worker_script_name' );
+delete_option( 'wpff_sp_cf_account_name' );
+delete_option( 'wpff_sp_auto_worker_url' );
+delete_option( 'wpff_sp_auto_worker_secret' );
+delete_option( 'wpff_sp_worker_mode' );
+delete_option( 'wpff_sp_delete_worker_on_uninstall' );
 delete_option( 'wpff_sp_proxy_list_url' );
 delete_option( 'wpff_sp_sitemap_url' );
 delete_option( 'wpff_sp_cron_interval' );

@@ -5,6 +5,101 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WPFF_SP_Preloader {
 
+	const WORKER_STATUS_TRANSIENT = 'wpff_sp_worker_status';
+
+	/**
+	 * Resolve the currently active Worker URL and shared secret pair, based
+	 * on the Manual/Auto mode switch. Manual and auto-deployed Workers are
+	 * tracked as separate option pairs (see [[project-cloudflare-worker-auto-deploy]])
+	 * so switching modes or disconnecting an auto-deployed Worker never
+	 * touches a manually configured one. Manual is the default and
+	 * unmodified read path.
+	 *
+	 * @return array{0: string, 1: string} [ $worker_url, $shared_secret ]
+	 */
+	private static function get_configured_worker() {
+		if ( 'auto' === get_option( 'wpff_sp_worker_mode', 'manual' ) ) {
+			return array(
+				get_option( 'wpff_sp_auto_worker_url' ),
+				sanitize_text_field( get_option( 'wpff_sp_auto_worker_secret', '' ) ),
+			);
+		}
+
+		return array(
+			get_option( 'wpff_sp_worker_url' ),
+			sanitize_text_field( get_option( 'wpff_sp_shared_secret', '' ) ),
+		);
+	}
+
+	/**
+	 * Read the last known Worker status without making a live request —
+	 * safe to call during page render. Returns null if it has never been
+	 * checked yet, or the cache has expired/been invalidated.
+	 *
+	 * @return string|null 'working' | 'not_deployed' | 'not_responding' | null
+	 */
+	public static function get_cached_worker_status() {
+		$status = get_transient( self::WORKER_STATUS_TRANSIENT );
+
+		return false !== $status ? $status : null;
+	}
+
+	/**
+	 * Get the Worker's status, using the cached value unless $force is true
+	 * or nothing is cached yet. A live check sends a real signed request to
+	 * the configured Worker (the same request shape a normal preload uses)
+	 * and caches the result briefly so repeated calls (e.g. the sidebar
+	 * status card polling on every page load) don't hammer the Worker.
+	 *
+	 * @param bool $force Bypass the cache and check live.
+	 * @return string 'working' | 'not_deployed' | 'not_responding'
+	 */
+	public static function get_worker_status( $force = false ) {
+		if ( ! $force ) {
+			$cached = self::get_cached_worker_status();
+
+			if ( null !== $cached ) {
+				return $cached;
+			}
+		}
+
+		list( $worker, $shared_secret ) = self::get_configured_worker();
+
+		if ( empty( $worker ) ) {
+			$status = 'not_deployed';
+		} else {
+			$test_target = home_url( '/' );
+			$token       = WPFF_SP_Helpers::generate_token( $test_target, $shared_secret );
+			$test_url    = $worker . '?url=' . rawurlencode( $test_target ) . '&token=' . $token;
+
+			$response = wp_remote_get(
+				$test_url,
+				array(
+					'timeout'    => 10,
+					'user-agent' => WPFF_SP_USER_AGENT,
+				)
+			);
+
+			$status = ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) )
+				? 'working'
+				: 'not_responding';
+		}
+
+		set_transient( self::WORKER_STATUS_TRANSIENT, $status, MINUTE_IN_SECONDS );
+
+		return $status;
+	}
+
+	/**
+	 * Invalidate the cached Worker status so the next check runs live
+	 * instead of returning a stale result. Called whenever something that
+	 * could change which Worker is in effect happens: settings saved, a
+	 * Worker deployed, or a Worker disconnected.
+	 */
+	public static function clear_worker_status_cache() {
+		delete_transient( self::WORKER_STATUS_TRANSIENT );
+	}
+
 	/**
 	 * Get the number of items remaining in the current preload run.
 	 * Derived from the existing cursor and queue transients — no separate
@@ -151,12 +246,26 @@ class WPFF_SP_Preloader {
 			return;
 		}
 
-		$worker    = get_option( 'wpff_sp_worker_url' );
+		list( $worker, $shared_secret ) = self::get_configured_worker();
+
 		$proxy_url = get_option( 'wpff_sp_proxy_list_url' );
 		$sitemap   = get_option( 'wpff_sp_sitemap_url' );
 
 		if ( empty( $worker ) || empty( $sitemap ) ) {
 			WPFF_SP_Helpers::log( esc_html__( 'Missing required settings: worker or sitemap.', 'super-preloader-for-cloudflare' ) );
+			return;
+		}
+
+		// Test the Worker itself directly (no proxy involved — same request
+		// the sidebar's Worker Status card uses) once at the start of a fresh
+		// run, not on every batch continuation within it. This is a live
+		// check, not the cache, so it reflects reality right now rather than
+		// whatever a browser last saw. Deliberately does not use the per-URL
+		// proxied requests for this: those go through rotating proxies, so a
+		// failure there could just as easily mean one dead proxy as a broken
+		// Worker — this check isolates the Worker's own reachability.
+		if ( ! get_transient( 'wpff_sp_preload_cursor' ) && 'working' !== self::get_worker_status( true ) ) {
+			WPFF_SP_Helpers::log( esc_html__( 'Preloader stopped: the Worker is not accessible.', 'super-preloader-for-cloudflare' ) );
 			return;
 		}
 
@@ -228,9 +337,6 @@ class WPFF_SP_Preloader {
 		$batch_size         = (int) get_option( 'wpff_sp_batch_size', 10 );
 		$batch              = array_slice( $queue, $cursor['index'], $batch_size );
 		$delay_between_urls = (int) get_option( 'wpff_sp_delay_between_urls', 1 );
-
-		// Secret for token generation
-		$shared_secret = sanitize_text_field( get_option( 'wpff_sp_shared_secret', '' ) );
 
 		foreach ( $batch as $item ) {
 			// Normalise item — in normal mode item is a plain URL string,
