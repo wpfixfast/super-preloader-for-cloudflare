@@ -45,6 +45,13 @@ class WPFF_SP_Post_Handlers {
 				);
 			}
 
+			if ( isset( $_POST['cf_zone_id'] ) ) {
+				update_option(
+					'wpff_sp_cf_zone_id',
+					sanitize_text_field( wp_unslash( $_POST['cf_zone_id'] ) )
+				);
+			}
+
 			if ( isset( $_POST['proxy_list_url'] ) ) {
 				$wpff_sp_proxy_list_url = esc_url_raw( wp_unslash( $_POST['proxy_list_url'] ) );
 				update_option( 'wpff_sp_proxy_list_url', $wpff_sp_proxy_list_url );
@@ -134,6 +141,10 @@ class WPFF_SP_Post_Handlers {
 			// fields edited, or the mode switched) — force the status card
 			// to re-check instead of showing a stale cached result.
 			WPFF_SP_Preloader::clear_worker_status_cache();
+
+			// The API Token/Zone ID in effect may have just changed — don't
+			// keep showing a Cache Coverage result computed with the old one.
+			WPFF_SP_Cloudflare_Analytics::clear_cache();
 
 			/**
 			 * Fires after all plugin settings have been saved.

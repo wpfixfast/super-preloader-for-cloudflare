@@ -28,7 +28,7 @@ It works best when used together with a caching plugin like [Super Page Cache](h
 
 Recommended steps:
 
-1. Create and deploy your Cloudflare Worker URL
+1. Deploy Cloudflare Worker using API Token
 2. Get your Webshare proxies download link
 3. Create your sitemap using Yoast SEO, RankMath SEO, or a similar plugin
 4. Start preloading
@@ -38,7 +38,7 @@ Recommended steps:
 - [What is Cloudflare Edge?](https://wpfixfast.com/blog/preload-cloudflare-cache/#what-is-cloudflare-edge)
 - [Why you should set up Super Page Cache first](https://wpfixfast.com/blog/preload-cloudflare-cache/#why-you-should-set-up-super-page-cache-first)
 - [Why a Cloudflare Worker is needed to preload cache](https://wpfixfast.com/blog/preload-cloudflare-cache/#why-a-cloudflare-worker-is-needed-to-preload-cache)
-- [How to create and deploy a Cloudflare Worker](https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-create-and-deploy-a-cloudflare-worker)
+- [Deploy Cloudflare Worker using API Token](https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-automatically-deploy-a-cloudflare-worker-using-an-api-token)
 - [How to register and use Webshare Proxies](https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-register-and-use-webshare-proxies)
 - [Usage Notes and Key Considerations](https://wpfixfast.com/blog/preload-cloudflare-cache/#usage-notes-and-key-considerations)
 
@@ -99,6 +99,12 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 11. How to check if your Cache is HIT, MISS, or BYPASS.
 
 ## Changelog
+
+### 1.3.0 - 11.09.2026
+
+- **Added:** Cache Coverage report. See real visitor cache hit/miss rates by country from Cloudflare Analytics, with suggested Webshare proxy countries to improve coverage
+- **Improved:** Exclusions tab now loads instantly instead of waiting on a live sitemap re-fetch every time
+- **Improved:** Visual improvements on all tabs
 
 ### 1.2.0 - 16.08.2026
 

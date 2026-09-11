@@ -45,6 +45,8 @@ delete_option( 'wpff_sp_cf_account_id' );
 delete_option( 'wpff_sp_cf_resolved_account_id' );
 delete_option( 'wpff_sp_cf_worker_script_name' );
 delete_option( 'wpff_sp_cf_account_name' );
+delete_option( 'wpff_sp_cf_zone_id' );
+delete_option( 'wpff_sp_cf_zone_name' );
 delete_option( 'wpff_sp_auto_worker_url' );
 delete_option( 'wpff_sp_auto_worker_secret' );
 delete_option( 'wpff_sp_worker_mode' );
@@ -75,6 +77,9 @@ delete_transient( 'wpff_sp_preload_urls' );
 delete_transient( 'wpff_sp_batch_stats' );
 delete_transient( 'wpff_sp_stop_flag' );
 delete_transient( 'wpff_sp_urls_tab_cache' );
+delete_transient( 'wpff_sp_cf_coverage_24h' );
+delete_transient( 'wpff_sp_cf_coverage_7d' );
+delete_transient( 'wpff_sp_cf_coverage_error' );
 
 // Delete log file
 if ( file_exists( $wpff_sp_log_file ) ) {

@@ -67,6 +67,32 @@ class WPFF_SP_Ajax {
 	}
 
 	/**
+	 * Handle the AJAX request for the Exclusions tab's deferred table
+	 * section. A fresh visit to that tab skips the (potentially slow —
+	 * live sitemap re-fetch) synchronous render entirely and shows a
+	 * skeleton instead; this fills it in. Renders the exact same
+	 * urls-table-section.php partial a table-interaction (pagination/
+	 * search/sort) request would render synchronously, so the two paths
+	 * produce identical markup.
+	 */
+	public static function get_urls_table() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( -1 );
+		}
+
+		check_ajax_referer( 'wpff_sp_urls_table_nonce', 'nonce' );
+
+		WPFF_SP_Admin_UI::load_urls_list_table_class();
+
+		$wpff_sp_urls_list_table = new WPFF_SP_Urls_List_Table();
+		$wpff_sp_urls_list_table->prepare_items();
+
+		include WPFF_SP_PLUGIN_PATH . 'includes/partials/urls-table-section.php';
+
+		wp_die();
+	}
+
+	/**
 	 * Handle the AJAX request for checking the preloader status.
 	 * Returns whether the preloader is currently running.
 	 */
@@ -150,6 +176,12 @@ class WPFF_SP_Ajax {
 		// deploy so the Account ID field stays hidden for solo-account users.
 		$submitted_account_id = isset( $_POST['cf_account_id'] ) ? sanitize_text_field( wp_unslash( $_POST['cf_account_id'] ) ) : '';
 
+		// Zone ID is entirely optional (only needed for the Cache Coverage
+		// report) — folded into this same Connect & Deploy step so existing
+		// users only have to disconnect/reconnect once to pick it up, rather
+		// than juggling a separate flow.
+		$submitted_zone_id = isset( $_POST['cf_zone_id'] ) ? sanitize_text_field( wp_unslash( $_POST['cf_zone_id'] ) ) : '';
+
 		if ( '' === $token ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'Enter your Cloudflare API Token first.', 'super-preloader-for-cloudflare' ) ) );
 		}
@@ -192,6 +224,33 @@ class WPFF_SP_Ajax {
 			$account_name = $accounts[0]['name'];
 		}
 
+		// Zone selection, mirroring the account flow above: only pause for
+		// a choice when there's genuinely more than one to pick from. A
+		// token that can't list zones at all isn't an error here; it just
+		// means the user hasn't opted into the Cache Coverage feature, so
+		// fall straight through to deploying the Worker without one, same
+		// as before this existed.
+		$zone_name = '';
+		if ( '' === $submitted_zone_id ) {
+			$zones_error = '';
+			$zones       = WPFF_SP_Cloudflare_Client::get_zones( $token, $zones_error );
+
+			if ( is_array( $zones ) && count( $zones ) > 1 ) {
+				// No 'message' here — the Zone ID field's own description
+				// already tells the user what to do, and the revealed
+				// dropdown is signal enough that something needs attention.
+				wp_send_json_error(
+					array(
+						'code'  => 'select_zone',
+						'zones' => $zones,
+					)
+				);
+			} elseif ( is_array( $zones ) && 1 === count( $zones ) ) {
+				$submitted_zone_id = $zones[0]['id'];
+				$zone_name         = $zones[0]['name'];
+			}
+		}
+
 		$script_name = 'wpff-sp-' . sanitize_title( wp_parse_url( home_url(), PHP_URL_HOST ) );
 
 		// Deliberately separate from wpff_sp_shared_secret (the legacy/manual
@@ -212,6 +271,31 @@ class WPFF_SP_Ajax {
 		update_option( 'wpff_sp_auto_worker_secret', $secret );
 		update_option( 'wpff_sp_cf_api_token', $token );
 		update_option( 'wpff_sp_cf_account_id', $submitted_account_id );
+		update_option( 'wpff_sp_cf_zone_id', $submitted_zone_id );
+
+		// Resolve the zone's display name (its domain) for the Connected
+		// card — best-effort only, so a failure here shouldn't fail the
+		// whole connect. Already resolved above when a single zone was
+		// auto-selected; only look it up again here for the "user typed a
+		// Zone ID manually" and "picked one from the reactive picker" paths.
+		if ( '' !== $submitted_zone_id && '' === $zone_name ) {
+			$zones_error = '';
+			$zones       = WPFF_SP_Cloudflare_Client::get_zones( $token, $zones_error );
+
+			if ( is_array( $zones ) ) {
+				foreach ( $zones as $zone ) {
+					if ( $zone['id'] === $submitted_zone_id ) {
+						$zone_name = $zone['name'];
+						break;
+					}
+				}
+			}
+		}
+		update_option( 'wpff_sp_cf_zone_name', $zone_name );
+
+		// The token/zone in effect may have just changed — don't leave a
+		// Cache Coverage result computed under the old one cached.
+		WPFF_SP_Cloudflare_Analytics::clear_cache();
 
 		// Persist the mode explicitly rather than relying only on the
 		// settings-form fallback inference (get_option('wpff_sp_cf_worker_script_name')
@@ -246,6 +330,7 @@ class WPFF_SP_Ajax {
 			array(
 				'workerUrl'   => $worker_url,
 				'accountName' => $account_name,
+				'zoneName'    => $zone_name,
 			)
 		);
 	}
@@ -267,11 +352,29 @@ class WPFF_SP_Ajax {
 		$account_id  = get_option( 'wpff_sp_cf_resolved_account_id' );
 		$script_name = get_option( 'wpff_sp_cf_worker_script_name' );
 
+		$worker_delete_warning = '';
+
 		if ( $token && $account_id && $script_name ) {
 			$error = '';
 
 			if ( ! WPFF_SP_Cloudflare_Client::delete_worker( $token, $account_id, $script_name, $error ) ) {
-				wp_send_json_error( array( 'message' => $error ) );
+				// Best-effort only, same fallback as uninstall.php: if the
+				// API Token was revoked/deleted on Cloudflare's side (or any
+				// other remote failure), the user still needs to be able to
+				// disconnect locally and reconnect with a fresh token — a
+				// failed remote cleanup shouldn't trap them here. The Worker
+				// script is simply left behind on their Cloudflare account
+				// for manual removal; surfaced to the user below instead of
+				// failing the whole disconnect.
+				WPFF_SP_Helpers::log(
+					sprintf(
+						/* translators: %1$s is the Worker script name, %2$s is the error message. */
+						__( 'Failed to delete Worker "%1$s" from Cloudflare during disconnect (proceeding with local cleanup anyway): %2$s', 'super-preloader-for-cloudflare' ),
+						$script_name,
+						$error
+					)
+				);
+				$worker_delete_warning = $error;
 			}
 		}
 
@@ -284,12 +387,53 @@ class WPFF_SP_Ajax {
 		// selected Account ID isn't worth preserving — leaving it behind just
 		// keeps the reactive Account ID row visible/populated after
 		// disconnecting, even though there's nothing to reconnect to yet.
+		// Same reasoning applies to the Zone ID/name now that zone selection
+		// is folded into this same Connect & Deploy flow — a stale zone
+		// shouldn't linger in the field after disconnecting.
 		delete_option( 'wpff_sp_cf_account_id' );
+		delete_option( 'wpff_sp_cf_zone_id' );
+		delete_option( 'wpff_sp_cf_zone_name' );
+
+		// The zone that was in effect just got cleared — don't leave a
+		// Cache Coverage result computed under it cached.
+		WPFF_SP_Cloudflare_Analytics::clear_cache();
 
 		WPFF_SP_Preloader::clear_worker_status_cache();
 
-		WPFF_SP_Helpers::log( __( 'Worker disconnected and removed from Cloudflare.', 'super-preloader-for-cloudflare' ) );
+		if ( '' === $worker_delete_warning ) {
+			WPFF_SP_Helpers::log( __( 'Worker disconnected and removed from Cloudflare.', 'super-preloader-for-cloudflare' ) );
+		} else {
+			WPFF_SP_Helpers::log( __( 'Worker disconnected locally; removal from Cloudflare failed (see above).', 'super-preloader-for-cloudflare' ) );
+		}
 
-		wp_send_json_success();
+		wp_send_json_success( array( 'workerDeleteWarning' => $worker_delete_warning ) );
+	}
+
+	/**
+	 * Handle the AJAX request for the sidebar and Stats tab "Cache Coverage"
+	 * cards. Returns a summary (see WPFF_SP_Cloudflare_Analytics::compute_summary())
+	 * for either the trailing 24 hours or the trailing 7 days, depending on
+	 * $_POST['range']. The server already knows whether the token/zone ID
+	 * are configured (see sidebar.php/stats-table.php), so this is only ever
+	 * called when they are — no "not connected" branch needed here.
+	 */
+	public static function get_cache_coverage() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'Unauthorized', 'super-preloader-for-cloudflare' ) ) );
+		}
+
+		check_ajax_referer( 'wpff_sp_cache_coverage_nonce', 'nonce' );
+
+		$range = isset( $_POST['range'] ) && '7d' === $_POST['range'] ? '7d' : '24h';
+		$force = isset( $_POST['force'] ) && '1' === $_POST['force'];
+		$error = '';
+
+		$summary = WPFF_SP_Cloudflare_Analytics::get_summary( $range, $force, $error );
+
+		if ( false === $summary ) {
+			wp_send_json_error( array( 'message' => $error ? $error : esc_html__( 'Cloudflare API Token or Zone ID is not configured.', 'super-preloader-for-cloudflare' ) ) );
+		}
+
+		wp_send_json_success( $summary );
 	}
 }

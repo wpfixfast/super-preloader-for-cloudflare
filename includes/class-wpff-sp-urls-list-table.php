@@ -197,11 +197,14 @@ class WPFF_SP_Urls_List_Table extends WP_List_Table {
 
 	/**
 	 * Check whether the current request is a table interaction (pagination,
-	 * search, or sort) rather than a fresh arrival at the URLs tab.
+	 * search, or sort) rather than a fresh arrival at the URLs tab. Public
+	 * and static so WPFF_SP_Admin_UI::render_page() can use the same check
+	 * to decide whether to defer the (potentially slow) table render to an
+	 * AJAX call instead of instantiating this class at all.
 	 *
 	 * @return bool
 	 */
-	private function is_table_interaction() {
+	public static function is_table_interaction() {
 		foreach ( array( 'paged', 's', 'orderby', 'order' ) as $key ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only pagination/search/sort state, not a state-changing action.
 			if ( isset( $_GET[ $key ] ) ) {
@@ -221,7 +224,7 @@ class WPFF_SP_Urls_List_Table extends WP_List_Table {
 	private function get_all_urls() {
 		$cached = get_transient( 'wpff_sp_urls_tab_cache' );
 
-		if ( $this->is_table_interaction() && is_array( $cached ) ) {
+		if ( self::is_table_interaction() && is_array( $cached ) ) {
 			return $cached;
 		}
 

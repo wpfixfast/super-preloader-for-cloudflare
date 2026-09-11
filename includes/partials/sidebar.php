@@ -154,4 +154,74 @@ $wpff_sp_worker_status_classes = array(
 	</div>
 	</div>
 
+	<?php
+	// Cache Coverage — how much of real visitor traffic actually hits cache
+	// (HTML pages only, trailing 24h), pulled live from Cloudflare Analytics.
+	// Requires the optional Zone Analytics Read token + Zone ID from Settings.
+	$wpff_sp_sidebar_coverage_ready = (bool) get_option( 'wpff_sp_cf_api_token' ) && (bool) get_option( 'wpff_sp_cf_zone_id' );
+
+	// A previously-cached failure (see WPFF_SP_Cloudflare_Analytics::get_cached_error(),
+	// the single source of truth for this) is checked before anything else —
+	// no point rendering the skeleton state only to have an AJAX call
+	// immediately repeat the same failure and hide it again.
+	$wpff_sp_sidebar_coverage_cached_error = $wpff_sp_sidebar_coverage_ready ? WPFF_SP_Cloudflare_Analytics::get_cached_error() : false;
+
+	// Render the real numbers directly when the cache is already warm —
+	// only defer to the skeleton+AJAX path when it'd actually require a
+	// live query. Avoids an unnecessary round trip (and the CLS risk that
+	// comes with it) for what would otherwise just re-fetch the same
+	// cached value a moment after this page already rendered it.
+	$wpff_sp_sidebar_coverage_summary = null;
+	if ( $wpff_sp_sidebar_coverage_ready && ! $wpff_sp_sidebar_coverage_cached_error && WPFF_SP_Cloudflare_Analytics::has_cached_stats( '24h' ) ) {
+		$wpff_sp_sidebar_coverage_error   = '';
+		$wpff_sp_sidebar_coverage_summary = WPFF_SP_Cloudflare_Analytics::get_summary( '24h', false, $wpff_sp_sidebar_coverage_error );
+	}
+	?>
+	<div class="wpff-sp-sidebar-card">
+	<div class="wpff-sp-sidebar-card-header">
+		<span class="wpff-sp-sidebar-label"><?php echo esc_html( __( 'Cache Coverage (24H)', 'super-preloader-for-cloudflare' ) ); ?></span>
+		<span class="d-flex items-center gap-5">
+		<?php if ( $wpff_sp_sidebar_coverage_ready ) : ?>
+			<button type="button" class="wpff-sp-icon-button" id="wpff-sp-coverage-refresh-button" title="<?php echo esc_attr( __( 'Refresh', 'super-preloader-for-cloudflare' ) ); ?>">
+				<img class="wpff-sp-sidebar-icon wpff-sp-sidebar-icon-small" id="wpff-sp-coverage-refresh-icon" src="<?php echo esc_url( WPFF_SP_PLUGIN_URL . 'images/refresh-cw.svg' ); ?>" width="14" height="14" alt="Refresh icon" />
+			</button>
+		<?php endif; ?>
+			<img class="wpff-sp-sidebar-icon" src="<?php echo esc_url( WPFF_SP_PLUGIN_URL . 'images/percent.svg' ); ?>" width="20" height="20" alt="Percent icon" />
+		</span>
+	</div>
+	<?php if ( ! $wpff_sp_sidebar_coverage_ready ) : ?>
+	<a class="wpff-sp-sidebar-note" href="<?php echo esc_url( admin_url( 'options-general.php?page=super-preloader-for-cloudflare#wpff-sp-cf-connect-section' ) ); ?>">
+		<?php
+		printf(
+		// translators: %1$s is the opening strong tag, %2$s is the closing strong tag.
+			esc_html__( 'Grant the %1$sAnalytics Read%2$s permission to your API token to access this report →', 'super-preloader-for-cloudflare' ),
+			'<strong>',
+			'</strong>'
+		);
+		?>
+	</a>
+	<?php elseif ( $wpff_sp_sidebar_coverage_cached_error ) : ?>
+	<span class="wpff-sp-sidebar-note"><?php echo esc_html( $wpff_sp_sidebar_coverage_cached_error ); ?></span>
+	<?php elseif ( is_array( $wpff_sp_sidebar_coverage_summary ) ) : ?>
+	<div class="wpff-sp-sidebar-value wpff-sp-sidebar-count" id="wpff-sp-coverage-hitrate"><?php echo esc_html( null !== $wpff_sp_sidebar_coverage_summary['hitRatePct'] ? $wpff_sp_sidebar_coverage_summary['hitRatePct'] . '%' : '—' ); ?></div>
+	<span class="wpff-sp-coverage-sidebar-note" id="wpff-sp-coverage-misses">
+		<?php
+		echo esc_html(
+			sprintf(
+				/* translators: %1$d is the request count, %2$d is the miss count, both for the last 24 hours. */
+				__( '%1$d requests - %2$d missed', 'super-preloader-for-cloudflare' ),
+				$wpff_sp_sidebar_coverage_summary['requests'],
+				$wpff_sp_sidebar_coverage_summary['misses']
+			)
+		);
+		?>
+	</span>
+	<p class="wpff-sp-sidebar-note" id="wpff-sp-coverage-report-link"><a href="?page=super-preloader-for-cloudflare&#038;tab=coverage"><?php echo esc_html( __( 'View full report →', 'super-preloader-for-cloudflare' ) ); ?></a></p>
+	<?php else : ?>
+	<div class="wpff-sp-sidebar-value wpff-sp-sidebar-count wpff-sp-skeleton" id="wpff-sp-coverage-hitrate" data-wpff-sp-loading="1">…</div>
+	<span class="wpff-sp-coverage-sidebar-note" id="wpff-sp-coverage-misses"><span class="wpff-sp-skeleton wpff-sp-skeleton-bar" style="width: 180px;"></span></span>
+	<p class="wpff-sp-sidebar-note" id="wpff-sp-coverage-report-link"><a href="?page=super-preloader-for-cloudflare&#038;tab=coverage"><?php echo esc_html( __( 'View full report →', 'super-preloader-for-cloudflare' ) ); ?></a></p>
+	<?php endif; ?>
+	</div>
+
 </div>

@@ -2,7 +2,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
+?>
 
+<h3><?php echo esc_html( __( 'Logs', 'super-preloader-for-cloudflare' ) ); ?></h3>
+
+<?php
 if ( file_exists( WPFF_SP_LOG_FILE ) ) {
 	$wpff_sp_all_lines = file( WPFF_SP_LOG_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 

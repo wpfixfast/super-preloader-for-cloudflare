@@ -148,6 +148,48 @@ class WPFF_SP_Cloudflare_Client {
 	}
 
 	/**
+	 * List the Cloudflare zones (domains) visible to the given API token.
+	 *
+	 * @param string $token Cloudflare API token.
+	 * @param string $error Reference; populated with the error message on failure.
+	 * @return array|false List of ['id' => ..., 'name' => ...] entries, or false on failure.
+	 */
+	public static function get_zones( $token, &$error = '' ) {
+		$zones       = array();
+		$page        = 1;
+		$total_pages = 1;
+
+		do {
+			$url      = self::API_BASE . '/zones?page=' . $page . '&per_page=50';
+			$response = wp_remote_get( $url, self::get_api_auth_args( $token ) );
+			$body     = self::is_success_api_response( $response, 'get_zones', $error );
+
+			if ( false === $body ) {
+				return false;
+			}
+
+			if ( ! empty( $body['result'] ) && is_array( $body['result'] ) ) {
+				foreach ( $body['result'] as $zone ) {
+					if ( isset( $zone['id'], $zone['name'] ) ) {
+						$zones[] = array(
+							'id'   => $zone['id'],
+							'name' => $zone['name'],
+						);
+					}
+				}
+			}
+
+			if ( ! empty( $body['result_info']['total_pages'] ) ) {
+				$total_pages = (int) $body['result_info']['total_pages'];
+			}
+
+			++$page;
+		} while ( $page <= $total_pages );
+
+		return $zones;
+	}
+
+	/**
 	 * Deploy the bundled Worker script to the given Cloudflare account, bind the
 	 * shared secret, enable its workers.dev route, and return the resulting URL.
 	 *

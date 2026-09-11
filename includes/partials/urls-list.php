@@ -3,33 +3,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-if ( null !== WPFF_SP_Urls_List_Table::$fetch_error ) {
-	?>
-	<div class="notice notice-error">
-		<p>
-		<?php
-		echo esc_html(
-			sprintf(
-				/* translators: %s is the sitemap fetch error message. */
-				__( 'Could not refresh the URL list: %s', 'super-preloader-for-cloudflare' ),
-				WPFF_SP_Urls_List_Table::$fetch_error
-			)
-		);
-		?>
-		</p>
-	</div>
-	<?php
-}
-
-$wpff_sp_url_keywords  = WPFF_SP_Helpers::get_exclusion_keywords();
-$wpff_sp_all_urls      = get_transient( 'wpff_sp_urls_tab_cache' );
-$wpff_sp_all_urls      = is_array( $wpff_sp_all_urls ) ? $wpff_sp_all_urls : array();
-$wpff_sp_included_urls = WPFF_SP_Helpers::filter_excluded_urls( $wpff_sp_all_urls );
+$wpff_sp_url_keywords = WPFF_SP_Helpers::get_exclusion_keywords();
 ?>
 
 <div class="wpff-sp-urls-tab">
 
-	<form method="post" class="mt-20">
+	<form method="post" class="mt-20 wpff-sp-urls-keyword-form">
 	<?php wp_nonce_field( 'wpff_sp_save_url_exclusions' ); ?>
 	<input type="hidden" name="wpff_sp_url_exclusions" value="1">
 
@@ -38,9 +17,9 @@ $wpff_sp_included_urls = WPFF_SP_Helpers::filter_excluded_urls( $wpff_sp_all_url
 		<?php
 		echo wp_kses_post(
 			sprintf(
-			// translators: %1$s is a line break, used twice.
+			// translators: %1$s is a line break.
 				__(
-					'One keyword per line.%1$sAny URL matching a path (case-insensitive), such as /wishlist, is skipped during preloading.%1$sUseful for saving time by avoiding pages that don\'t need to be cached.',
+					'One keyword per line.%1$sAny URL matching a path (case-insensitive), such as /wishlist, is skipped during preloading. Useful for saving time by avoiding pages that don\'t need to be cached.',
 					'super-preloader-for-cloudflare'
 				),
 				'<br>'
@@ -64,27 +43,31 @@ $wpff_sp_included_urls = WPFF_SP_Helpers::filter_excluded_urls( $wpff_sp_all_url
 	</p>
 	</form>
 
-	<p class="wpff-sp-urls-summary">
-	<?php
-	echo esc_html(
-		sprintf(
-			/* translators: 1: number of URLs that will be preloaded, 2: total number of URLs found in the sitemap. */
-			__( '%1$d of %2$d URLs will be preloaded.', 'super-preloader-for-cloudflare' ),
-			count( $wpff_sp_included_urls ),
-			count( $wpff_sp_all_urls )
-		)
-	);
-	?>
-	</p>
-
-	<form method="get">
-	<input type="hidden" name="page" value="super-preloader-for-cloudflare" />
-	<input type="hidden" name="tab" value="exclusions" />
-	<div class="wpff-sp-urls-table-toolbar">
-		<h3 class="wpff-sp-urls-table-heading"><?php echo esc_html( __( 'Manual URL Exclusions', 'super-preloader-for-cloudflare' ) ); ?></h3>
-		<?php $wpff_sp_urls_list_table->search_box( __( 'Search URLs', 'super-preloader-for-cloudflare' ), 'wpff-sp-url-search' ); ?>
+	<?php if ( $wpff_sp_defer_urls_table ) : ?>
+	<div id="wpff-sp-urls-table-section" data-wpff-sp-loading="1">
+		<p class="wpff-sp-urls-summary"><span class="wpff-sp-skeleton wpff-sp-skeleton-bar" style="width: 220px;"></span></p>
+		<div class="wpff-sp-urls-table-toolbar">
+			<h3 class="wpff-sp-urls-table-heading"><?php echo esc_html( __( 'Manual URL Exclusions', 'super-preloader-for-cloudflare' ) ); ?></h3>
+		</div>
+		<div class="wpff-sp-urls-skeleton-table">
+			<?php
+			// Varied bar widths so the rows don't look like a single
+			// repeated tile — closer to how real URLs vary in length.
+			$wpff_sp_skeleton_widths = array( '70%', '45%', '85%', '55%', '65%', '40%' );
+			foreach ( $wpff_sp_skeleton_widths as $wpff_sp_skeleton_width ) :
+				?>
+			<div class="wpff-sp-urls-skeleton-row">
+				<span class="wpff-sp-skeleton wpff-sp-urls-skeleton-bar" style="width: <?php echo esc_attr( $wpff_sp_skeleton_width ); ?>;"></span>
+			</div>
+				<?php
+			endforeach;
+			?>
+		</div>
 	</div>
-	<?php $wpff_sp_urls_list_table->display(); ?>
-	</form>
+	<?php else : ?>
+	<div id="wpff-sp-urls-table-section">
+		<?php include plugin_dir_path( __FILE__ ) . 'urls-table-section.php'; ?>
+	</div>
+	<?php endif; ?>
 
 </div>

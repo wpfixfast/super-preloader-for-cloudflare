@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $wpff_sp_settings_class = 'settings' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_urls_class     = 'exclusions' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_stats_class    = 'stats' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
+$wpff_sp_coverage_class = 'coverage' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_logs_class     = 'logs' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 $wpff_sp_howto_class    = 'howto' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab';
 ?>
@@ -19,6 +20,9 @@ $wpff_sp_howto_class    = 'howto' === $tab ? 'nav-tab nav-tab-active' : 'nav-tab
 	</a>
 	<a href="?page=super-preloader-for-cloudflare&tab=stats" class="<?php echo esc_attr( $wpff_sp_stats_class ); ?>">
 	<?php echo esc_html( __( 'Stats', 'super-preloader-for-cloudflare' ) ); ?>
+	</a>
+	<a href="?page=super-preloader-for-cloudflare&tab=coverage" class="<?php echo esc_attr( $wpff_sp_coverage_class ); ?>">
+	<?php echo esc_html( __( 'Coverage', 'super-preloader-for-cloudflare' ) ); ?>
 	</a>
 	<a href="?page=super-preloader-for-cloudflare&tab=logs" class="<?php echo esc_attr( $wpff_sp_logs_class ); ?>">
 	<?php echo esc_html( __( 'Logs', 'super-preloader-for-cloudflare' ) ); ?>

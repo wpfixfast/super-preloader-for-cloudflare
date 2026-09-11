@@ -240,7 +240,9 @@ class WPFF_SP_Helpers {
 
 		// Pattern: 2025-05-28 12:04:09@SJC
 		if ( preg_match( '/(.+)@([A-Z]{3})$/', $entry, $matches ) ) {
-			$datetime  = $matches[1];
+			// Drop the seconds (Y-m-d H:i:s -> Y-m-d H:i) — not useful at a
+			// glance and lets the Run column stay narrower.
+			$datetime  = preg_replace( '/:\d{2}$/', '', $matches[1] );
 			$edge_code = $matches[2];
 
 			if ( isset( $edge_locations[ $edge_code ] ) ) {

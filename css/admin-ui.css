@@ -171,14 +171,22 @@
 /* stats table */
 .wpff-sp-stats-table-wrapper {
   overflow-x: auto;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 20px 0;
 }
 
 .wpff-sp-stats-table {
   border: 0 !important;
+}
+
+/* WP core's "table.fixed { table-layout: fixed; }" (type + class) outranks
+   a bare ".wpff-sp-stats-table" override, so this needs the same type +
+   two classes to reliably win regardless of stylesheet load order. Fixed
+   layout can only give columns an explicit pixel width, never size-to-
+   content — auto is what lets the Run columns below shrink-wrap to their
+   content, and, unlike under fixed layout, lets min-width on the URL
+   column actually work as a real floor. */
+table.wpff-sp-stats-table.fixed {
+  table-layout: auto;
 }
 
 .wpff-sp-stats-table th {
@@ -192,6 +200,35 @@
   vertical-align: middle;
 }
 
+/* Run columns shrink-wrap to their content (edge badge + "Y-m-d H:i"
+   timestamp) instead of taking a fixed width: white-space:nowrap stops
+   them wrapping, and width:1% is the standard trick that tells
+   table-layout:auto to give the column no more than that content needs. */
+.wpff-sp-stats-table th:not(:first-child),
+.wpff-sp-stats-table td:not(:first-child) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.wpff-sp-stats-table th:not(:first-child) {
+  padding: 10px 16px;
+}
+
+.wpff-sp-stats-table td:not(:first-child) {
+  padding: 6px 16px;
+  font-size: 12px;
+}
+
+/* Tablet/desktop: URL column gets whatever width is left, down to a
+   readable 520px floor; below that the wrapper's overflow-x:auto scrolls
+   horizontally instead of crushing it further. */
+@media screen and (min-width: 783px) {
+  .wpff-sp-stats-table th:first-child,
+  .wpff-sp-stats-table td:first-child {
+    min-width: 520px;
+  }
+}
+
 .wpff-sp-stats-table tr {
   transition: background-color 0.05s ease;
 }
@@ -200,8 +237,35 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.bg-light-gray {
-  background-color: #f5f5f5;
+/* Opt this table out of WP core's responsive list-table behavior (same
+   782px breakpoint fix as the Coverage table, see .wpff-sp-coverage-table
+   below) — it turns rows into flex containers expecting a data-colname
+   "expand row" toggle that only exists on real WP_List_Table output. A
+   plain table that falls back to the wrapper's horizontal scroll reads
+   better than replicating that toggle mechanism for a 6-column matrix. */
+@media screen and (max-width: 782px) {
+  .wpff-sp-stats-table tr {
+    display: table-row;
+  }
+
+  .wpff-sp-stats-table th,
+  .wpff-sp-stats-table td {
+    display: table-cell;
+    position: static;
+    flex: none;
+  }
+
+  /* Mobile floor is narrower than tablet/desktop's; the run columns'
+     own content-fit width plus this is what the wrapper's overflow-x:auto
+     scrolls for once it no longer fits. */
+  .wpff-sp-stats-table th:first-child,
+  .wpff-sp-stats-table td:first-child {
+    min-width: 350px;
+  }
+
+  .wpff-sp-stats-table td::before {
+    content: none;
+  }
 }
 
 .edge-location {
@@ -248,39 +312,6 @@
   background-color: #f3efec;
 }
 
-.wpff-sp-summary {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-.wpff-sp-summary h4 {
-  margin: 0 0 10px 0;
-  color: #495057;
-}
-.wpff-sp-summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-}
-.wpff-sp-summary-item {
-  background: white;
-  padding: 10px;
-  border-radius: 3px;
-  border-left: 4px solid #007cba;
-}
-.wpff-sp-summary-item strong {
-  display: block;
-  font-size: 1.2em;
-  color: #007cba;
-}
-.wpff-sp-frequency {
-  font-size: 0.9em;
-  color: #666;
-  margin-top: 5px;
-}
-
 /* log output box */
 #wpff-sp-log-output {
   background: #1e1e1e;
@@ -295,147 +326,89 @@
   font-style: italic;
 }
 
-/* Cumulative and latest run stats styling */
-/* Main Container */
+/* Cumulative stats — unboxed, native-style layout matching the Coverage
+   tab's tiles instead of the old boxed/gradient panel; capped at the same
+   520px other tabs use (Coverage's .wpff-sp-coverage-wrap, the Exclusions
+   keyword form, WP core's own .card on How to Use). */
 .wpff-sp-summary {
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 520px;
   margin: 20px 0;
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-}
-
-/* Header */
-.wpff-sp-summary-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
-}
-
-.wpff-sp-summary-header h4 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #111827;
-}
-
-/* Section Styling */
-.wpff-sp-summary-section {
-  padding: 24px;
-  border-radius: 6px;
-  margin-bottom: 0;
-}
-
-.wpff-sp-overall-section {
-  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
-  border-left: 4px solid #3b82f6;
-}
-
-.wpff-sp-latest-section {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border-left: 4px solid #10b981;
-  border-top: 1px solid #e5e7eb;
 }
 
 /* Section Headers */
 .wpff-sp-section-header {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
-.wpff-sp-section-header h5 {
-  margin: 0 0 6px 0;
-  font-size: 16px;
-  font-weight: 600;
+.wpff-sp-section-header h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: normal;
   color: #111827;
-}
-
-.wpff-sp-overall-section .wpff-sp-section-header h5 {
-  color: #1e40af;
-}
-
-.wpff-sp-latest-section .wpff-sp-section-header h5 {
-  color: #047857;
 }
 
 .wpff-sp-section-description {
   margin: 0;
   font-size: 13px;
   color: #6b7280;
-  font-style: italic;
 }
 
 /* Overall Stats Grid */
 .wpff-sp-overall-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
 .wpff-sp-summary-item {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 16px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .wpff-sp-summary-item.wide {
   grid-column: span 2;
 }
 
-.wpff-sp-summary-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
 /* Metric Styling */
 .wpff-sp-metric-value {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #111827;
   line-height: 1.2;
   margin-bottom: 4px;
-}
-
-.wpff-sp-overall-section .wpff-sp-primary-metric .wpff-sp-metric-value {
-  color: #1e40af;
+  overflow-wrap: anywhere;
 }
 
 .wpff-sp-metric-label {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 500;
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .wpff-sp-frequency {
   margin-top: 8px;
   font-size: 12px;
-  color: #9ca3af;
+  color: #6b7280;
   padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.05);
+  background: #f9fafb;
   border-radius: 4px;
   font-family: monospace;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .wpff-sp-summary-section {
-    padding: 16px;
-  }
-
   .wpff-sp-overall-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
+    gap: 10px;
   }
 
   .wpff-sp-metric-value {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .wpff-sp-urls-table-toolbar {
@@ -458,16 +431,12 @@
 }
 
 @media (max-width: 480px) {
-  .wpff-sp-summary-header {
-    padding: 16px;
-  }
-
   .wpff-sp-overall-grid {
     grid-template-columns: 1fr;
   }
 
   .wpff-sp-metric-value {
-    font-size: 18px;
+    font-size: 17px;
   }
 }
 
@@ -525,6 +494,45 @@
   filter: invert(71%) sepia(8%) saturate(468%) hue-rotate(182deg) brightness(92%) contrast(87%);
 }
 
+.wpff-sp-sidebar-icon-small {
+  width: 14px;
+  height: 14px;
+}
+
+/* Cache Coverage card's manual refresh button */
+.wpff-sp-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 2px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.wpff-sp-icon-button:hover .wpff-sp-sidebar-icon {
+  filter: invert(41%) sepia(8%) saturate(468%) hue-rotate(182deg) brightness(75%) contrast(87%);
+}
+
+.wpff-sp-icon-button:disabled {
+  cursor: default;
+}
+
+.wpff-sp-icon-spinning {
+  animation: wpff-sp-icon-spin 0.8s linear infinite;
+}
+
+@keyframes wpff-sp-icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .wpff-sp-sidebar-label {
   font-size: 11px;
   font-weight: 600;
@@ -543,6 +551,11 @@
   font-size: 24px;
   font-weight: 700;
   color: #111827;
+  /* Reserves the same line height whether it holds the loading "…"
+     placeholder or the real value, so filling it in doesn't shift the
+     content below (skeleton and loaded text share this font-size, but
+     min-height makes that guaranteed rather than incidental). */
+  min-height: 29px;
 }
 
 /* Mode badges */
@@ -614,6 +627,12 @@
   text-overflow: ellipsis;
   font-weight: 400;
   white-space: nowrap;
+  /* inline-block defaults to vertical-align: baseline, which is its own
+     separate thing from the parent <td>'s vertical-align (that only
+     positions this element's *line box* within the cell, not the pill
+     within that line box) — same root cause class as the checkbox fix,
+     different property. */
+  vertical-align: middle;
 }
 
 .wpff-sp-sidebar-remaining {
@@ -623,30 +642,144 @@
   color: #6b7280;
 }
 
+/* Cache Coverage sidebar card's secondary line — a block (not inline, like
+   .wpff-sp-sidebar-remaining above) since it can carry a full Cloudflare
+   error message instead of a short "(N remaining)" tag, and needs to wrap
+   within the card instead of overflowing it. */
+.wpff-sp-coverage-sidebar-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  overflow-wrap: anywhere;
+  /* Starts empty (filled in by JS after load) — without a reserved
+     height an empty element collapses to 0px, then suddenly pushes
+     everything below it down once real text arrives. */
+  min-height: 17px;
+}
+
+/* Generic small placeholder bar — used anywhere a dynamic text element
+   needs to reserve its real height *before* JS fills it in, not just
+   pulse in otherwise-empty space. Set a width per use via inline style. */
+.wpff-sp-skeleton-bar {
+  display: inline-block;
+  height: 12px;
+  border-radius: 3px;
+  background: #dcdcde;
+}
+
+/* How to Use tab — reuses WP core's native .card class (white bg, border,
+   radius, padding, capped at its own 520px) for the "boxed" containment
+   that plain unboxed text was missing; this just adds spacing/typography
+   so the long-form content within it reads comfortably. */
+.wpff-sp-setup-guide {
+  line-height: 1.6;
+}
+
+.wpff-sp-setup-guide h4 {
+  margin: 28px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #dcdcde;
+}
+
+.wpff-sp-setup-guide h4:first-child {
+  margin-top: 0;
+}
+
+.wpff-sp-setup-guide h5 {
+  margin: 18px 0 8px;
+  color: #3c434a;
+}
+
+.wpff-sp-setup-guide p {
+  margin: 0 0 14px;
+}
+
+.wpff-sp-setup-guide ul,
+.wpff-sp-setup-guide ol {
+  margin: 0 0 14px 20px;
+}
+
+.wpff-sp-setup-guide li {
+  margin-bottom: 4px;
+}
+
 /* URLs tab */
+
+/* Caps at the same 520px WP core's own .card class uses (see the How to
+   Use tab) — for width consistency, not for the box styling itself; this
+   tab stays unboxed. A plain textarea+button stretching full-width across
+   a wide screen read as un-native, per user feedback. */
+.wpff-sp-urls-keyword-form {
+  max-width: 520px;
+}
+
 .wpff-sp-urls-summary {
   margin: 16px 0;
   font-weight: 600;
   color: #1d2327;
+  /* Matches the skeleton bar's height so swapping it for the real "N of
+     M URLs..." text doesn't shift the table below it. */
+  min-height: 20px;
 }
 
-.wpff-sp-tab-loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.7);
+/* Vertically center cell content — WP core's list-table default is
+   top-aligned (.widefat td { vertical-align: top; } in wp-admin's own
+   common.css), which looks off once the Status column's pill badges vary
+   in height/width against the plain URL text beside them. !important
+   because this specific selector should already out-specificity that
+   core rule and still wasn't visibly taking effect. */
+.wpff-sp-urls-tab .wp-list-table td,
+.wpff-sp-urls-tab .wp-list-table th {
+  vertical-align: middle !important;
+}
+
+/* The checkbox column specifically was still off even with the above —
+   traced via DevTools to WP core's .check-column padding being wildly
+   asymmetric (11px top, 0 bottom — see .widefat tbody td.check-column in
+   common.css) versus the regular 8px/10px every other cell gets, so
+   vertical-centering a lopsided box still lands off-center. Matching the
+   regular cell padding here removes that asymmetry entirely. */
+.wpff-sp-urls-tab .wp-list-table td.check-column,
+.wpff-sp-urls-tab .wp-list-table th.check-column {
+  padding: 8px 10px !important;
+}
+
+/* Exclusions tab — skeleton shown in place of the URL table on a fresh
+   visit, filled in via AJAX (see js/admin-ui.js). Replaces the old
+   full-page blocking overlay this used to show on every click. */
+.wpff-sp-urls-skeleton-table {
+  border: 1px solid #c3c4c7;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.wpff-sp-urls-skeleton-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #1d2327;
-  z-index: 999999;
+  height: 32px;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f1;
 }
 
-.wpff-sp-tab-loading-overlay .spinner {
-  float: none;
-  margin: 0;
-  visibility: visible;
+/* Matches WP core's own .striped row tint (odd rows tinted, same as the
+   real table this replaces will use once it loads in). */
+.wpff-sp-urls-skeleton-row:nth-child(odd) {
+  background: #f6f7f7;
+}
+
+.wpff-sp-urls-skeleton-row:last-child {
+  border-bottom: none;
+}
+
+.wpff-sp-urls-skeleton-bar {
+  display: block;
+  height: 12px;
+  border-radius: 3px;
+  background: #dcdcde;
 }
 
 .wpff-sp-status-excluded {
@@ -734,4 +867,126 @@
   .wpff-sp-sidebar-card-last-run {
     min-width: 90.5%;
   }
+}
+
+/* ============================================================
+   Cache Coverage (sidebar card + Coverage tab) — real visitor
+   cache-miss data pulled live from Cloudflare Analytics. No outer card —
+   the Coverage tab otherwise looked out of place next to the plain,
+   unboxed native-WP styling every other tab (e.g. Exclusions) uses.
+   ============================================================ */
+.wpff-sp-coverage-wrap {
+  max-width: 500px;
+}
+
+/* Today / Last 7 Days / Worst Coverage — three tiles stacked vertically,
+   each reusing the sidebar card's own classes (.wpff-sp-sidebar-card etc.)
+   so this tab's top section visually matches the sidebar card exactly. */
+.wpff-sp-coverage-tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wpff-sp-coverage-table-caption {
+  margin: 16px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+}
+
+/* Deliberately relies on WordPress core's own .widefat/.striped list-table
+   styling (borders, header weight, row striping, padding) — matches the
+   Exclusions tab's native WP_List_Table look instead of a custom style. */
+.wpff-sp-coverage-table-wrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.wpff-sp-coverage-table th,
+.wpff-sp-coverage-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Country stays left-aligned (text); Requests/Misses/Hit Rate right-align
+   so magnitudes line up by digit instead of by leftmost character. */
+.wpff-sp-coverage-table th:not(:first-child),
+.wpff-sp-coverage-table td:not(:first-child) {
+  text-align: right;
+}
+
+/* Opt this table out of WP core's responsive list-table behavior
+   (wp-admin/css/list-tables.css, same 782px breakpoint) — that CSS turns
+   rows into flex containers and forces columns 3+ onto their own full-width
+   line, expecting a data-colname "expand row" toggle that only exists on
+   real WP_List_Table output. With only 4 short columns here, a plain
+   compact table (falling back to the existing horizontal-scroll wrapper)
+   reads better than replicating that whole toggle mechanism. */
+@media screen and (max-width: 782px) {
+  .wpff-sp-coverage-table tr {
+    display: table-row;
+  }
+
+  .wpff-sp-coverage-table th,
+  .wpff-sp-coverage-table td {
+    display: table-cell;
+    position: static;
+    flex: none;
+  }
+
+  .wpff-sp-coverage-table td::before {
+    content: none;
+  }
+}
+
+.wpff-sp-coverage-suggestion {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.wpff-sp-coverage-not-connected,
+.wpff-sp-coverage-error {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.wpff-sp-coverage-error {
+  margin: 0 0 16px;
+}
+
+.wpff-sp-coverage-not-connected a {
+  color: inherit;
+}
+
+/* Skeleton loading placeholder — same-height card, no layout jump while
+   the async Cloudflare Analytics fetch resolves. */
+.wpff-sp-skeleton {
+  opacity: 0.4;
+  animation: wpff-sp-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes wpff-sp-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Persistent yellow highlight on the walkthrough's "Zone > Analytics > Read"
+   step (or the Connected card's reconnect hint) when arriving via the Cache
+   Coverage card's prompt link, so it's obvious which one is the relevant
+   step — stays highlighted rather than fading, since the user still has to
+   go act on it (create/update the token) before it matters less. */
+.wpff-sp-highlight-flash {
+  background-color: #fef08a;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
 }

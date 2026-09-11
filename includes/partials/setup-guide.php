@@ -4,9 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<div class="wpff-sp-setup-guide postbox mt-40">
-	<div class="inside" style="max-width: 1024px;">
-	<h2><?php echo esc_html( __( 'Setup Guide', 'super-preloader-for-cloudflare' ) ); ?></h2>
+<h3><?php echo esc_html( __( 'How to Use', 'super-preloader-for-cloudflare' ) ); ?></h3>
+
+<div class="wpff-sp-setup-guide card">
+	<h4><?php echo esc_html( __( 'Setup Guide', 'super-preloader-for-cloudflare' ) ); ?></h4>
 	<p>
 		<?php
 		echo esc_html__(
@@ -45,9 +46,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		);
 		?>
 	</p>
-	<h3><?php echo esc_html( __( 'Steps to Get Started:', 'super-preloader-for-cloudflare' ) ); ?></h3>
+	<h4><?php echo esc_html( __( 'Steps to Get Started:', 'super-preloader-for-cloudflare' ) ); ?></h4>
 	<ol>
-		<li><a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-create-and-deploy-a-cloudflare-worker" target="_blank" rel="noopener"><?php echo esc_html( __( 'Create and Deploy Cloudflare Worker URL', 'super-preloader-for-cloudflare' ) ); ?></a></li>
+		<li><a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-automatically-deploy-a-cloudflare-worker-using-an-api-token" target="_blank" rel="noopener"><?php echo esc_html( __( 'Deploy Cloudflare Worker using API Token', 'super-preloader-for-cloudflare' ) ); ?></a></li>
 		<li><a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-register-and-use-webshare-proxies" target="_blank" rel="noopener"><?php echo esc_html( __( 'Register and Use Webshare Proxies', 'super-preloader-for-cloudflare' ) ); ?></a></li>
 		<li><a href="https://wordpress.org/plugins/search/seo/" target="_blank" rel="noopener"><?php echo esc_html( __( 'Create your sitemap using Yoast, RankMath, or similar SEO plugin', 'super-preloader-for-cloudflare' ) ); ?></a></li>
 		<li><?php echo esc_html( __( 'Start Preloading', 'super-preloader-for-cloudflare' ) ); ?></li>
@@ -55,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p class="description">
 		<?php echo esc_html( __( 'Note: The WebShare link on the Settings tab includes our referral code, which supports our plugin development at no extra cost to you.', 'super-preloader-for-cloudflare' ) ); ?>
 	</p>
-	<h2><?php echo esc_html( __( 'FAQs', 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<h4><?php echo esc_html( __( 'FAQs', 'super-preloader-for-cloudflare' ) ); ?></h4>
 	<ul class="ul-disc">
 		<li>
 		<a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#what-is-cloudflare-edge" target="_blank" rel="noopener">
@@ -76,36 +77,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#how-to-check-cache-from-your-location" target="_blank" rel="noopener">
 			<?php echo esc_html( __( 'How to Check if it\'s working', 'super-preloader-for-cloudflare' ) ); ?>
 		</a>
-		</li>      
+		</li>
 		<li>
 		<a href="https://wpfixfast.com/blog/preload-cloudflare-cache/#usage-notes-and-key-considerations" target="_blank" rel="noopener">
 			<?php echo esc_html( __( 'Usage notes and key considerations', 'super-preloader-for-cloudflare' ) ); ?>
 		</a>
-		</li>   
+		</li>
 	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.2.0", 'super-preloader-for-cloudflare' ) ); ?></h2>
+	<h4><?php echo esc_html( __( "What's New", 'super-preloader-for-cloudflare' ) ); ?></h4>
+	<h5><?php echo esc_html( __( 'Version 1.3.0', 'super-preloader-for-cloudflare' ) ); ?></h5>
+	<ul class="ul-disc">
+		<li><?php echo esc_html__( 'Added: Cache Coverage report. See real visitor cache hit/miss rates by country from Cloudflare Analytics, with suggested Webshare proxy countries to improve coverage.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Improved: Exclusions tab now loads instantly instead of waiting on a live sitemap re-fetch every time.', 'super-preloader-for-cloudflare' ); ?></li>
+		<li><?php echo esc_html__( 'Improved: Visual improvements on all tabs.', 'super-preloader-for-cloudflare' ); ?></li>
+	</ul>
+	<h5><?php echo esc_html( __( 'Version 1.2.0', 'super-preloader-for-cloudflare' ) ); ?></h5>
 	<ul class="ul-disc">
 		<li><?php echo esc_html__( 'Added: Optional automated Cloudflare Worker deployment.', 'super-preloader-for-cloudflare' ); ?></li>
 		<li><?php echo esc_html__( 'Improved: Admin bar shortcut', 'super-preloader-for-cloudflare' ); ?></li>
 	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.1.2", 'super-preloader-for-cloudflare' ) ); ?></h2>
-	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Fixed: Proxy count in the sidebar could get stuck showing "None" after saving a new proxy list URL because of a stale 24-hour cache; the count now updates immediately when the URL is saved and after each preload run.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Fixed: Last run duration always showed "minutes" (plural) even for a single minute, e.g. "1 minutes".', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Improved: Minor wording and clarity improvements to Settings and Exclusions tab descriptions.', 'super-preloader-for-cloudflare' ); ?></li>
-	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.1.1", 'super-preloader-for-cloudflare' ) ); ?></h2>
-	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Fixed: Manually excluded URLs on the Exclusions tab were matched as substrings, causing similar URLs to be excluded unintentionally; manual exclusions now require an exact URL match.', 'super-preloader-for-cloudflare' ); ?></li>
-	</ul>
-	<h2><?php echo esc_html( __( "What's New in 1.1.0", 'super-preloader-for-cloudflare' ) ); ?></h2>
-	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Added: New "Exclusions" tab that allows manual and keyword-based URL exclusions.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Added: Optional "Start Preload" shortcut in the WordPress admin bar to trigger a manual preload from any page.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Added: Auto-dismissing toast notifications confirm when the preload starts and completes.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Added: Live remaining URL count shown in the sidebar and next to the admin bar shortcut while a run is in progress.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Improved: Admin bar shortcut reflects the real running state immediately, whether the preload was started manually or via the scheduled cron.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Tested: Compatibility with WordPress 7.0.', 'super-preloader-for-cloudflare' ); ?></li>
-	</ul>
-	</div>
 </div>

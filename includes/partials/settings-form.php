@@ -14,7 +14,7 @@ $wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name
 
 	<table class="form-table">
 	<tbody>
-		<tr>
+		<tr id="wpff-sp-cf-connect-section">
 		<th>
 			<label><?php echo esc_html( __( 'Deploy Worker via Cloudflare API Token?', 'super-preloader-for-cloudflare' ) ); ?></label>
 		</th>
@@ -27,7 +27,20 @@ $wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name
 					<?php echo esc_html( __( 'No', 'super-preloader-for-cloudflare' ) ); ?>
 				</button>
 			</div>
-			<p class="long-description"><?php echo esc_html( __( '"Yes" deploys the Worker automatically using a Cloudflare API Token. "No" lets you create and paste in your own Worker URL manually.', 'super-preloader-for-cloudflare' ) ); ?></p>
+			<p class="long-description">
+				<?php
+				echo wp_kses_post(
+					sprintf(
+					// translators: %1$s is a line break.
+						__(
+							'"Yes" deploys the Worker automatically using a Cloudflare API Token (Recommended).%1$s"No" lets you create and paste in your own Worker URL manually.',
+							'super-preloader-for-cloudflare'
+						),
+						'<br>'
+					)
+				);
+				?>
+			</p>
 		</td>
 		</tr>
 	</tbody>
@@ -115,14 +128,24 @@ $wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name
 					<?php
 					printf(
 					// translators: %1$s is the opening strong tag, %2$s is the closing strong tag.
-						esc_html__( 'Add the %1$sAccount > Workers Scripts > Edit%2$s permission.', 'super-preloader-for-cloudflare' ),
+						esc_html__( 'Add the %1$sAccount > Workers Scripts > Edit%2$s permission (deploys the Worker).', 'super-preloader-for-cloudflare' ),
+						'<strong>',
+						'</strong>'
+					);
+					?>
+					</li>
+					<li id="wpff-sp-analytics-permission-step">
+					<?php
+					printf(
+					// translators: %1$s is the opening strong tag, %2$s is the closing strong tag.
+						esc_html__( 'Add the %1$sZone > Analytics > Read%2$s permission (lets the plugin show which countries have the most cache misses, so you know where to add proxies).', 'super-preloader-for-cloudflare' ),
 						'<strong>',
 						'</strong>'
 					);
 					?>
 					</li>
 					<li><?php echo esc_html( __( 'Under "Account Resources", select the account that your domain is connected to.', 'super-preloader-for-cloudflare' ) ); ?></li>
-					<li><?php echo esc_html( __( 'Click "Continue to summary", review the permission, and click "Create Token".', 'super-preloader-for-cloudflare' ) ); ?></li>
+					<li><?php echo esc_html( __( 'Click "Continue to summary", review the permissions, and click "Create Token".', 'super-preloader-for-cloudflare' ) ); ?></li>
 					<li><?php echo esc_html( __( 'Copy the generated token and paste it above.', 'super-preloader-for-cloudflare' ) ); ?></li>
 				</ol>
 			</div>
@@ -147,6 +170,28 @@ $wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name
 			/>
 			<p class="long-description" id="wpff-sp-auto-deploy-account-hint">
 				<?php echo esc_html( __( 'Only needed if your API Token has access to more than one Cloudflare account.', 'super-preloader-for-cloudflare' ) ); ?>
+			</p>
+		</td>
+		</tr>
+
+		<tr id="wpff-sp-auto-deploy-zone-row" style="<?php echo ( $wpff_sp_worker_connected || empty( $cf_zone_id ) ) ? 'display: none;' : ''; ?>">
+		<th>
+			<label for="wpff_sp_cf_zone_id"><?php echo esc_html( __( 'Cloudflare Zone ID', 'super-preloader-for-cloudflare' ) ); ?></label>
+		</th>
+		<td>
+			<select id="wpff-sp-zone-id-picker" class="regular-text" style="display: none;">
+				<option value=""><?php echo esc_html( __( 'Select a zone…', 'super-preloader-for-cloudflare' ) ); ?></option>
+			</select>
+			<input
+			type="text"
+			name="cf_zone_id"
+			id="wpff_sp_cf_zone_id"
+			placeholder="<?php echo esc_attr( __( 'Optional — needed for the Cache Coverage report', 'super-preloader-for-cloudflare' ) ); ?>"
+			value="<?php echo esc_attr( $cf_zone_id ); ?>"
+			class="regular-text"
+			/>
+			<p class="long-description">
+			<?php echo esc_html( __( 'Pick a zone for the Cache Coverage report.', 'super-preloader-for-cloudflare' ) ); ?>
 			</p>
 		</td>
 		</tr>
@@ -196,6 +241,10 @@ $wpff_sp_worker_connected    = (bool) get_option( 'wpff_sp_cf_worker_script_name
 				<div class="wpff-sp-connection-card-row">
 					<span class="wpff-sp-connection-card-label"><?php echo esc_html( __( 'Worker URL', 'super-preloader-for-cloudflare' ) ); ?></span>
 					<span class="wpff-sp-connection-card-value" id="wpff-sp-connection-worker-url"><?php echo esc_html( $cf_auto_worker_url ); ?></span>
+				</div>
+				<div class="wpff-sp-connection-card-row" id="wpff-sp-connection-zone-row" style="<?php echo empty( $cf_zone_name ) ? 'display: none;' : ''; ?>">
+					<span class="wpff-sp-connection-card-label"><?php echo esc_html( __( 'Zone (Analytics)', 'super-preloader-for-cloudflare' ) ); ?></span>
+					<span class="wpff-sp-connection-card-value" id="wpff-sp-connection-zone-name"><?php echo esc_html( $cf_zone_name ); ?></span>
 				</div>
 			</div>
 			<span class="spinner" id="wpff-sp-disconnect-spinner"></span>

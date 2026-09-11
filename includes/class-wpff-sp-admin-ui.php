@@ -23,8 +23,9 @@ class WPFF_SP_Admin_UI {
 
 	/**
 	 * Require the URLs tab's WP_List_Table class and its WP core dependency.
+	 * Public so WPFF_SP_Ajax::get_urls_table() can reuse it too.
 	 */
-	private static function load_urls_list_table_class() {
+	public static function load_urls_list_table_class() {
 		if ( ! class_exists( 'WP_List_Table' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 		}
@@ -110,6 +111,7 @@ class WPFF_SP_Admin_UI {
 		$worker_url    = get_option( 'wpff_sp_worker_url', '' );
 		$cf_api_token  = defined( 'WPFF_SP_CF_API_TOKEN' ) && '' !== (string) WPFF_SP_CF_API_TOKEN ? WPFF_SP_CF_API_TOKEN : get_option( 'wpff_sp_cf_api_token', '' );
 		$cf_account_id = get_option( 'wpff_sp_cf_account_id', '' );
+		$cf_zone_id    = get_option( 'wpff_sp_cf_zone_id', '' );
 
 		// Infer a default the first time this is ever read (before the user has
 		// explicitly toggled or saved a mode).
@@ -132,6 +134,7 @@ class WPFF_SP_Admin_UI {
 		}
 
 		$cf_account_name    = get_option( 'wpff_sp_cf_account_name', '' );
+		$cf_zone_name       = get_option( 'wpff_sp_cf_zone_name', '' );
 		$cf_auto_worker_url = get_option( 'wpff_sp_auto_worker_url', '' );
 		$proxy_url          = get_option( 'wpff_sp_proxy_list_url', '' );
 		$sitemap_url        = get_option( 'wpff_sp_sitemap_url', get_site_url() . '/sitemap.xml' );
@@ -142,12 +145,27 @@ class WPFF_SP_Admin_UI {
 		// Bulk actions are already handled earlier via load-{hook} (see
 		// maybe_process_url_bulk_action) since a redirect can't happen here —
 		// by this point admin-header.php has already sent output.
-		$wpff_sp_urls_list_table = null;
+		//
+		// On a plain fresh visit (no pagination/search/sort params),
+		// prepare_items() re-fetches the sitemap live — deliberately, so
+		// this tab always reflects the current sitemap rather than a stale
+		// cache, unlike pagination/search/sort which reuse the cache for
+		// consistency (see WPFF_SP_Urls_List_Table::get_all_urls()). That
+		// live fetch can take a couple of seconds, so it's deferred to an
+		// AJAX call (see js/admin-ui.js + WPFF_SP_Ajax::get_urls_table())
+		// instead of blocking this page load — urls-list.php renders a
+		// skeleton in the meantime when $wpff_sp_defer_urls_table is true.
+		$wpff_sp_urls_list_table  = null;
+		$wpff_sp_defer_urls_table = false;
 		if ( 'exclusions' === $tab ) {
 			self::load_urls_list_table_class();
 
-			$wpff_sp_urls_list_table = new WPFF_SP_Urls_List_Table();
-			$wpff_sp_urls_list_table->prepare_items();
+			if ( WPFF_SP_Urls_List_Table::is_table_interaction() ) {
+				$wpff_sp_urls_list_table = new WPFF_SP_Urls_List_Table();
+				$wpff_sp_urls_list_table->prepare_items();
+			} else {
+				$wpff_sp_defer_urls_table = true;
+			}
 		}
 
 		echo '<div class="wrap">';
@@ -170,6 +188,8 @@ class WPFF_SP_Admin_UI {
 			include plugin_dir_path( __FILE__ ) . 'partials/urls-list.php';
 		} elseif ( 'stats' === $tab ) {
 			include plugin_dir_path( __FILE__ ) . 'partials/stats-table.php';
+		} elseif ( 'coverage' === $tab ) {
+			include plugin_dir_path( __FILE__ ) . 'partials/coverage-tab.php';
 		} elseif ( 'logs' === $tab ) {
 			include plugin_dir_path( __FILE__ ) . 'partials/logs-viewer.php';
 		} elseif ( 'howto' === $tab ) {
@@ -304,35 +324,45 @@ class WPFF_SP_Admin_UI {
 			'wpff-sp-admin-ui',
 			'wpff',
 			array(
-				'nonce'             => wp_create_nonce( 'wpff_sp_preload_nonce' ),
-				'statusNonce'       => wp_create_nonce( 'wpff_sp_status_nonce' ),
-				'deployNonce'       => wp_create_nonce( 'wpff_sp_deploy_worker_nonce' ),
-				'disconnectNonce'   => wp_create_nonce( 'wpff_sp_disconnect_worker_nonce' ),
-				'workerStatusNonce' => wp_create_nonce( 'wpff_sp_worker_status_nonce' ),
-				'i18n'              => array(
-					'running'                   => __( 'Preloader running... Please wait for the first batch to complete.', 'super-preloader-for-cloudflare' ),
-					'complete'                  => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
+				'nonce'              => wp_create_nonce( 'wpff_sp_preload_nonce' ),
+				'statusNonce'        => wp_create_nonce( 'wpff_sp_status_nonce' ),
+				'deployNonce'        => wp_create_nonce( 'wpff_sp_deploy_worker_nonce' ),
+				'disconnectNonce'    => wp_create_nonce( 'wpff_sp_disconnect_worker_nonce' ),
+				'workerStatusNonce'  => wp_create_nonce( 'wpff_sp_worker_status_nonce' ),
+				'cacheCoverageNonce' => wp_create_nonce( 'wpff_sp_cache_coverage_nonce' ),
+				'urlsTableNonce'     => wp_create_nonce( 'wpff_sp_urls_table_nonce' ),
+				'i18n'               => array(
+					'running'                       => __( 'Preloader running... Please wait for the first batch to complete.', 'super-preloader-for-cloudflare' ),
+					'complete'                      => __( 'Preload Complete', 'super-preloader-for-cloudflare' ),
 					// translators: %d is the number of items remaining in the preload queue.
-					'remaining'                 => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
-					'error'                     => __( 'Error: ', 'super-preloader-for-cloudflare' ),
-					'ajaxFailed'                => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
-					'unknown'                   => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
-					'statusRunning'             => __( 'Running', 'super-preloader-for-cloudflare' ),
-					'statusIdle'                => __( 'Idle', 'super-preloader-for-cloudflare' ),
+					'remaining'                     => __( '%d items remaining. Background process will continue.', 'super-preloader-for-cloudflare' ),
+					'error'                         => __( 'Error: ', 'super-preloader-for-cloudflare' ),
+					'ajaxFailed'                    => __( 'AJAX request failed.', 'super-preloader-for-cloudflare' ),
+					'unknown'                       => __( 'Unknown error.', 'super-preloader-for-cloudflare' ),
+					'statusRunning'                 => __( 'Running', 'super-preloader-for-cloudflare' ),
+					'statusIdle'                    => __( 'Idle', 'super-preloader-for-cloudflare' ),
 					// translators: %d is the number of items remaining in the preload queue.
-					'remainingTag'              => __( '(%d remaining)', 'super-preloader-for-cloudflare' ),
-					'loadingTab'                => __( 'Loading URLs…', 'super-preloader-for-cloudflare' ),
-					'deploying'                 => __( 'Deploying Worker to Cloudflare…', 'super-preloader-for-cloudflare' ),
-					'deploySuccess'             => __( 'Worker deployed successfully and your settings have been saved.', 'super-preloader-for-cloudflare' ),
-					'deployMissing'             => __( 'Enter your Cloudflare API Token first.', 'super-preloader-for-cloudflare' ),
-					'disconnectConfirm'         => __( 'This will delete the deployed Worker from your Cloudflare account. Continue?', 'super-preloader-for-cloudflare' ),
-					'disconnecting'             => __( 'Disconnecting…', 'super-preloader-for-cloudflare' ),
-					'disconnectSuccess'         => __( 'Worker disconnected and removed from Cloudflare.', 'super-preloader-for-cloudflare' ),
-					'workerStatusChecking'      => __( 'Checking…', 'super-preloader-for-cloudflare' ),
-					'workerStatusDeploying'     => __( 'Waiting for the Worker', 'super-preloader-for-cloudflare' ),
-					'workerStatusWorking'       => __( 'Deployed & Working', 'super-preloader-for-cloudflare' ),
-					'workerStatusNotDeployed'   => __( 'Not Deployed', 'super-preloader-for-cloudflare' ),
-					'workerStatusNotResponding' => __( 'Not Responding', 'super-preloader-for-cloudflare' ),
+					'remainingTag'                  => __( '(%d remaining)', 'super-preloader-for-cloudflare' ),
+					'deploying'                     => __( 'Deploying Worker to Cloudflare…', 'super-preloader-for-cloudflare' ),
+					'deploySuccess'                 => __( 'Worker deployed successfully and your settings have been saved.', 'super-preloader-for-cloudflare' ),
+					'deployMissing'                 => __( 'Enter your Cloudflare API Token first.', 'super-preloader-for-cloudflare' ),
+					'disconnectConfirm'             => __( 'This will delete the deployed Worker from your Cloudflare account. Continue?', 'super-preloader-for-cloudflare' ),
+					'disconnecting'                 => __( 'Disconnecting…', 'super-preloader-for-cloudflare' ),
+					'disconnectSuccess'             => __( 'Worker disconnected and removed from Cloudflare.', 'super-preloader-for-cloudflare' ),
+					'disconnectWorkerDeleteWarning' => __( 'Disconnected locally, but the Worker script could not be removed from Cloudflare automatically. You may need to delete it manually from your Cloudflare dashboard (Workers & Pages).', 'super-preloader-for-cloudflare' ),
+					'workerStatusChecking'          => __( 'Checking…', 'super-preloader-for-cloudflare' ),
+					'workerStatusDeploying'         => __( 'Waiting for the Worker', 'super-preloader-for-cloudflare' ),
+					'workerStatusWorking'           => __( 'Deployed & Working', 'super-preloader-for-cloudflare' ),
+					'workerStatusNotDeployed'       => __( 'Not Deployed', 'super-preloader-for-cloudflare' ),
+					'workerStatusNotResponding'     => __( 'Not Responding', 'super-preloader-for-cloudflare' ),
+					// translators: %1$d is the request count, %2$d is the miss count, both for the last 24 hours.
+					'coverageMissesToday'           => __( '%1$d requests - %2$d missed', 'super-preloader-for-cloudflare' ),
+					// translators: %1$d is the request count, %2$d is the miss count, both for the last 7 days.
+					'coverageMisses7d'              => __( '%1$d requests - %2$d missed', 'super-preloader-for-cloudflare' ),
+					// translators: %1$d is the request count, %2$d is the miss count, for a single country with no time period implied.
+					'coverageMissesPlain'           => __( '%1$d requests - %2$d missed', 'super-preloader-for-cloudflare' ),
+					'coverageAllGood'               => __( 'No misses in the last 7 days. Great coverage!', 'super-preloader-for-cloudflare' ),
+					'coverageNoSuggestions'         => __( 'No countries need attention right now.', 'super-preloader-for-cloudflare' ),
 				),
 			)
 		);
