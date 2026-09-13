@@ -85,15 +85,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</li>
 	</ul>
 	<h4><?php echo esc_html( __( "What's New", 'super-preloader-for-cloudflare' ) ); ?></h4>
+	<h5><?php echo esc_html( __( 'Version 1.3.1', 'super-preloader-for-cloudflare' ) ); ?></h5>
+	<ul class="ul-disc">
+		<li><?php echo esc_html__( 'Fixed: Exclusions tab pagination links pointed to admin-ajax.php on a fresh page visit instead of the settings page, so clicking to page 2 or beyond failed.', 'super-preloader-for-cloudflare' ); ?></li>
+	</ul>
 	<h5><?php echo esc_html( __( 'Version 1.3.0', 'super-preloader-for-cloudflare' ) ); ?></h5>
 	<ul class="ul-disc">
 		<li><?php echo esc_html__( 'Added: Cache Coverage report. See real visitor cache hit/miss rates by country from Cloudflare Analytics, with suggested Webshare proxy countries to improve coverage.', 'super-preloader-for-cloudflare' ); ?></li>
 		<li><?php echo esc_html__( 'Improved: Exclusions tab now loads instantly instead of waiting on a live sitemap re-fetch every time.', 'super-preloader-for-cloudflare' ); ?></li>
 		<li><?php echo esc_html__( 'Improved: Visual improvements on all tabs.', 'super-preloader-for-cloudflare' ); ?></li>
-	</ul>
-	<h5><?php echo esc_html( __( 'Version 1.2.0', 'super-preloader-for-cloudflare' ) ); ?></h5>
-	<ul class="ul-disc">
-		<li><?php echo esc_html__( 'Added: Optional automated Cloudflare Worker deployment.', 'super-preloader-for-cloudflare' ); ?></li>
-		<li><?php echo esc_html__( 'Improved: Admin bar shortcut', 'super-preloader-for-cloudflare' ); ?></li>
 	</ul>
 </div>

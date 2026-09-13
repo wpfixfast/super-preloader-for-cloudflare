@@ -84,10 +84,25 @@ class WPFF_SP_Ajax {
 
 		WPFF_SP_Admin_UI::load_urls_list_table_class();
 
+		// WP_List_Table::pagination() builds its « ‹ › » links from
+		// $_SERVER['REQUEST_URI'] of whatever request is rendering the table.
+		// Since this runs inside an AJAX POST to admin-ajax.php, that value
+		// would otherwise be admin-ajax.php itself, producing dead
+		// ".../admin-ajax.php?paged=2" links. Point it at the real Exclusions
+		// tab URL for the duration of the render instead (this call only ever
+		// fires for the fresh, page-1, no-query-args case — see
+		// WPFF_SP_Urls_List_Table::is_table_interaction() — so no existing
+		// paged/s/orderby/order needs to be preserved here).
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Not output or used for logic, only cached here to be restored verbatim after the render below.
+		$original_request_uri   = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$_SERVER['REQUEST_URI'] = wp_make_link_relative( admin_url( 'options-general.php?page=super-preloader-for-cloudflare&tab=exclusions' ) );
+
 		$wpff_sp_urls_list_table = new WPFF_SP_Urls_List_Table();
 		$wpff_sp_urls_list_table->prepare_items();
 
 		include WPFF_SP_PLUGIN_PATH . 'includes/partials/urls-table-section.php';
+
+		$_SERVER['REQUEST_URI'] = $original_request_uri;
 
 		wp_die();
 	}

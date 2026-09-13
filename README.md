@@ -100,6 +100,10 @@ Yes. Without proxies, requests go directly from your server and only warm the ne
 
 ## Changelog
 
+### 1.3.1 - 13.09.2026
+
+- **Fixed:** Exclusions tab pagination links pointed to admin-ajax.php on a fresh page visit instead of the settings page, so clicking to page 2 or beyond failed
+
 ### 1.3.0 - 11.09.2026
 
 - **Added:** Cache Coverage report. See real visitor cache hit/miss rates by country from Cloudflare Analytics, with suggested Webshare proxy countries to improve coverage
